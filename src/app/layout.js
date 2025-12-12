@@ -21,22 +21,3 @@ export default function RootLayout({ children }) {
     </html>
   );
 }
-```
-
-## Estrutura final:
-```
-src/
-  ├── app/
-  │   ├── carrinho/
-  │   │   └── page.js
-  │   ├── checkout/
-  │   │   └── page.js
-  │   ├── context/
-  │   │   └── cartContext.js ✅ CRIAR
-  │   ├── produtos/
-  │   │   └── page.js
-  │   ├── layout.js
-  │   └── page.js
-  └── components/
-      ├── Header.js ✅ CRIAR
-      └── ProductCard.js ✅ CRIAR
