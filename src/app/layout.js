@@ -1,30 +1,42 @@
-import { Inter } from 'next/font/google';
-import './globals.css';
 import { CartProvider } from './context/cartContext';
 import Header from '@/components/Header';
-import Footer from '@/components/Footer';
-
-const inter = Inter({ subsets: ['latin'] });
+import './globals.css';
 
 export const metadata = {
-  title: 'Supermercado Brasileiro em Londres',
-  description: 'Os melhores produtos brasileiros em Londres',
+  title: 'Mercado Londres',
+  description: 'Produtos brasileiros em Londres',
 };
 
 export default function RootLayout({ children }) {
   return (
     <html lang="pt-BR">
-      <body className={inter.className}>
+      <body>
         <CartProvider>
-          <div className="flex flex-col min-h-screen">
-            <Header />
-            <main className="flex-grow">
-              {children}
-            </main>
-            <Footer />
-          </div>
+          <Header />
+          <main className="min-h-screen">
+            {children}
+          </main>
         </CartProvider>
       </body>
     </html>
   );
 }
+```
+
+## Estrutura final:
+```
+src/
+  ├── app/
+  │   ├── carrinho/
+  │   │   └── page.js
+  │   ├── checkout/
+  │   │   └── page.js
+  │   ├── context/
+  │   │   └── cartContext.js ✅ CRIAR
+  │   ├── produtos/
+  │   │   └── page.js
+  │   ├── layout.js
+  │   └── page.js
+  └── components/
+      ├── Header.js ✅ CRIAR
+      └── ProductCard.js ✅ CRIAR
