@@ -62,18 +62,3 @@ export default function Footer() {
     </footer>
   );
 }
-```
-
-## 📁 Estrutura Final:
-```
-src/app/
-├── components/
-│   ├── ProductCard.js
-│   ├── Header.js         ← CRIE
-│   └── Footer.js         ← CRIE
-├── context/
-│   └── CartContext.js    ← RENOMEIE (C maiúsculo)
-├── produtos/
-├── globals.css
-├── layout.js
-└── page.js
