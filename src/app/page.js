@@ -61,7 +61,7 @@ export default function HomePage() {
       <section className="bg-gradient-to-r from-green-700 via-green-600 to-yellow-500 text-white">
         <div className="container mx-auto px-4 py-20 text-center">
           <h1 className="text-5xl md:text-6xl font-black mb-6">
-            🇧🇷 Sabor de Casa em Londres!
+            🇧🇷 Sabor Brasileiro em Londres!
           </h1>
           <p className="text-xl md:text-2xl mb-8 max-w-2xl mx-auto">
             Os melhores produtos brasileiros entregues na sua porta. Açaí, pão de queijo, guaraná e muito mais!
