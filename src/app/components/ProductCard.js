@@ -19,7 +19,12 @@ export default function ProductCard({ product }) {
       <div className="relative h-48 bg-white-100 flex items-center justify-center p-4">
         {/* CORREÇÃO AQUI: Renderizando a imagem corretamente */}
         <div className="flex items-center justify-center w-full h-full">
-          {product.id === '1' && <span className="text-6xl">🥐</span>}
+          {product.id === '1' && (
+               <img 
+              src="https://vpqevrxwiglfpyrwxmne.supabase.co/storage/v1/object/public/images/lata%20de%20guarana%206%20un.webp" 
+              alt={product.name}
+              className="h-full w-full object-contain" 
+            />
           
           {product.id === '2' && (
             <img 
