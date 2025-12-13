@@ -3,7 +3,7 @@
 import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { Truck, ShieldCheck, Clock, ArrowRight } from 'lucide-react';
-import ProductCard from '@/components/ProductCard';
+import ProductCard from '@/app/components/ProductCard';
 
 export default function HomePage() {
   const router = useRouter();
