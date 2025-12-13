@@ -25,7 +25,7 @@ export default function ProdutosPage() {
       },
       {
         id: '2',
-        name: 'Guaraná Antarctica (2L)',
+        name: 'Guaraná Antarctica (300ml)',
         description: 'O refrigerante brasileiro mais famoso',
         price: 3.99,
         origin: 'Brasil',
