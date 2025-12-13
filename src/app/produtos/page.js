@@ -43,7 +43,7 @@ export default function ProdutosPage() {
       },
       {
         id: '4',
-        name: 'Brigadeiro Gourmet (12 unidades)',
+        name: 'Brigadeiro Gourmet (1 un)',
         description: 'Brigadeiros artesanais feitos com chocolate belga',
         price: 9.99,
         origin: 'Brasil',
