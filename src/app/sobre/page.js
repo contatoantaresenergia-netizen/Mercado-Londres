@@ -89,10 +89,7 @@ export default function SobrePage() {
                 <p className="text-gray-600">
                   Entrega rápida e confiável
                 </p>
-              </div>
             </div>
-          </div>
-        </div>
       </section>
     </div>
   );
