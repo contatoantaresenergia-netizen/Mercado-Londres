@@ -19,7 +19,7 @@ export default function ProductCard({ product }) {
       <div className="relative h-48 bg-gray-100 flex items-center justify-center">
         <div className="text-6xl">
           {product.id === '1' && '🥐'}
-          {product.id === '2' && '🥤'}
+          {product.id === '2' && 'https://vpqevrxwiglfpyrwxmne.supabase.co/storage/v1/object/public/images/lata%20de%20guarana%206%20un.webp'}
           {product.id === '3' && '🍇'}
           {product.id === '4' && '🍫'}
         </div>
