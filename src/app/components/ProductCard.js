@@ -16,10 +16,11 @@ export default function ProductCard({ product }) {
 
   return (
     <div className="bg-white rounded-xl shadow-lg overflow-hidden hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-1">
-      <div className="relative h-48 bg-white-100 flex items-center justify-center p-4">
-        {/* CORREÇÃO AQUI: Renderizando a imagem corretamente */}
+      {/* CORREÇÃO 1: Mudei 'bg-white-100' para 'bg-white' (o anterior não existe no Tailwind e causava o fundo cinza) */}
+      <div className="relative h-48 bg-white flex items-center justify-center p-4">
+        
         <div className="flex items-center justify-center w-full h-full">
-        {/* Foto 1: Guaraná 6 un (ou o sabor 1) */}
+          {/* Foto 1 */}
           {product.id === '1' && (
             <img 
               src="https://vpqevrxwiglfpyrwxmne.supabase.co/storage/v1/object/public/images/FEE9A1D6-CDD6-4436-8E46-212F2C4F3A34.webp" 
@@ -28,7 +29,7 @@ export default function ProductCard({ product }) {
             />
           )}
 
-          {/* Foto 2: Guaraná Sabor 2 (Altere o link abaixo se a URL for diferente no Supabase) */}
+          {/* Foto 2 */}
           {product.id === '2' && (
             <img 
               src="https://vpqevrxwiglfpyrwxmne.supabase.co/storage/v1/object/public/images/lata%20de%20guarana%206%20un.webp" 
@@ -37,7 +38,7 @@ export default function ProductCard({ product }) {
             />
           )}
 
-          {/* Foto 3: Guaraná Sabor 3 */}
+          {/* Foto 3 */}
           {product.id === '3' && (
             <img 
               src="https://vpqevrxwiglfpyrwxmne.supabase.co/storage/v1/object/public/images/lata%20de%20guarana%206%20un.webp" 
@@ -46,7 +47,7 @@ export default function ProductCard({ product }) {
             />
           )}
 
-          {/* Foto 4: Guaraná Sabor 4 */}
+          {/* Foto 4 */}
           {product.id === '4' && (
             <img 
               src="https://vpqevrxwiglfpyrwxmne.supabase.co/storage/v1/object/public/images/lata%20de%20guarana%206%20un.webp" 
@@ -54,12 +55,15 @@ export default function ProductCard({ product }) {
               className="h-full w-full object-contain" 
             />
           )}
+        {/* CORREÇÃO 2: Faltava fechar a DIV interna das imagens aqui */}
+        </div>
 
         {product.origin === 'Brasil' && (
           <span className="absolute top-2 right-2 bg-green-600 text-white text-xs font-bold px-2 py-1 rounded-full z-10">
             🇧🇷 Brasil
           </span>
         )}
+      {/* CORREÇÃO 3: Faltava fechar a DIV principal da imagem (a que tem o h-48) aqui */}
       </div>
 
       <div className="p-4">
