@@ -16,7 +16,7 @@ export default function ProductCard({ product }) {
 
   return (
     <div className="bg-white rounded-xl shadow-lg overflow-hidden hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-1">
-      <div className="relative h-48 bg-gray-100 flex items-center justify-center p-4">
+      <div className="relative h-48 bg-white-100 flex items-center justify-center p-4">
         {/* CORREÇÃO AQUI: Renderizando a imagem corretamente */}
         <div className="flex items-center justify-center w-full h-full">
           {product.id === '1' && <span className="text-6xl">🥐</span>}
