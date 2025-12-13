@@ -15,7 +15,7 @@ export default function Header() {
           {/* Logo */}
           <Link href="/" className="flex items-center gap-2 hover:opacity-80 transition">
             <span className="text-2xl">🇧🇷</span>
-            <span className="font-bold text-xl">Mercado Londres</span>
+            <span className="font-bold text-xl">Brazilian Center</span>
           </Link>
 
           {/* Navigation */}
