@@ -16,15 +16,25 @@ export default function ProductCard({ product }) {
 
   return (
     <div className="bg-white rounded-xl shadow-lg overflow-hidden hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-1">
-      <div className="relative h-48 bg-gray-100 flex items-center justify-center">
-        <div className="text-6xl">
-          {product.id === '1' && '🥐'}
-          {product.id === '2' && 'https://vpqevrxwiglfpyrwxmne.supabase.co/storage/v1/object/public/images/lata%20de%20guarana%206%20un.webp'}
-          {product.id === '3' && '🍇'}
-          {product.id === '4' && '🍫'}
+      <div className="relative h-48 bg-gray-100 flex items-center justify-center p-4">
+        {/* CORREÇÃO AQUI: Renderizando a imagem corretamente */}
+        <div className="flex items-center justify-center w-full h-full">
+          {product.id === '1' && <span className="text-6xl">🥐</span>}
+          
+          {product.id === '2' && (
+            <img 
+              src="https://vpqevrxwiglfpyrwxmne.supabase.co/storage/v1/object/public/images/lata%20de%20guarana%206%20un.webp" 
+              alt={product.name}
+              className="h-full w-full object-contain" 
+            />
+          )}
+
+          {product.id === '3' && <span className="text-6xl">🍇</span>}
+          {product.id === '4' && <span className="text-6xl">🍫</span>}
         </div>
+
         {product.origin === 'Brasil' && (
-          <span className="absolute top-2 right-2 bg-green-600 text-white text-xs font-bold px-2 py-1 rounded-full">
+          <span className="absolute top-2 right-2 bg-green-600 text-white text-xs font-bold px-2 py-1 rounded-full z-10">
             🇧🇷 Brasil
           </span>
         )}
