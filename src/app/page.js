@@ -26,7 +26,7 @@ export default function HomePage() {
         name: 'Guaraná Antarctica (2L)',
         description: 'O refrigerante brasileiro mais famoso',
         price: 3.99,
-        image_url: '/images/produtos/guarana.jpg',
+        image_url: 'https://vpqevrxwiglfpyrwxmne.supabase.co/storage/v1/object/public/images/lata%20de%20guarana%206%20un.webp',
         origin: 'Brasil',
         stock: 100,
       },
