@@ -1,5 +1,5 @@
 import './globals.css'
-import { CartProvider } from '@/app/context/CartContext'
+import { CartProvider } from '@/app/context/cartContext'
 import Header from '@/components/Header'
 import Footer from '@/components/Footer'
 
