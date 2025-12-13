@@ -19,13 +19,16 @@ export default function ProductCard({ product }) {
       <div className="relative h-48 bg-white-100 flex items-center justify-center p-4">
         {/* CORREÇÃO AQUI: Renderizando a imagem corretamente */}
         <div className="flex items-center justify-center w-full h-full">
+        {/* Foto 1: Guaraná 6 un (ou o sabor 1) */}
           {product.id === '1' && (
-               <img 
+            <img 
               src="https://vpqevrxwiglfpyrwxmne.supabase.co/storage/v1/object/public/images/lata%20de%20guarana%206%20un.webp" 
               alt={product.name}
               className="h-full w-full object-contain" 
             />
-          
+          )}
+
+          {/* Foto 2: Guaraná Sabor 2 (Altere o link abaixo se a URL for diferente no Supabase) */}
           {product.id === '2' && (
             <img 
               src="https://vpqevrxwiglfpyrwxmne.supabase.co/storage/v1/object/public/images/lata%20de%20guarana%206%20un.webp" 
@@ -34,9 +37,23 @@ export default function ProductCard({ product }) {
             />
           )}
 
-          {product.id === '3' && <span className="text-6xl">🍇</span>}
-          {product.id === '4' && <span className="text-6xl">🍫</span>}
-        </div>
+          {/* Foto 3: Guaraná Sabor 3 */}
+          {product.id === '3' && (
+            <img 
+              src="https://vpqevrxwiglfpyrwxmne.supabase.co/storage/v1/object/public/images/lata%20de%20guarana%206%20un.webp" 
+              alt={product.name}
+              className="h-full w-full object-contain" 
+            />
+          )}
+
+          {/* Foto 4: Guaraná Sabor 4 */}
+          {product.id === '4' && (
+            <img 
+              src="https://vpqevrxwiglfpyrwxmne.supabase.co/storage/v1/object/public/images/lata%20de%20guarana%206%20un.webp" 
+              alt={product.name}
+              className="h-full w-full object-contain" 
+            />
+          )}
 
         {product.origin === 'Brasil' && (
           <span className="absolute top-2 right-2 bg-green-600 text-white text-xs font-bold px-2 py-1 rounded-full z-10">
