@@ -22,7 +22,7 @@ export default function ProductCard({ product }) {
         {/* Foto 1: Guaraná 6 un (ou o sabor 1) */}
           {product.id === '1' && (
             <img 
-              src="https://vpqevrxwiglfpyrwxmne.supabase.co/storage/v1/object/public/images/lata%20de%20guarana%206%20un.webp" 
+              src="https://vpqevrxwiglfpyrwxmne.supabase.co/storage/v1/object/public/images/FEE9A1D6-CDD6-4436-8E46-212F2C4F3A34.webp" 
               alt={product.name}
               className="h-full w-full object-contain" 
             />
