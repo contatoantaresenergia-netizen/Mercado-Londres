@@ -1,5 +1,4 @@
 'use client'
-
 import React from 'react';
 import { Heart, Users, Truck, Star } from 'lucide-react';
 
@@ -89,7 +88,10 @@ export default function SobrePage() {
                 <p className="text-gray-600">
                   Entrega rápida e confiável
                 </p>
+              </div>
             </div>
+          </div>
+        </div>
       </section>
     </div>
   );
