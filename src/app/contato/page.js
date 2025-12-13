@@ -252,3 +252,31 @@ export default function ContatoPage() {
                   Aceitamos cartões de crédito/débito, PayPal, transferência bancária 
                   e PIX para clientes do Brasil.
                 </p>
+              </div>
+
+              <div className="bg-gray-50 p-6 rounded-lg">
+                <h3 className="font-bold text-lg text-gray-800 mb-2">
+                  🔄 Posso trocar ou devolver produtos?
+                </h3>
+                <p className="text-gray-600">
+                  Sim! Você tem até 14 dias para trocar ou devolver produtos, 
+                  desde que estejam em perfeito estado.
+                </p>
+              </div>
+
+              <div className="bg-gray-50 p-6 rounded-lg">
+                <h3 className="font-bold text-lg text-gray-800 mb-2">
+                  🇧🇷 Vocês falam português?
+                </h3>
+                <p className="text-gray-600">
+                  Sim! Toda nossa equipe fala português fluentemente. 
+                  Atendemos brasileiros em Londres com todo carinho!
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+    </div>
+  );
+}
