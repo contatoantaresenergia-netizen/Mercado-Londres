@@ -21,7 +21,6 @@ export default function ContatoPage() {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    // Simular envio
     setSubmitted(true);
     setTimeout(() => {
       setSubmitted(false);
@@ -36,7 +35,6 @@ export default function ContatoPage() {
 
   return (
     <div className="min-h-screen bg-gray-50">
-      {/* Hero Section */}
       <section className="bg-gradient-to-r from-green-700 to-green-600 text-white py-20">
         <div className="container mx-auto px-4">
           <div className="max-w-4xl mx-auto text-center">
@@ -50,11 +48,9 @@ export default function ContatoPage() {
         </div>
       </section>
 
-      {/* Conteúdo Principal */}
       <section className="py-16">
         <div className="container mx-auto px-4">
           <div className="max-w-6xl mx-auto grid lg:grid-cols-2 gap-12">
-            {/* Informações de Contato */}
             <div>
               <h2 className="text-3xl font-bold text-gray-800 mb-8">
                 Nossas Informações
@@ -124,13 +120,11 @@ export default function ContatoPage() {
                 </div>
               </div>
 
-              {/* Mapa (Placeholder) */}
               <div className="mt-8 bg-gray-200 rounded-lg h-64 flex items-center justify-center">
                 <p className="text-gray-500">🗺️ Mapa - Londres, UK</p>
               </div>
             </div>
 
-            {/* Formulário de Contato */}
             <div>
               <div className="bg-white rounded-lg shadow-lg p-8">
                 <h2 className="text-3xl font-bold text-gray-800 mb-6">
@@ -232,7 +226,6 @@ export default function ContatoPage() {
         </div>
       </section>
 
-      {/* FAQ Section */}
       <section className="py-16 bg-white">
         <div className="container mx-auto px-4">
           <div className="max-w-4xl mx-auto">
@@ -259,40 +252,3 @@ export default function ContatoPage() {
                   Aceitamos cartões de crédito/débito, PayPal, transferência bancária 
                   e PIX para clientes do Brasil.
                 </p>
-              </div>
-
-              <div className="bg-gray-50 p-6 rounded-lg">
-                <h3 className="font-bold text-lg text-gray-800 mb-2">
-                  🔄 Posso devolver produtos?
-                </h3>
-                <p className="text-gray-600">
-                  Sim! Você tem até 14 dias para devolução de produtos não perecíveis. 
-                  Entre em contato conosco para iniciar o processo.
-                </p>
-              </div>
-
-              <div className="bg-gray-50 p-6 rounded-lg">
-                <h3 className="font-bold text-lg text-gray-800 mb-2">
-                  🇧🇷 Vocês importam produtos do Brasil?
-                </h3>
-                <p className="text-gray-600">
-                  Sim! Trabalhamos com importadores certificados para trazer os melhores 
-                  produtos brasileiros com qualidade garantida.
-                </p>
-              </div>
-
-              <div className="bg-gray-50 p-6 rounded-lg">
-                <h3 className="font-bold text-lg text-gray-800 mb-2">
-                  📱 Posso fazer pedidos pelo WhatsApp?
-                </h3>
-                <p className="text-gray-600">
-                  Claro! Entre em contato pelo nosso WhatsApp +44 20 1234 5678 
-                  e faremos seu pedido com todo carinho.
-                </p>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-    </div>
-  );
