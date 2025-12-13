@@ -16,11 +16,16 @@ export default function ProductCard({ product }) {
 
   return (
     <div className="bg-white rounded-xl shadow-lg overflow-hidden hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-1">
-      {/* CORREÇÃO 1: Mudei 'bg-white-100' para 'bg-white' (o anterior não existe no Tailwind e causava o fundo cinza) */}
-      <div className="relative h-48 bg-white flex items-center justify-center p-4">
+      
+      {/* AJUSTE AQUI: 
+          1. h-72 no mobile (deixa a foto bem maior no celular)
+          2. md:h-48 no desktop (mantém o tamanho padrão em telas grandes)
+          3. bg-white fixo para sumir o fundo cinza
+      */}
+      <div className="relative h-72 md:h-48 bg-white flex items-center justify-center p-4">
         
         <div className="flex items-center justify-center w-full h-full">
-          {/* Foto 1 */}
+          {/* Foto 1: Guaraná 1 */}
           {product.id === '1' && (
             <img 
               src="https://vpqevrxwiglfpyrwxmne.supabase.co/storage/v1/object/public/images/FEE9A1D6-CDD6-4436-8E46-212F2C4F3A34.webp" 
@@ -29,7 +34,7 @@ export default function ProductCard({ product }) {
             />
           )}
 
-          {/* Foto 2 */}
+          {/* Foto 2: Guaraná 2 */}
           {product.id === '2' && (
             <img 
               src="https://vpqevrxwiglfpyrwxmne.supabase.co/storage/v1/object/public/images/lata%20de%20guarana%206%20un.webp" 
@@ -38,7 +43,7 @@ export default function ProductCard({ product }) {
             />
           )}
 
-          {/* Foto 3 */}
+          {/* Foto 3: Guaraná 3 */}
           {product.id === '3' && (
             <img 
               src="https://vpqevrxwiglfpyrwxmne.supabase.co/storage/v1/object/public/images/E0655ADF-9622-472F-BE1D-569A33FDBF90.webp" 
@@ -47,7 +52,7 @@ export default function ProductCard({ product }) {
             />
           )}
 
-          {/* Foto 4 */}
+          {/* Foto 4: Guaraná 4 */}
           {product.id === '4' && (
             <img 
               src="https://vpqevrxwiglfpyrwxmne.supabase.co/storage/v1/object/public/images/Design%20sem%20nome%20(17).png" 
@@ -55,15 +60,13 @@ export default function ProductCard({ product }) {
               className="h-full w-full object-contain" 
             />
           )}
-        {/* CORREÇÃO 2: Faltava fechar a DIV interna das imagens aqui */}
         </div>
 
         {product.origin === 'Brasil' && (
-          <span className="absolute top-2 right-2 bg-green-600 text-white text-xs font-bold px-2 py-1 rounded-full z-10">
+          <span className="absolute top-2 right-2 bg-green-600 text-white text-[10px] font-bold px-2 py-1 rounded-full z-10 shadow-sm">
             🇧🇷 Brasil
           </span>
         )}
-      {/* CORREÇÃO 3: Faltava fechar a DIV principal da imagem (a que tem o h-48) aqui */}
       </div>
 
       <div className="p-4">
