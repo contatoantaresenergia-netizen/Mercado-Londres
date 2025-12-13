@@ -7,15 +7,12 @@ export default function Footer() {
     <footer className="bg-gray-900 text-white pt-12 pb-6">
       <div className="container mx-auto px-4">
         <div className="grid md:grid-cols-4 gap-8 mb-8">
-          {/* Sobre */}
           <div>
             <h3 className="font-bold text-lg mb-4 text-yellow-400">🇧🇷 Mercado Londres</h3>
             <p className="text-gray-400 text-sm">
               Os melhores produtos brasileiros entregues na sua porta em Londres.
             </p>
           </div>
-
-          {/* Links */}
           <div>
             <h4 className="font-bold mb-4">Links Úteis</h4>
             <ul className="space-y-2 text-sm text-gray-400">
@@ -25,8 +22,6 @@ export default function Footer() {
               <li><Link href="/contato" className="hover:text-yellow-400 transition">Contato</Link></li>
             </ul>
           </div>
-
-          {/* Contato */}
           <div>
             <h4 className="font-bold mb-4">Contato</h4>
             <ul className="space-y-2 text-sm text-gray-400">
@@ -40,8 +35,6 @@ export default function Footer() {
               </li>
             </ul>
           </div>
-
-          {/* Redes Sociais */}
           <div>
             <h4 className="font-bold mb-4">Siga-nos</h4>
             <div className="flex gap-4">
@@ -54,7 +47,6 @@ export default function Footer() {
             </div>
           </div>
         </div>
-
         <div className="border-t border-gray-800 pt-6 text-center text-sm text-gray-400">
           <p>&copy; {new Date().getFullYear()} Mercado Londres. Todos os direitos reservados.</p>
         </div>
