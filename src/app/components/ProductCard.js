@@ -41,7 +41,7 @@ export default function ProductCard({ product }) {
           {/* Foto 3 */}
           {product.id === '3' && (
             <img 
-              src="https://vpqevrxwiglfpyrwxmne.supabase.co/storage/v1/object/public/images/lata%20de%20guarana%206%20un.webp" 
+              src="https://vpqevrxwiglfpyrwxmne.supabase.co/storage/v1/object/public/images/E0655ADF-9622-472F-BE1D-569A33FDBF90.webp" 
               alt={product.name}
               className="h-full w-full object-contain" 
             />
@@ -50,7 +50,7 @@ export default function ProductCard({ product }) {
           {/* Foto 4 */}
           {product.id === '4' && (
             <img 
-              src="https://vpqevrxwiglfpyrwxmne.supabase.co/storage/v1/object/public/images/lata%20de%20guarana%206%20un.webp" 
+              src="https://vpqevrxwiglfpyrwxmne.supabase.co/storage/v1/object/public/images/Design%20sem%20nome%20(17).png" 
               alt={product.name}
               className="h-full w-full object-contain" 
             />
