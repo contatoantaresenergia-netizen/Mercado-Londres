@@ -240,4 +240,59 @@ export default function ContatoPage() {
               Perguntas Frequentes
             </h2>
 
-            <div className="space-
+            <div className="space-y-6">
+              <div className="bg-gray-50 p-6 rounded-lg">
+                <h3 className="font-bold text-lg text-gray-800 mb-2">
+                  📦 Como funciona a entrega?
+                </h3>
+                <p className="text-gray-600">
+                  Entregamos em toda Londres e arredores. O prazo é de 2-5 dias úteis 
+                  e você pode acompanhar seu pedido em tempo real.
+                </p>
+              </div>
+
+              <div className="bg-gray-50 p-6 rounded-lg">
+                <h3 className="font-bold text-lg text-gray-800 mb-2">
+                  💳 Quais formas de pagamento aceitam?
+                </h3>
+                <p className="text-gray-600">
+                  Aceitamos cartões de crédito/débito, PayPal, transferência bancária 
+                  e PIX para clientes do Brasil.
+                </p>
+              </div>
+
+              <div className="bg-gray-50 p-6 rounded-lg">
+                <h3 className="font-bold text-lg text-gray-800 mb-2">
+                  🔄 Posso devolver produtos?
+                </h3>
+                <p className="text-gray-600">
+                  Sim! Você tem até 14 dias para devolução de produtos não perecíveis. 
+                  Entre em contato conosco para iniciar o processo.
+                </p>
+              </div>
+
+              <div className="bg-gray-50 p-6 rounded-lg">
+                <h3 className="font-bold text-lg text-gray-800 mb-2">
+                  🇧🇷 Vocês importam produtos do Brasil?
+                </h3>
+                <p className="text-gray-600">
+                  Sim! Trabalhamos com importadores certificados para trazer os melhores 
+                  produtos brasileiros com qualidade garantida.
+                </p>
+              </div>
+
+              <div className="bg-gray-50 p-6 rounded-lg">
+                <h3 className="font-bold text-lg text-gray-800 mb-2">
+                  📱 Posso fazer pedidos pelo WhatsApp?
+                </h3>
+                <p className="text-gray-600">
+                  Claro! Entre em contato pelo nosso WhatsApp +44 20 1234 5678 
+                  e faremos seu pedido com todo carinho.
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+    </div>
+  );
