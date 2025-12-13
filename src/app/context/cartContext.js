@@ -6,7 +6,6 @@ const CartContext = createContext();
 export function CartProvider({ children }) {
   const [cart, setCart] = useState([]);
 
-  // Carregar carrinho do localStorage (opcional)
   useEffect(() => {
     if (typeof window !== 'undefined') {
       const savedCart = localStorage.getItem('cart');
@@ -16,7 +15,6 @@ export function CartProvider({ children }) {
     }
   }, []);
 
-  // Salvar carrinho no localStorage
   useEffect(() => {
     if (typeof window !== 'undefined' && cart.length > 0) {
       localStorage.setItem('cart', JSON.stringify(cart));
@@ -26,7 +24,6 @@ export function CartProvider({ children }) {
   const addToCart = (product) => {
     setCart(prevCart => {
       const existingItem = prevCart.find(item => item.id === product.id);
-      
       if (existingItem) {
         return prevCart.map(item =>
           item.id === product.id
@@ -34,7 +31,6 @@ export function CartProvider({ children }) {
             : item
         );
       }
-      
       return [...prevCart, { ...product, quantity: 1 }];
     });
   };
@@ -48,7 +44,6 @@ export function CartProvider({ children }) {
       removeFromCart(productId);
       return;
     }
-    
     setCart(prevCart =>
       prevCart.map(item =>
         item.id === productId ? { ...item, quantity } : item
