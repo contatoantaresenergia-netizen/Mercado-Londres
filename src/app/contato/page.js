@@ -271,6 +271,7 @@ export default function ContatoPage() {
                 <p className="text-gray-600">
                   Sim! Toda nossa equipe fala português fluentemente. 
                   Atendemos brasileiros em Londres com todo carinho!
+               </p> 
               </div>
             </div>
           </div>
