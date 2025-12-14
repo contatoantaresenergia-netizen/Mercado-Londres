@@ -1,12 +1,13 @@
 'use client'
-import React from 'react';
+import React, { useState } from 'react';
 import Link from 'next/link';
-import { ShoppingCart } from 'lucide-react';
+import { ShoppingCart, Menu } from 'lucide-react';
 import { useCart } from '@/app/context/CartContext';
 import MobileMenu from './MobileMenu';
 
 export default function Header() {
   const { getCartCount } = useCart();
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   
   return (
     <header className="bg-green-700 text-white shadow-lg">
@@ -35,7 +36,7 @@ export default function Header() {
           </nav>
           
           {/* Cart e Menu Mobile */}
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-4">
             <Link 
               href="/carrinho" 
               className="relative hover:text-yellow-300 transition flex items-center gap-2"
@@ -48,13 +49,20 @@ export default function Header() {
               )}
             </Link>
             
-            {/* Menu Hambúrguer - Apenas Mobile */}
-            <div className="md:hidden">
-              <MobileMenu />
-            </div>
+            {/* Botão Menu Hambúrguer - Apenas Mobile */}
+            <button 
+              className="md:hidden p-2 hover:bg-green-600 rounded transition"
+              onClick={() => setMobileMenuOpen(true)}
+              aria-label="Abrir menu"
+            >
+              <Menu className="w-6 h-6" />
+            </button>
           </div>
         </div>
       </div>
+      
+      {/* Menu Mobile */}
+      <MobileMenu isOpen={mobileMenuOpen} onClose={() => setMobileMenuOpen(false)} />
     </header>
   );
 }
