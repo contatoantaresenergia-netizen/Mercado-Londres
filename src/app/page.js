@@ -139,7 +139,7 @@ export default function HomePage() {
         name: 'Coração de Frango (1kg)',
         description: 'Coração de frango temperado para churrasco',
         price: 11.99,
-        image_url: '/images/produtos/coracao.jpg',
+        image_url: 'https://vpqevrxwiglfpyrwxmne.supabase.co/storage/v1/object/public/images/663D3233-E1D0-4FE7-AE11-34D2BD69EAC4.webp',
         origin: 'Brasil',
         stock: 20,
       },
