@@ -2,7 +2,7 @@
 
 export const dynamic = 'force-dynamic'
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { useCart } from '@/app/context/CartContext';
 import { CreditCard, Truck, CheckCircle } from 'lucide-react';
@@ -11,6 +11,7 @@ export default function CheckoutPage() {
   const router = useRouter();
   const { cart, getCartTotal, clearCart } = useCart();
   const [step, setStep] = useState(1);
+  const [isClient, setIsClient] = useState(false);
   const [formData, setFormData] = useState({
     // Dados pessoais
     nome: '',
@@ -29,6 +30,18 @@ export default function CheckoutPage() {
     cvv: '',
   });
 
+  // Marcar quando o componente está no cliente
+  useEffect(() => {
+    setIsClient(true);
+  }, []);
+
+  // Redirecionar se o carrinho estiver vazio (apenas no cliente)
+  useEffect(() => {
+    if (isClient && cart.length === 0 && step !== 4) {
+      router.push('/produtos');
+    }
+  }, [isClient, cart.length, step, router]);
+
   const handleInputChange = (e) => {
     setFormData({
       ...formData,
@@ -45,9 +58,13 @@ export default function CheckoutPage() {
     }, 2000);
   };
 
-  if (cart.length === 0 && step !== 4) {
-    router.push('/produtos');
-    return null;
+  // Mostrar loading durante SSR
+  if (!isClient) {
+    return (
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+        <div className="text-gray-600 text-lg">A carregar...</div>
+      </div>
+    );
   }
 
   // Página de Sucesso
