@@ -94,7 +94,7 @@ export default function HomePage() {
         name: 'Açaí Puro (1kg)',
         description: 'Polpa de açaí congelada 100% natural',
         price: 12.99,
-        image_url: '/images/produtos/acai.jpg',
+        image_url: 'https://vpqevrxwiglfpyrwxmne.supabase.co/storage/v1/object/public/images/4ADDD686-459C-4CF8-861E-98BB34EAA224%20(1).webp',
         origin: 'Brasil',
         stock: 30,
       },
