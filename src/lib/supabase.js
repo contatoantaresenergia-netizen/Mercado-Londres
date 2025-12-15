@@ -1,10 +1,4 @@
-import { createClient } from '@supabase/supabase-js'
-
-const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL
-const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
-
-if (!supabaseUrl || !supabaseKey) {
-  console.error("ERRO: Chaves do Supabase faltando!")
-}
-
-export const supabase = createClient(supabaseUrl, supabaseKey)
+// CÓDIGO INCORRETO
+const SUPABASE_KEY = 'SUPABASE_CLIENT_API_KEY'
+// ...
+export const supabase = createClient(SUPABASE_URL, SUPABASE_KEY)
