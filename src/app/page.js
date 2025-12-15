@@ -42,7 +42,7 @@ export default function HomePage() {
       id: 1,
       name: 'CHARCUTERIE',
       subtitle: 'Embutidos e Enchidos',
-      image: 'https://images.unsplash.com/photo-1542030750-a9adf03b3710?w=400&h=300&fit=crop',
+      image: 'https://vpqevrxwiglfpyrwxmne.supabase.co/storage/v1/object/public/images/800x600webp%20(1).webp',
       link: '/produtos?categoria=charcuterie',
     },
     {
