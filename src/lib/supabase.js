@@ -1,10 +1,13 @@
 import { createClient } from '@supabase/supabase-js'
 
-// O URL do projeto Supabase (Se você colocou esta linha no código)
-const supabaseUrl = "https://vpqevrxwiglfpyrwxmne.supabase.co"
-
-// A Chave REAL lida da Vercel (com o prefixo NEXT_PUBLIC_ )
+// Lê ambas as variáveis do ambiente
+const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || "https://vpqevrxwiglfpyrwxmne.supabase.co"
 const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
 
+// Validação importante
+if (!supabaseKey) {
+  console.error('ERRO: NEXT_PUBLIC_SUPABASE_ANON_KEY não está definida!')
+}
+
 // Cria o cliente Supabase
-export const supabase = createClient(supabaseUrl, supabaseKey)
+export const supabase = createClient(supabaseUrl, supabaseKey || '')
