@@ -1,12 +1,11 @@
 'use client'
 
-// ⬇️ ADICIONA ESTA LINHA AQUI
 export const dynamic = 'force-dynamic'
 
 import React, { useState, useEffect } from 'react';
 import ProductCard from '@/app/components/ProductCard';
 import { Search, Filter } from 'lucide-react';
-import { supabase } from '@/lib/supabase'; // Importando a conexão
+import { supabase } from '@/lib/supabase';
 
 export default function ProdutosPage() {
   const [products, setProducts] = useState([]);
@@ -38,7 +37,7 @@ export default function ProdutosPage() {
     getProducts();
   }, []);
 
-  // LÓGICA DE FILTRO (Permanece igual, mas agora com dados reais)
+  // LÓGICA DE FILTRO
   useEffect(() => {
     let filtered = products;
 
@@ -83,4 +82,63 @@ export default function ProdutosPage() {
                 type="text"
                 placeholder="Buscar produtos..."
                 value={searchTerm}
-                onChange={(e) => setSearchT
+                onChange={(e) => setSearchTerm(e.target.value)}
+                className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-600 focus:border-transparent text-gray-800"
+              />
+            </div>
+
+            <div className="flex gap-2 overflow-x-auto w-full md:w-auto pb-2 md:pb-0">
+              {categories.map(cat => (
+                <button
+                  key={cat}
+                  onClick={() => setCategory(cat)}
+                  className={`px-4 py-2 rounded-lg font-medium whitespace-nowrap transition ${
+                    category === cat
+                      ? 'bg-green-600 text-white'
+                      : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
+                  }`}
+                >
+                  {cat === 'all' ? 'Todos' : cat}
+                </button>
+              ))}
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Lista de Produtos */}
+      <section className="py-12">
+        <div className="container mx-auto px-4">
+          {loading ? (
+            <div className="text-center py-20">
+              <div className="inline-block w-12 h-12 border-4 border-green-600 border-t-transparent rounded-full animate-spin"></div>
+              <p className="mt-4 text-gray-600">Carregando mercado...</p>
+            </div>
+          ) : filteredProducts.length === 0 ? (
+            <div className="text-center py-20">
+              <p className="text-2xl text-gray-600 mb-4">Nenhum produto encontrado</p>
+              <button
+                onClick={() => { setSearchTerm(''); setCategory('all'); }}
+                className="bg-green-600 text-white font-bold px-6 py-3 rounded-lg"
+              >
+                Ver Tudo
+              </button>
+            </div>
+          ) : (
+            <>
+              <div className="mb-6 text-gray-600">
+                Mostrando <span className="font-bold text-gray-900">{filteredProducts.length}</span> produtos
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-6">
+                {filteredProducts.map(product => (
+                  <ProductCard key={product.id} product={product} />
+                ))}
+              </div>
+            </>
+          )}
+        </div>
+      </section>
+    </div>
+  );
+}
