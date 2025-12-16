@@ -1,163 +1,115 @@
 'use client'
+import React, { createContext, useContext, useState, useEffect } from 'react';
 
-import React, { useState } from 'react';
-import { ShoppingCart, Check, Minus, Plus } from 'lucide-react';
-import { useCart } from '@/app/context/CartContext';
+const CartContext = createContext();
 
-export default function ProductCard({ product }) {
-  const { addToCart } = useCart();
-  
-  // NOVO: Estado para controlar a quantidade (começa em 1)
-  const [quantity, setQuantity] = useState(1); 
-  const [added, setAdded] = useState(false);
+export function CartProvider({ children }) {
+  const [cart, setCart] = useState([]);
 
-  // NOVO: Lógica para mudar a quantidade (input ou botões)
-  const handleQuantityChange = (delta) => {
-    let newQuantity;
-    
-    if (typeof delta === 'number') {
-      // Se for um número (botão + / -)
-      newQuantity = quantity + delta;
-    } else {
-      // Se for um evento (input text)
-      const value = parseInt(delta.target.value, 10);
-      newQuantity = isNaN(value) ? 1 : value;
+  // 1. useEffect para CARREGAR o carrinho do localStorage (roda apenas na montagem)
+  useEffect(() => {
+    // Verifica se estamos no ambiente do navegador (browser)
+    if (typeof window !== 'undefined') {
+      const savedCart = localStorage.getItem('cart');
+      if (savedCart) {
+        // Garante que o item é JSON válido antes de definir o estado
+        try {
+          setCart(JSON.parse(savedCart));
+        } catch (e) {
+          console.error("Erro ao carregar carrinho do localStorage:", e);
+          localStorage.removeItem('cart'); // Limpa dados corrompidos
+        }
+      }
     }
+  }, []);
 
-    // Limitar a quantidade mínima em 1 e máxima (exemplo: 99)
-    newQuantity = Math.max(1, newQuantity); 
-    newQuantity = Math.min(99, newQuantity);
+  // 2. useEffect para SALVAR o carrinho no localStorage (roda toda vez que 'cart' muda)
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      if (cart.length > 0) {
+        localStorage.setItem('cart', JSON.stringify(cart));
+      } else {
+        // Se o carrinho estiver vazio, garante que o item seja removido
+        localStorage.removeItem('cart');
+      }
+    }
+  }, [cart]);
 
-    setQuantity(newQuantity);
-    setAdded(false); // Reseta o feedback se a quantidade mudar
+  // FUNÇÃO CORRIGIDA PARA QUANTIDADE
+  const addToCart = (product, quantity = 1) => { 
+    // Garante que a quantidade seja um número inteiro positivo
+    const qtyToAdd = Math.max(1, parseInt(quantity, 10) || 1); 
+
+    setCart(prevCart => {
+      const existingItem = prevCart.find(item => item.id === product.id);
+      
+      if (existingItem) {
+        // Se o item existe, some a nova quantidade (qtyToAdd) à quantidade atual
+        return prevCart.map(item =>
+          item.id === product.id
+            ? { ...item, quantity: item.quantity + qtyToAdd }
+            : item
+        );
+      }
+      
+      // Se o item não existe, adicione o produto com a quantidade (qtyToAdd)
+      return [...prevCart, { ...product, quantity: qtyToAdd }];
+    });
   };
-  
-  // ATUALIZADO: Passa a quantidade para a função do carrinho
-  const handleAddToCart = () => {
-    if (quantity < 1) return;
-    
-    addToCart(product, quantity); // Envia o produto E a quantidade
-    setAdded(true);
-    setTimeout(() => setAdded(false), 2000);
-    // Opcional: setQuantity(1); se você quiser resetar o contador após adicionar
+
+  const removeFromCart = (productId) => {
+    setCart(prevCart => prevCart.filter(item => item.id !== productId));
+  };
+
+  const updateQuantity = (productId, quantity) => {
+    if (quantity <= 0) {
+      removeFromCart(productId);
+      return;
+    }
+    
+    setCart(prevCart =>
+      prevCart.map(item =>
+        item.id === productId ? { ...item, quantity } : item
+      )
+    );
+  };
+
+  const clearCart = () => {
+    setCart([]);
+    if (typeof window !== 'undefined') {
+      localStorage.removeItem('cart');
+    }
+  };
+
+  const getCartTotal = () => {
+    return cart.reduce((total, item) => total + (item.price * item.quantity), 0);
+  };
+
+  const getCartCount = () => {
+    return cart.reduce((count, item) => count + item.quantity, 0);
   };
 
   return (
-    <div className="bg-white rounded-xl shadow-lg overflow-hidden hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-1">
-      
-      {/* Container da Imagem */}
-      <div className="relative h-72 md:h-48 bg-white flex items-center justify-center p-4">
-        <div className="flex items-center justify-center w-full h-full">
-          {product.image_url ? (
-            <img 
-              src={product.image_url} 
-              alt={product.name}
-              className="h-full w-full object-contain" 
-            />
-          ) : (
-            <div className="flex flex-col items-center text-gray-400">
-              <ShoppingCart className="w-8 h-8 opacity-20" />
-              <span className="text-[10px] mt-2">Sem imagem</span>
-            </div>
-          )}
-        </div>
-
-        {/* Selo de Origem Brasil */}
-        {(product.origin === 'Brasil' || product.category === 'Brasileiros') && (
-          <span className="absolute top-2 right-2 bg-green-600 text-white text-[10px] font-bold px-2 py-1 rounded-full z-10 shadow-sm">
-            🇧🇷 Brasil
-          </span>
-        )}
-      </div>
-
-      <div className="p-4">
-        {/* Nome do Produto */}
-        <h3 className="font-bold text-lg text-gray-800 mb-2 line-clamp-2">
-          {product.name || product.title}
-        </h3>
-        
-        {/* Descrição */}
-        <p className="text-sm text-gray-600 mb-3 line-clamp-2 h-10">
-          {product.description || 'Produto de qualidade selecionada.'}
-        </p>
-
-        {/* NOVO LAYOUT: Preço, Estoque e Seletor em colunas */}
-        <div className="flex flex-col gap-3 mb-4">
-        
-          {/* Linha do Preço e Estoque */}
-          <div className="flex items-center justify-between">
-            <div>
-              <span className="text-2xl font-bold text-green-700">
-                £{Number(product.price).toFixed(2)}
-              </span>
-            </div>
-            {/* Status de Estoque */}
-            {product.stock > 0 ? (
-              <span className="text-xs text-green-600 font-medium">
-                ✓ Em estoque
-              </span>
-            ) : (
-              <span className="text-xs text-red-600 font-medium">
-                ✗ Indisponível
-              </span>
-            )}
-          </div>
-
-          {/* Linha do Seletor de Quantidade (NOVA POSIÇÃO) */}
-          <div className="flex items-center justify-center gap-2 border border-gray-200 rounded-lg p-2 bg-gray-50">
-            <button
-              onClick={() => handleQuantityChange(-1)}
-              disabled={quantity <= 1 || product.stock === 0}
-              className="p-1 bg-white border border-gray-300 rounded-full text-gray-700 hover:bg-gray-200 disabled:opacity-50 transition"
-            >
-              <Minus className="w-4 h-4" />
-            </button>
-            
-            <input
-              type="number"
-              min="1"
-              max="99"
-              value={quantity}
-              onChange={handleQuantityChange}
-              disabled={product.stock === 0}
-              className="w-16 text-center text-lg font-semibold bg-gray-50 focus:outline-none" 
-            />
-
-            <button
-              onClick={() => handleQuantityChange(1)}
-              disabled={product.stock === 0}
-              className="p-1 bg-white border border-gray-300 rounded-full text-gray-700 hover:bg-gray-200 disabled:opacity-50 transition"
-            >
-              <Plus className="w-4 h-4" />
-            </button>
-          </div>
-        </div>
-
-        {/* Botão de Compra */}
-        <button
-          onClick={handleAddToCart}
-          disabled={product.stock === 0 || added}
-          className={`w-full py-2.5 rounded-lg font-semibold transition flex items-center justify-center gap-2 ${
-            product.stock === 0
-              ? 'bg-gray-300 text-gray-500 cursor-not-allowed'
-              : added
-              ? 'bg-green-600 text-white'
-              : 'bg-yellow-400 hover:bg-yellow-500 text-green-900'
-          }`}
-        >
-          {added ? (
-            <>
-              <Check className="w-5 h-5" />
-              Adicionado!
-            </>
-          ) : (
-            <>
-              <ShoppingCart className="w-5 h-5" />
-              Adicionar
-            </>
-          )}
-        </button>
-      </div>
-    </div>
+    <CartContext.Provider
+      value={{
+        cart,
+        addToCart,
+        removeFromCart,
+        updateQuantity,
+        clearCart,
+        getCartTotal,
+        getCartCount,
+      }}
+    >
+      {children}
+    </CartContext.Provider>
   );
+}
+
+export function useCart() {
+  const context = useContext(CartContext);
+  if (!context) {
+    throw new Error('useCart deve ser usado dentro de um CartProvider');
+  }
+  return context;
 }
