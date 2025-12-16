@@ -1,144 +1,179 @@
 'use client'
 
-export const dynamic = 'force-dynamic'
-
 import React, { useState, useEffect } from 'react';
-import ProductCard from '@/app/components/ProductCard';
-import { Search, Filter } from 'lucide-react';
-import { supabase } from '@/lib/supabase';
+import { ShoppingCart, Check, Minus, Plus } from 'lucide-react';
+import { useCart } from '@/app/context/CartContext';
 
-export default function ProdutosPage() {
-  const [products, setProducts] = useState([]);
-  const [filteredProducts, setFilteredProducts] = useState([]);
-  const [searchTerm, setSearchTerm] = useState('');
-  const [category, setCategory] = useState('all');
-  const [loading, setLoading] = useState(true);
+export default function ProductCard({ product }) {
+  const { addToCart, cart, updateQuantity } = useCart();
+  
+  const [quantity, setQuantity] = useState(1); 
+  const [added, setAdded] = useState(false);
+  // NOVO ESTADO: Controla se o seletor deve ser exibido
+  const [showQuantitySelector, setShowQuantitySelector] = useState(false);
 
-  // BUSCA REAL DO SUPABASE
-  useEffect(() => {
-    async function getProducts() {
-      setLoading(true);
-      try {
-        const { data, error } = await supabase
-          .from('produtos')
-          .select('*');
+  // Verifica se o produto já está no carrinho ao carregar o componente
+  useEffect(() => {
+    const currentItem = cart.find(item => item.id === product.id);
+    if (currentItem) {
+      setQuantity(currentItem.quantity);
+      setShowQuantitySelector(true); // Se já está no carrinho, mostra o seletor
+    } else {
+      setQuantity(1);
+      setShowQuantitySelector(false); // Se não está no carrinho, mostra o botão Adicionar
+    }
+  }, [cart, product.id]);
 
-        if (error) throw error;
-        if (data) {
-          setProducts(data);
-          setFilteredProducts(data);
-        }
-      } catch (error) {
-        console.error('Erro ao carregar produtos:', error.message);
-      } finally {
-        setLoading(false);
-      }
-    }
-    getProducts();
-  }, []);
 
-  // LÓGICA DE FILTRO
-  useEffect(() => {
-    let filtered = products;
+  // Lógica para mudar a quantidade
+  const handleQuantityChange = (delta) => {
+    let newQuantity;
+    
+    if (typeof delta === 'number') {
+      newQuantity = quantity + delta;
+    } else {
+      const value = parseInt(delta.target.value, 10);
+      newQuantity = isNaN(value) ? 1 : value;
+    }
 
-    if (category !== 'all') {
-      filtered = filtered.filter(p => p.category === category);
-    }
+    newQuantity = Math.max(1, newQuantity); 
+    newQuantity = Math.min(99, newQuantity);
 
-    if (searchTerm) {
-      filtered = filtered.filter(p =>
-        p.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        (p.description && p.description.toLowerCase().includes(searchTerm.toLowerCase()))
-      );
-    }
+    setQuantity(newQuantity);
+    setAdded(false);
+    // ATUALIZA A QUANTIDADE NO CONTEXTO IMEDIATAMENTE APÓS A MUDANÇA
+    if (showQuantitySelector) {
+      updateQuantity(product.id, newQuantity);
+    }
+  };
+  
+  // Lógica para o primeiro clique em "Adicionar"
+  const handleFirstAddToCart = () => {
+    if (product.stock === 0) return;
+    
+    addToCart(product, 1); // Adiciona 1 unidade
+    setShowQuantitySelector(true); // Mostra o seletor
+    setAdded(true);
+    setTimeout(() => setAdded(false), 1000);
+  };
 
-    setFilteredProducts(filtered);
-  }, [searchTerm, category, products]);
+  return (
+    <div className="bg-white rounded-xl shadow-lg overflow-hidden hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-1">
+      
+      {/* Container da Imagem */}
+      <div className="relative h-72 md:h-48 bg-white flex items-center justify-center p-4">
+        <div className="flex items-center justify-center w-full h-full">
+          {product.image_url ? (
+            <img 
+              src={product.image_url} 
+              alt={product.name}
+              className="h-full w-full object-contain" 
+            />
+          ) : (
+            <div className="flex flex-col items-center text-gray-400">
+              <ShoppingCart className="w-8 h-8 opacity-20" />
+              <span className="text-[10px] mt-2">Sem imagem</span>
+            </div>
+          )}
+        </div>
 
-  // Extrai categorias únicas do banco de dados automaticamente
-  const categories = ['all', ...new Set(products.map(p => p.category).filter(Boolean))];
+        {/* Selo de Origem Brasil */}
+        {(product.origin === 'Brasil' || product.category === 'Brasileiros') && (
+          <span className="absolute top-2 right-2 bg-green-600 text-white text-[10px] font-bold px-2 py-1 rounded-full z-10 shadow-sm">
+            🇧🇷 Brasil
+          </span>
+        )}
+      </div>
 
-  return (
-    <div className="min-h-screen bg-gray-50">
-      {/* Hero Section */}
-      <section className="bg-gradient-to-r from-green-700 to-green-600 text-white py-12">
-        <div className="container mx-auto px-4">
-          <h1 className="text-4xl md:text-5xl font-bold mb-4">
-            🇧🇷 Nossos Produtos
-          </h1>
-          <p className="text-xl">
-            Produtos brasileiros autênticos direto para sua casa
-          </p>
-        </div>
-      </section>
+      <div className="p-4 flex flex-col justify-between h-full">
+        <div>
+          {/* Nome do Produto */}
+          <h3 className="font-bold text-lg text-gray-800 mb-2 line-clamp-2">
+            {product.name || product.title}
+          </h3>
+          
+          {/* Descrição */}
+          <p className="text-sm text-gray-600 mb-3 line-clamp-2 h-10">
+            {product.description || 'Produto de qualidade selecionada.'}
+          </p>
+        </div>
 
-      {/* Filtros */}
-      <section className="bg-white border-b sticky top-0 z-10 shadow-sm">
-        <div className="container mx-auto px-4 py-4">
-          <div className="flex flex-col md:flex-row gap-4 items-center">
-            <div className="relative flex-1 w-full">
-              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
-              <input
-                type="text"
-                placeholder="Buscar produtos..."
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
-                className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-600 focus:border-transparent text-gray-800"
-              />
-            </div>
+        <div>
+          {/* Linha do Preço e Estoque */}
+          <div className="flex items-center justify-between mb-4">
+            <div>
+              <span className="text-2xl font-bold text-green-700">
+                £{Number(product.price).toFixed(2)}
+              </span>
+            </div>
+            {/* Status de Estoque */}
+            {product.stock > 0 ? (
+              <span className="text-xs text-green-600 font-medium">
+                ✓ Em estoque
+              </span>
+            ) : (
+              <span className="text-xs text-red-600 font-medium">
+                ✗ Indisponível
+              </span>
+            )}
+          </div>
 
-            <div className="flex gap-2 overflow-x-auto w-full md:w-auto pb-2 md:pb-0">
-              {categories.map(cat => (
-                <button
-                  key={cat}
-                  onClick={() => setCategory(cat)}
-                  className={`px-4 py-2 rounded-lg font-medium whitespace-nowrap transition ${
-                    category === cat
-                      ? 'bg-green-600 text-white'
-                      : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
-                  }`}
-                >
-                  {cat === 'all' ? 'Todos' : cat}
-                </button>
-              ))}
-            </div>
-          </div>
-        </div>
-      </section>
+          {/* LÓGICA DE EXIBIÇÃO: Se o seletor está visível OU o botão Adicionar */}
+          {showQuantitySelector && product.stock > 0 ? (
+            // 1. Seletor de Quantidade (NOVO LAYOUT LIMPO)
+            <div className="flex items-center w-full h-10 mb-2">
+              <button
+                onClick={() => handleQuantityChange(-1)}
+                disabled={quantity <= 1}
+                className="w-1/3 h-full rounded-l-full bg-gray-100 flex items-center justify-center text-gray-700 hover:bg-gray-200 disabled:opacity-50 transition border border-r-0 border-gray-200"
+              >
+                <Minus className="w-4 h-4" />
+              </button>
+              
+              <input
+                type="number"
+                min="1"
+                max="99"
+                value={quantity}
+                onChange={handleQuantityChange}
+                className="w-1/3 h-full text-center text-base font-semibold border-y border-gray-200 focus:outline-none" 
+              />
 
-      {/* Lista de Produtos */}
-      <section className="py-12">
-        <div className="container mx-auto px-4">
-          {loading ? (
-            <div className="text-center py-20">
-              <div className="inline-block w-12 h-12 border-4 border-green-600 border-t-transparent rounded-full animate-spin"></div>
-              <p className="mt-4 text-gray-600">Carregando mercado...</p>
-            </div>
-          ) : filteredProducts.length === 0 ? (
-            <div className="text-center py-20">
-              <p className="text-2xl text-gray-600 mb-4">Nenhum produto encontrado</p>
-              <button
-                onClick={() => { setSearchTerm(''); setCategory('all'); }}
-                className="bg-green-600 text-white font-bold px-6 py-3 rounded-lg"
-              >
-                Ver Tudo
-              </button>
-            </div>
-          ) : (
-            <>
-              <div className="mb-6 text-gray-600">
-                Mostrando <span className="font-bold text-gray-900">{filteredProducts.length}</span> produtos
-              </div>
-
-              <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-6">
-                {filteredProducts.map(product => (
-                  <ProductCard key={product.id} product={product} />
-                ))}
-              </div>
-            </>
-          )}
-        </div>
-      </section>
-    </div>
-  );
+              <button
+                onClick={() => handleQuantityChange(1)}
+                className="w-1/3 h-full rounded-r-full bg-gray-100 flex items-center justify-center text-gray-700 hover:bg-gray-200 transition border border-l-0 border-gray-200"
+              >
+                <Plus className="w-4 h-4" />
+              </button>
+            </div>
+          ) : (
+            // 2. Botão de Compra (Visível no estado inicial ou se estiver fora de estoque)
+            <button
+              onClick={handleFirstAddToCart}
+              disabled={product.stock === 0 || added}
+              className={`w-full py-2.5 rounded-lg font-semibold transition flex items-center justify-center gap-2 ${
+                product.stock === 0
+                  ? 'bg-gray-300 text-gray-500 cursor-not-allowed'
+                  : added
+                  ? 'bg-green-600 text-white'
+                  : 'bg-yellow-400 hover:bg-yellow-500 text-green-900'
+              }`}
+            >
+              {added ? (
+                <>
+                  <Check className="w-5 h-5" />
+                  Adicionado!
+                </>
+              ) : (
+                <>
+                  <ShoppingCart className="w-5 h-5" />
+                  Adicionar
+                </>
+              )}
+            </button>
+          )}
+        </div>
+      </div>
+    </div>
+  );
 }
