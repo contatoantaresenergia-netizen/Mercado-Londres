@@ -1,3 +1,5 @@
+// /app/components/ProductCard.js (CORRIGIDO E COMPLETO)
+
 'use client'
 
 import React, { useState } from 'react';
@@ -7,39 +9,35 @@ import { useCart } from '@/app/context/CartContext';
 export default function ProductCard({ product }) {
   const { addToCart } = useCart();
   
-  // NOVO: Estado para controlar a quantidade (começa em 1)
+  // 1. Estado para controlar a quantidade (começa em 1)
   const [quantity, setQuantity] = useState(1); 
   const [added, setAdded] = useState(false);
 
-  // NOVO: Lógica para mudar a quantidade (input ou botões)
+  // 2. Lógica para mudar a quantidade (input ou botões)
   const handleQuantityChange = (delta) => {
     let newQuantity;
     
     if (typeof delta === 'number') {
-      // Se for um número (botão + / -)
       newQuantity = quantity + delta;
     } else {
-      // Se for um evento (input text)
       const value = parseInt(delta.target.value, 10);
       newQuantity = isNaN(value) ? 1 : value;
     }
 
-    // Limitar a quantidade mínima em 1 e máxima (exemplo: 99)
     newQuantity = Math.max(1, newQuantity); 
     newQuantity = Math.min(99, newQuantity);
 
     setQuantity(newQuantity);
-    setAdded(false); // Reseta o feedback se a quantidade mudar
+    setAdded(false);
   };
   
-  // ATUALIZADO: Passa a quantidade para a função do carrinho
+  // 3. Passa o produto E a quantidade para o Contexto
   const handleAddToCart = () => {
     if (quantity < 1) return;
     
     addToCart(product, quantity); // Envia o produto E a quantidade
     setAdded(true);
     setTimeout(() => setAdded(false), 2000);
-    // Opcional: setQuantity(1); se você quiser resetar o contador após adicionar
   };
 
   return (
@@ -81,52 +79,56 @@ export default function ProductCard({ product }) {
           {product.description || 'Produto de qualidade selecionada.'}
         </p>
 
-        <div className="flex items-center justify-between mb-4">
-          <div>
-            <span className="text-2xl font-bold text-green-700">
-              £{Number(product.price).toFixed(2)}
-            </span>
+        {/* NOVO LAYOUT: Preço, Estoque e Seletor em colunas */}
+        <div className="flex flex-col gap-3 mb-4">
+        
+          {/* Linha do Preço e Estoque */}
+          <div className="flex items-center justify-between">
+            <div>
+              <span className="text-2xl font-bold text-green-700">
+                £{Number(product.price).toFixed(2)}
+              </span>
+            </div>
+            {/* Status de Estoque */}
+            {product.stock > 0 ? (
+              <span className="text-xs text-green-600 font-medium">
+                ✓ Em estoque
+              </span>
+            ) : (
+              <span className="text-xs text-red-600 font-medium">
+                ✗ Indisponível
+              </span>
+            )}
           </div>
-          
-          {/* Status de Estoque */}
-          {product.stock > 0 ? (
-            <span className="text-xs text-green-600 font-medium">
-              ✓ Em estoque
-            </span>
-          ) : (
-            <span className="text-xs text-red-600 font-medium">
-              ✗ Indisponível
-            </span>
-          )}
-        </div>
 
-        {/* NOVO: Seletor de Quantidade */}
-        <div className="flex items-center justify-center mb-4 gap-2">
-          <button
-            onClick={() => handleQuantityChange(-1)}
-            disabled={quantity <= 1 || product.stock === 0}
-            className="p-2 bg-gray-100 rounded-full text-gray-700 hover:bg-gray-200 disabled:opacity-50 transition"
-          >
-            <Minus className="w-4 h-4" />
-          </button>
-          
-          <input
-            type="number"
-            min="1"
-            max="99"
-            value={quantity}
-            onChange={handleQuantityChange}
-            disabled={product.stock === 0}
-            className="w-16 text-center border border-gray-300 rounded-md py-1 text-base focus:border-green-500 focus:ring-green-500"
-          />
+          {/* Linha do Seletor de Quantidade (NOVA POSIÇÃO E ESTILO) */}
+          <div className="flex items-center justify-center gap-2 border border-gray-200 rounded-lg p-2 bg-gray-50">
+            <button
+              onClick={() => handleQuantityChange(-1)}
+              disabled={quantity <= 1 || product.stock === 0}
+              className="p-1 bg-white border border-gray-300 rounded-full text-gray-700 hover:bg-gray-200 disabled:opacity-50 transition"
+            >
+              <Minus className="w-4 h-4" />
+            </button>
+            
+            <input
+              type="number"
+              min="1"
+              max="99"
+              value={quantity}
+              onChange={handleQuantityChange}
+              disabled={product.stock === 0}
+              className="w-16 text-center text-lg font-semibold bg-gray-50 focus:outline-none" 
+            />
 
-          <button
-            onClick={() => handleQuantityChange(1)}
-            disabled={product.stock === 0}
-            className="p-2 bg-gray-100 rounded-full text-gray-700 hover:bg-gray-200 disabled:opacity-50 transition"
-          >
-            <Plus className="w-4 h-4" />
-          </button>
+            <button
+              onClick={() => handleQuantityChange(1)}
+              disabled={product.stock === 0}
+              className="p-1 bg-white border border-gray-300 rounded-full text-gray-700 hover:bg-gray-200 disabled:opacity-50 transition"
+            >
+              <Plus className="w-4 h-4" />
+            </button>
+          </div>
         </div>
 
         {/* Botão de Compra */}
