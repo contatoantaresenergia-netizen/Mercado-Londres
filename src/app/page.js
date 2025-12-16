@@ -1,5 +1,8 @@
 'use client'
 
+// ⬇️ ADICIONA ESTA LINHA AQUI
+export const dynamic = 'force-dynamic'
+
 import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
