@@ -48,8 +48,8 @@ const featuredCategories = [
     { 
       id: 2,
       name: 'DOCES',
-      subtitle: 'Cafés e Chás Premium',
-      image: 'https://images.unsplash.com/photo-1447933601403-0c6688de566e?w=400&h=300&fit=crop',
+      subtitle: 'Balas e Chocolates',
+      image: 'https://vpqevrxwiglfpyrwxmne.supabase.co/storage/v1/object/public/images/doces.webp?v=3',
       link: '/produtos?categoria=doces' 
     },
     { 
