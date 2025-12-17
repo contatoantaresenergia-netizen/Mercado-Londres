@@ -56,7 +56,7 @@ const featuredCategories = [
       id: 3,
       name: 'HIGIENE',
       subtitle: 'Beleza e Esmaltes', 
-      image: 'https://images.unsplash.com/photo-1486427944299-d1955d23e34d?w=400&h=300&fit=crop',
+      image: 'https://vpqevrxwiglfpyrwxmne.supabase.co/storage/v1/object/public/images/beleza.webp?v=4',
       link: '/produtos?categoria=doces' 
     },
     { 
