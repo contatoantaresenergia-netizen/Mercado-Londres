@@ -8,7 +8,7 @@ export default function Footer() {
       <div className="container mx-auto px-4">
         <div className="grid md:grid-cols-4 gap-8 mb-8">
           <div>
-            <h3 className="font-bold text-lg mb-4 text-yellow-400">🇧🇷 Mercado Londres</h3>
+            <h3 className="font-bold text-lg mb-4 text-yellow-400">🇧🇷 Prime Brasil Market</h3>
             <p className="text-gray-400 text-sm">
               Os melhores produtos brasileiros entregues na sua porta em Londres.
             </p>
