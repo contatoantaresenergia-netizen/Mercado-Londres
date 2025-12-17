@@ -49,8 +49,8 @@ export default function HomePage() {
      link: '/produtos?categoria=doces' },
     { 
       id: 3,
-      name: 'CONFECTIONERY',
-      subtitle: 'Doces e Biscoitos', 
+      name: 'Higiene',
+      subtitle: 'Beleza e Esmaltes', 
       image: 'https://images.unsplash.com/photo-1486427944299-d1955d23e34d?w=400&h=300&fit=crop',
       link: '/produtos?categoria=doces' },
     { 
