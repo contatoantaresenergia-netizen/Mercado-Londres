@@ -13,6 +13,7 @@ export default function Footer() {
               Os melhores produtos brasileiros entregues na sua porta em Londres.
             </p>
           </div>
+          
           <div>
             <h4 className="font-bold mb-4">Links Úteis</h4>
             <ul className="space-y-2 text-sm text-gray-400">
@@ -22,12 +23,13 @@ export default function Footer() {
               <li><Link href="/contato" className="hover:text-yellow-400 transition">Contato</Link></li>
             </ul>
           </div>
+
           <div>
             <h4 className="font-bold mb-4">Contato</h4>
             <ul className="space-y-2 text-sm text-gray-400">
               <li className="flex items-center gap-2">
                 <Phone className="w-4 h-4" />
-                +44 20 1234 5678
+                +44 7459 413442 
               </li>
               <li className="flex items-center gap-2">
                 <Mail className="w-4 h-4" />
@@ -35,18 +37,33 @@ export default function Footer() {
               </li>
             </ul>
           </div>
+
           <div>
             <h4 className="font-bold mb-4">Siga-nos</h4>
             <div className="flex gap-4">
-              <a href="#" className="hover:text-yellow-400 transition">
+              {/* FACEBOOK ATUALIZADO ABAIXO */}
+              <a 
+                href="https://www.facebook.com/LINK_DA_SUA_PAGINA" 
+                target="_blank" 
+                rel="noopener noreferrer" 
+                className="hover:text-yellow-400 transition"
+              >
                 <Facebook className="w-6 h-6" />
               </a>
-              <a href="#" className="hover:text-yellow-400 transition">
+
+              {/* INSTAGRAM JÁ CONFIGURADO */}
+              <a 
+                href="https://www.instagram.com/prime_brasilmarket/" 
+                target="_blank" 
+                rel="noopener noreferrer" 
+                className="hover:text-yellow-400 transition"
+              >
                 <Instagram className="w-6 h-6" />
               </a>
             </div>
           </div>
         </div>
+
         <div className="border-t border-gray-800 pt-6 text-center text-sm text-gray-400">
           <p>&copy; {new Date().getFullYear()} Mercado Londres. Todos os direitos reservados.</p>
         </div>
