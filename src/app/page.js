@@ -40,7 +40,7 @@ const featuredCategories = [
     { 
       id: 1,
       name: 'BEBIDAS',
-      subtitle: 'Vinhos e Cervejas',
+      subtitle: 'Refrigerentes e Sucos',
       // CORRIGIDO: Removido as aspas extras e adicionado o ?v=3
       image: 'https://vpqevrxwiglfpyrwxmne.supabase.co/storage/v1/object/public/images/bebida.webp?v=3',
       link: '/produtos?categoria=bebidas' 
