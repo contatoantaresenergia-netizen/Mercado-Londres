@@ -36,29 +36,35 @@ export default function HomePage() {
     },
   ];
 
-  const featuredCategories = [
-    { id: 1,
-     name: 'BEBIDAS',
-     subtitle: 'Embutidos e Enchidos',
-     image: 'https://vpqevrxwiglfpyrwxmne.supabase.co/storage/v1/object/public/images/bebida.webp?v=2'',
-     link: '/produtos?categoria=bebidas' },
-    { id: 2,
-     name: 'DOCES',
-     subtitle: 'Cafés e Chás Premium',
-     image: 'https://images.unsplash.com/photo-1447933601403-0c6688de566e?w=400&h=300&fit=crop',
-     link: '/produtos?categoria=doces' },
+const featuredCategories = [
+    { 
+      id: 1,
+      name: 'BEBIDAS',
+      subtitle: 'Vinhos e Cervejas',
+      // CORRIGIDO: Removido as aspas extras e adicionado o ?v=3
+      image: 'https://vpqevrxwiglfpyrwxmne.supabase.co/storage/v1/object/public/images/bebida%20400x300.webp?v=3',
+      link: '/produtos?categoria=bebidas' 
+    },
+    { 
+      id: 2,
+      name: 'DOCES',
+      subtitle: 'Cafés e Chás Premium',
+      image: 'https://images.unsplash.com/photo-1447933601403-0c6688de566e?w=400&h=300&fit=crop',
+      link: '/produtos?categoria=doces' 
+    },
     { 
       id: 3,
-      name: 'Higiene',
-      subtitle: 'Beleza e Esmaltes', 
+      name: 'CONFECTIONERY',
+      subtitle: 'Doces e Biscoitos', 
       image: 'https://images.unsplash.com/photo-1486427944299-d1955d23e34d?w=400&h=300&fit=crop',
-      link: '/produtos?categoria=doces' },
+      link: '/produtos?categoria=doces' 
+    },
     { 
       id: 4, 
       name: 'MERCEARIA', 
       subtitle: 'Queijos e Laticínios', 
-      // CORRIGIDO: Aspas fechadas corretamente abaixo
-      image: 'https://vpqevrxwiglfpyrwxmne.supabase.co/storage/v1/object/public/images/mercearia%20%281%29.webp?v=2', 
+      // CORRIGIDO: Link exato da Mercearia com cache v=3
+      image: 'https://vpqevrxwiglfpyrwxmne.supabase.co/storage/v1/object/public/images/mercearia%20%281%29.webp?v=3', 
       link: '/produtos?categoria=mercearia' 
     },
   ];
