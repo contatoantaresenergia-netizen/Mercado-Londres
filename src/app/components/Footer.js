@@ -31,7 +31,7 @@ export default function Footer() {
               </li>
               <li className="flex items-center gap-2">
                 <Mail className="w-4 h-4" />
-                contato@mercadolondres.co.uk
+                primebrasilmarket@outlook.com
               </li>
             </ul>
           </div>
