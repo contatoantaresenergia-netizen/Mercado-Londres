@@ -40,7 +40,14 @@ export default function HomePage() {
     { id: 1, name: 'BEBIDAS', subtitle: 'Embutidos e Enchidos', image: 'https://images.unsplash.com/photo-1542030750-a9adf03b3710?w=400&h=300&fit=crop', link: '/produtos?categoria=bebidas' },
     { id: 2, name: 'DOCES', subtitle: 'Cafés e Chás Premium', image: 'https://images.unsplash.com/photo-1447933601403-0c6688de566e?w=400&h=300&fit=crop', link: '/produtos?categoria=doces' },
     { id: 3, name: 'CONFECTIONERY', subtitle: 'Doces e Biscoitos', image: 'https://images.unsplash.com/photo-1486427944299-d1955d23e34d?w=400&h=300&fit=crop', link: '/produtos?categoria=doces' },
-    { id: 4, name: 'MERCEARIA', subtitle: 'Queijos e Laticínios', image: 'https://vpqevrxwiglfpyrwxmne.supabase.co/storage/v1/object/public/images/mercearia%20%281%29.webp?v=2, link: '/produtos?categoria=mercearia' },
+    { 
+      id: 4, 
+      name: 'MERCEARIA', 
+      subtitle: 'Queijos e Laticínios', 
+      // CORRIGIDO: Aspas fechadas corretamente abaixo
+      image: 'https://vpqevrxwiglfpyrwxmne.supabase.co/storage/v1/object/public/images/mercearia%20%281%29.webp?v=2', 
+      link: '/produtos?categoria=mercearia' 
+    },
   ];
 
   useEffect(() => {
@@ -68,6 +75,7 @@ export default function HomePage() {
 
   return (
     <div className="min-h-screen">
+      {/* Hero Section */}
       <section className="relative h-[500px] overflow-hidden">
         {banners.map((banner, index) => (
           <div key={banner.id} className={`absolute inset-0 transition-opacity duration-1000 ${index === currentSlide ? 'opacity-100' : 'opacity-0'}`}>
@@ -86,6 +94,7 @@ export default function HomePage() {
         ))}
       </section>
 
+      {/* Categorias */}
       <section className="py-16 bg-gray-50">
         <div className="container mx-auto px-4">
           <div className="text-center mb-12">
@@ -93,12 +102,22 @@ export default function HomePage() {
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
             {featuredCategories.map(category => (
-              <div key={category.id} onClick={() => router.push(category.link)} className="relative h-80 rounded-xl overflow-hidden cursor-pointer group shadow-lg">
-                <div className="absolute inset-0 bg-cover bg-center transition-transform group-hover:scale-110" style={{ backgroundImage: `url(${category.image})` }}></div>
-                <div className="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent"></div>
-                <div className="absolute bottom-0 p-6 text-white">
-                  <h3 className="text-2xl font-black uppercase">{category.name}</h3>
-                  <div className="inline-flex items-center gap-2 text-yellow-400 font-semibold">Ver Produtos <ArrowRight className="w-5 h-5" /></div>
+              <div 
+                key={category.id} 
+                onClick={() => router.push(category.link)} 
+                className="relative h-80 rounded-xl overflow-hidden cursor-pointer group shadow-lg"
+              >
+                <div 
+                  className="absolute inset-0 bg-cover bg-center transition-transform duration-500 group-hover:scale-110" 
+                  style={{ backgroundImage: `url(${category.image})` }}
+                ></div>
+                <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent"></div>
+                <div className="absolute bottom-0 p-6 text-white w-full">
+                  <h3 className="text-2xl font-black uppercase mb-1">{category.name}</h3>
+                  <p className="text-sm text-gray-200 mb-3">{category.subtitle}</p>
+                  <div className="inline-flex items-center gap-2 text-yellow-400 font-semibold group-hover:translate-x-2 transition-transform">
+                    Ver Produtos <ArrowRight className="w-5 h-5" />
+                  </div>
                 </div>
               </div>
             ))}
@@ -106,11 +125,18 @@ export default function HomePage() {
         </div>
       </section>
 
+      {/* Produtos em Destaque */}
       <section className="py-16 bg-white text-center">
-        <h2 className="text-4xl font-bold mb-8">Produtos em Destaque</h2>
-        {loading ? <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-green-600 mx-auto"></div> : (
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-6 container mx-auto px-4">
-            {featuredProducts.map(product => <ProductCard key={product.id} product={product} />)}
+        <h2 className="text-4xl font-bold mb-8 text-gray-800">Produtos em Destaque</h2>
+        {loading ? (
+          <div className="flex justify-center py-10">
+            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-green-600"></div>
+          </div>
+        ) : (
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 container mx-auto px-4">
+            {featuredProducts.map(product => (
+              <ProductCard key={product.id} product={product} />
+            ))}
           </div>
         )}
       </section>
