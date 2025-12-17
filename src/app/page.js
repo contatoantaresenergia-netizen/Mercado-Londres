@@ -40,7 +40,7 @@ export default function HomePage() {
     { id: 1,
      name: 'BEBIDAS',
      subtitle: 'Embutidos e Enchidos',
-     image: 'https://vpqevrxwiglfpyrwxmne.supabase.co/storage/v1/object/public/images/bebida%20400x300.webpv=2'',
+     image: 'https://vpqevrxwiglfpyrwxmne.supabase.co/storage/v1/object/public/images/bebida%20400x300.webp?v=2'',
      link: '/produtos?categoria=bebidas' },
     { id: 2,
      name: 'DOCES',
