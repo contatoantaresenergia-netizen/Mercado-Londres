@@ -42,7 +42,7 @@ const featuredCategories = [
       name: 'BEBIDAS',
       subtitle: 'Vinhos e Cervejas',
       // CORRIGIDO: Removido as aspas extras e adicionado o ?v=3
-      image: 'https://vpqevrxwiglfpyrwxmne.supabase.co/storage/v1/object/public/images/bebida%20400x300.webp?v=3',
+      image: 'https://vpqevrxwiglfpyrwxmne.supabase.co/storage/v1/object/public/images/bebida.webp?v=3',
       link: '/produtos?categoria=bebidas' 
     },
     { 
