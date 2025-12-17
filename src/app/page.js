@@ -40,7 +40,7 @@ export default function HomePage() {
     { id: 1, name: 'BEBIDAS', subtitle: 'Embutidos e Enchidos', image: 'https://images.unsplash.com/photo-1542030750-a9adf03b3710?w=400&h=300&fit=crop', link: '/produtos?categoria=bebidas' },
     { id: 2, name: 'DOCES', subtitle: 'Cafés e Chás Premium', image: 'https://images.unsplash.com/photo-1447933601403-0c6688de566e?w=400&h=300&fit=crop', link: '/produtos?categoria=doces' },
     { id: 3, name: 'CONFECTIONERY', subtitle: 'Doces e Biscoitos', image: 'https://images.unsplash.com/photo-1486427944299-d1955d23e34d?w=400&h=300&fit=crop', link: '/produtos?categoria=doces' },
-    { id: 4, name: 'MERCEARIA', subtitle: 'Queijos e Laticínios', image: 'https://vpqevrxwiglfpyrwxmne.supabase.co/storage/v1/object/public/images/mercearia%20(1).webp?v=1', link: '/produtos?categoria=mercearia' },
+    { id: 4, name: 'MERCEARIA', subtitle: 'Queijos e Laticínios', image: 'https://vpqevrxwiglfpyrwxmne.supabase.co/storage/v1/object/public/images/mercearia%20%281%29.webp?v=2, link: '/produtos?categoria=mercearia' },
   ];
 
   useEffect(() => {
