@@ -18,7 +18,7 @@ export default function Header() {
           
           {/* LADO ESQUERDO: LOGO + NOME (AJUSTADO) */}
           <Link href="/" className="flex items-center gap-2 hover:opacity-90 transition group">
-            <div className="h-17 w-17 flex-shrink-0">
+            <div className="h-16 w-16 flex-shrink-0">
               <img 
                 src={logoSupabase} 
                 alt="Prime Brasil Logo" 
