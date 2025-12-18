@@ -9,19 +9,16 @@ export default function Header() {
   const { getCartCount } = useCart();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   
-  // URL da sua logo no Supabase
   const logoSupabase = "https://vpqevrxwiglfpyrwxmne.supabase.co/storage/v1/object/public/images/logo.png/logo-prime-brasil-removebg-preview.png";
 
   return (
     <header className="bg-green-700 text-white shadow-lg w-full">
       <div className="container mx-auto px-4">
-        {/* h-20 garante espaço para a logo e o texto sem apertar */}
         <div className="flex items-center justify-between h-20">
           
-          {/* LADO ESQUERDO: LOGO + NOME */}
-          <Link href="/" className="flex items-center gap-3 hover:opacity-90 transition group">
-            {/* Logo como ícone */}
-            <div className="h-14 w-14 flex-shrink-0">
+          {/* LADO ESQUERDO: LOGO + NOME (AJUSTADO) */}
+          <Link href="/" className="flex items-center gap-2 hover:opacity-90 transition group">
+            <div className="h-12 w-12 flex-shrink-0">
               <img 
                 src={logoSupabase} 
                 alt="Prime Brasil Logo" 
@@ -29,12 +26,13 @@ export default function Header() {
               />
             </div>
             
-            {/* Nome da Marca em Texto para máxima legibilidade */}
-            <div className="flex flex-col leading-none">
-              <span className="text-white font-black text-xl md:text-2xl uppercase tracking-tighter">
+            <div className="flex flex-col leading-tight">
+              {/* Diminuído de text-xl para text-lg e md:text-2xl para md:text-xl */}
+              <span className="text-white font-bold text-lg md:text-xl uppercase tracking-tight">
                 Prime Brasil
               </span>
-              <span className="text-yellow-400 font-bold text-xs md:text-sm tracking-[0.2em] uppercase">
+              {/* Diminuído de text-xs para text-[10px] e md:text-sm para md:text-xs */}
+              <span className="text-yellow-400 font-semibold text-[10px] md:text-xs tracking-[0.15em] uppercase">
                 Market
               </span>
             </div>
@@ -70,7 +68,6 @@ export default function Header() {
               )}
             </Link>
             
-            {/* Menu Mobile */}
             <button 
               className="md:hidden p-2 hover:bg-green-600 rounded transition"
               onClick={() => setMobileMenuOpen(true)}
@@ -82,7 +79,6 @@ export default function Header() {
         </div>
       </div>
       
-      {/* Componente de Menu Lateral Mobile */}
       <MobileMenu isOpen={mobileMenuOpen} onClose={() => setMobileMenuOpen(false)} />
     </header>
   );
