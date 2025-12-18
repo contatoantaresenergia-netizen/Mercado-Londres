@@ -30,7 +30,7 @@ export default function HomePage() {
     {
       id: 3,
       title: 'FRETE GRÁTIS 🚚',
-      subtitle: 'Compras acima de £99 - Todo o Reino Unido',
+      subtitle: 'Compras acima de £70 - Todo o Reino Unido',
       image: 'https://images.unsplash.com/photo-1474487548417-781cb71495f3?w=1200&h=500&fit=crop',
       bgColor: 'from-blue-700 to-blue-600',
     },
