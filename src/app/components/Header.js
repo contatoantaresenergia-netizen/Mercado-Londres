@@ -11,7 +11,7 @@ export default function Header() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   // COLE AQUI a URL pública que você copiou do seu Supabase
-  const logoSupabase = "https://vpqevrxwiglfpyrwxmne.supabase.co/storage/v1/object/public/images/SUA_FOTO_AQUI.png";
+  const logoSupabase = "https://vpqevrxwiglfpyrwxmne.supabase.co/storage/v1/object/public/images/logo.png/logo-prime-brasil-removebg-preview.png";
   
   return (
     <header className="bg-green-700 text-white shadow-lg">
