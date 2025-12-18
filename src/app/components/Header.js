@@ -9,7 +9,7 @@ export default function Header() {
   const { getCartCount } = useCart();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   
-  const logoSupabase = "https://vpqevrxwiglfpyrwxmne.supabase.co/storage/v1/object/public/images/logo.png/logo.png";
+  const logoSupabase = "https://vpqevrxwiglfpyrwxmne.supabase.co/storage/v1/object/public/images/logo.png/logomarca.png";
 
   return (
     <header className="bg-green-700 text-white shadow-lg w-full">
