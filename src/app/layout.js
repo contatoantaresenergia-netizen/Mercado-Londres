@@ -6,7 +6,7 @@ export const metadata = {
     icon: [
       {
         url: 'https://vpqevrxwiglfpyrwxmne.supabase.co/storage/v1/object/public/images/fav.icon/Gemini_Generated_Image_t78o5it78o5it78o-removebg-preview.png',
-        sizes: '32x32',
+        sizes: '56x56',
         type: 'image/png',
       },
       {
