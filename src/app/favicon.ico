@@ -1,8 +1,8 @@
-// Exemplo no src/app/layout.js
 export const metadata = {
   title: 'Prime Brasil Market',
   description: 'O melhor mercado brasileiro em Londres',
   icons: {
-    icon: '/favicon.ico', // Caminho relativo à pasta public
+    icon: 'https://vpqevrxwiglfpyrwxmne.supabase.co/storage/v1/object/public/images/fav.icon/Gemini_Generated_Image_pky8czpky8czpky8.png',
+    apple: 'https://vpqevrxwiglfpyrwxmne.supabase.co/storage/v1/object/public/images/fav.icon/Gemini_Generated_Image_pky8czpky8czpky8.png',
   },
 };
