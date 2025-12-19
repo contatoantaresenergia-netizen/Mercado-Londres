@@ -1,8 +1,19 @@
+// Arquivo: src/app/layout.js
+
 export const metadata = {
   title: 'Prime Brasil Market',
   description: 'O melhor mercado brasileiro em Londres',
   icons: {
+    // O seu link do Supabase entra aqui:
     icon: 'https://vpqevrxwiglfpyrwxmne.supabase.co/storage/v1/object/public/images/fav.icon/Gemini_Generated_Image_pky8czpky8czpky8.png',
     apple: 'https://vpqevrxwiglfpyrwxmne.supabase.co/storage/v1/object/public/images/fav.icon/Gemini_Generated_Image_pky8czpky8czpky8.png',
   },
 };
+
+export default function RootLayout({ children }) {
+  return (
+    <html lang="pt">
+      <body>{children}</body>
+    </html>
+  );
+}
