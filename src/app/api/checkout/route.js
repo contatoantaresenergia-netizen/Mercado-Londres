@@ -6,12 +6,12 @@ const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
 export async function POST(req) {
   try {
     const body = await req.json();
-    const { total, orderNumber, customer } = body;
+    const { total, orderNumber } = body;
 
     const paymentIntent = await stripe.paymentIntents.create({
       amount: Math.round(total * 100),
       currency: 'gbp',
-      metadata: { orderNumber, email: customer.email },
+      metadata: { orderNumber },
     });
 
     return NextResponse.json({ 
@@ -19,7 +19,6 @@ export async function POST(req) {
       success: true 
     });
   } catch (error) {
-    console.error("Erro Stripe:", error.message);
     return NextResponse.json({ error: error.message }, { status: 500 });
   }
 }
