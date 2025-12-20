@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server';
 import Stripe from 'stripe';
 
-// Aqui o Stripe usa OBRIGATORIAMENTE a chave secreta (sk_test...)
+// IMPORTANTE: Esta variável deve ser sk_test_... na Vercel
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
 
 export async function POST(req) {
@@ -9,9 +9,11 @@ export async function POST(req) {
     const body = await req.json();
     const { total, orderNumber, customer } = body;
 
-    // Esta chamada create() exige permissão total (Secret Key)
+    // Log para você ver o que está acontecendo nos logs da Vercel
+    console.log(`Iniciando checkout para pedido: ${orderNumber}`);
+
     const paymentIntent = await stripe.paymentIntents.create({
-      amount: Math.round(total * 100), 
+      amount: Math.round(total * 100), // Converte £ para centavos
       currency: 'gbp',
       metadata: { 
         orderNumber: orderNumber,
@@ -26,7 +28,11 @@ export async function POST(req) {
       success: true 
     });
   } catch (error) {
-    console.error("Erro no Backend Stripe:", error.message);
-    return NextResponse.json({ error: error.message }, { status: 500 });
+    // Se o erro de "publishable key" aparecer aqui, o problema é a chave na Vercel
+    console.error("ERRO CRÍTICO STRIPE BACKEND:", error.message);
+    return NextResponse.json(
+      { error: "Erro no servidor de pagamento: " + error.message }, 
+      { status: 500 }
+    );
   }
 }
