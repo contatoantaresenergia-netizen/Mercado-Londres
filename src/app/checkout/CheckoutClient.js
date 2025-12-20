@@ -3,7 +3,15 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import { useRouter } from 'next/navigation';
 import { useCart } from '@/app/context/CartContext';
-import { CreditCard, CheckCircle, MapPin, Truck } from 'lucide-react';
+import { CheckCircle, MapPin, Truck, Lock } from 'lucide-react';
+
+// Integração com Stripe
+import { loadStripe } from '@stripe/stripe-js';
+import { Elements } from '@stripe/react-stripe-js';
+import CheckoutForm from './CheckoutForm';
+
+// Use sua chave pública de teste (pk_test_...)
+const stripePromise = loadStripe(process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY);
 
 const MAINLAND_PREFIXES = ['E1', 'E2', 'E3', 'E4', 'E5', 'E6', 'E7', 'E8', 'E9', 'N1', 'NW1', 'SE1', 'SW1', 'W', 'WC', 'BR', 'CR', 'HA', 'IG', 'KT', 'RM', 'SM', 'TW', 'UB', 'AB', 'AL', 'B', 'BA', 'BB', 'BD', 'BH', 'BL', 'BN', 'BS', 'CA', 'CB', 'CF', 'CH', 'CM', 'CO', 'CT', 'CV', 'CW', 'DA', 'DD', 'DE', 'DG', 'DH', 'DL', 'DN', 'DT', 'DY', 'EN', 'EH', 'EX', 'FK', 'FY', 'G', 'GL', 'GU', 'HD', 'HG', 'HP', 'HR', 'HU', 'HX', 'IP', 'KA', 'KY', 'L', 'LA', 'LD', 'LE', 'LL', 'LN', 'LS', 'LU', 'M', 'ME', 'MK', 'ML', 'NE', 'NG', 'NN', 'NP', 'NR', 'OL', 'OX', 'PA', 'PE', 'PH', 'PL', 'PO', 'PR', 'RG', 'RH', 'S', 'SA', 'SG', 'SK', 'SL', 'SN', 'SO', 'SP', 'SR', 'SS', 'ST', 'SY', 'TA', 'TD', 'TF', 'TN', 'TQ', 'TR', 'TS', 'WA', 'WD', 'WF', 'WN', 'WR', 'WS', 'WV', 'YO'];
 
@@ -15,33 +23,27 @@ export default function CheckoutClient() {
   const [loading, setLoading] = useState(false);
   const [formData, setFormData] = useState({ nome: '', email: '', postcode: '', endereco: '' });
   const [isSuccess, setIsSuccess] = useState(false);
+  const [clientSecret, setClientSecret] = useState('');
 
   useEffect(() => {
     setOrderNumber(Math.random().toString(36).substr(2, 9).toUpperCase());
   }, []);
 
   const subtotal = getCartTotal();
-  const handlingFee = 1.99; // Taxa de sacola restaurada
+  const handlingFee = 1.99;
 
-  // CÁLCULO AUTOMÁTICO DE FRETE
   const deliveryInfo = useMemo(() => {
     const pc = formData.postcode.toUpperCase().trim();
     if (pc.length < 2) return { cost: 5.99, valid: true };
-    
     const isMainland = MAINLAND_PREFIXES.some(prefix => pc.startsWith(prefix));
     if (!isMainland) return { cost: 0, valid: false };
-    
-    // Regras de frete: Terça-Sexta (£5.99/Grátis > £70) | Sábado (£6.99/Grátis > £100)
-    let cost = (deliveryDay === 'saturday') 
-      ? (subtotal >= 100 ? 0 : 6.99) 
-      : (subtotal >= 70 ? 0 : 5.99);
-    
+    let cost = (deliveryDay === 'saturday') ? (subtotal >= 100 ? 0 : 6.99) : (subtotal >= 70 ? 0 : 5.99);
     return { cost, valid: true, isFree: cost === 0 };
   }, [formData.postcode, subtotal, deliveryDay]);
 
   const totalGeral = subtotal + deliveryInfo.cost + handlingFee;
 
-  const handleSubmit = async (e) => {
+  const handleStartPayment = async (e) => {
     e.preventDefault();
     if (!deliveryInfo.valid) return;
     setLoading(true);
@@ -57,14 +59,15 @@ export default function CheckoutClient() {
         }),
       });
 
-      if (res.ok) {
-        setIsSuccess(true);
-        clearCart();
+      const data = await res.json();
+
+      if (res.ok && data.clientSecret) {
+        setClientSecret(data.clientSecret);
       } else {
-        alert("Erro no processamento. Verifique os dados ou a chave do Stripe.");
+        alert("Erro no Stripe: " + (data.error || "Verifique suas chaves na Vercel."));
       }
     } catch (err) {
-      alert("Erro de conexão.");
+      alert("Erro de conexão com o servidor.");
     } finally {
       setLoading(false);
     }
@@ -86,44 +89,35 @@ export default function CheckoutClient() {
       <h1 className="text-3xl font-black mb-8 italic uppercase tracking-tighter">Finalizar Compra</h1>
       <div className="grid lg:grid-cols-3 gap-12">
         <div className="lg:col-span-2">
-          <form onSubmit={handleSubmit} className="space-y-8">
-            <div className="bg-gray-50 p-8 rounded-3xl border border-gray-100">
-              <h2 className="text-xl font-bold mb-6 flex items-center gap-2 italic uppercase"><MapPin size={22} className="text-green-600"/> Dados de Entrega</h2>
-              <div className="grid md:grid-cols-2 gap-5">
-                <input placeholder="NOME COMPLETO *" onChange={e => setFormData({...formData, nome: e.target.value})} required className="p-4 rounded-2xl border-gray-200 focus:ring-2 focus:ring-green-500 outline-none transition-all" />
-                <input placeholder="E-MAIL *" type="email" onChange={e => setFormData({...formData, email: e.target.value})} required className="p-4 rounded-2xl border-gray-200 focus:ring-2 focus:ring-green-500 outline-none transition-all" />
-                <input 
-                  placeholder="POSTCODE *" 
-                  value={formData.postcode}
-                  onChange={e => setFormData({...formData, postcode: e.target.value.toUpperCase()})} 
-                  required 
-                  className="p-4 rounded-2xl border-gray-200 uppercase font-black focus:ring-2 focus:ring-green-500 outline-none transition-all" 
-                />
-                <input placeholder="ENDEREÇO E NÚMERO *" onChange={e => setFormData({...formData, endereco: e.target.value})} required className="p-4 rounded-2xl border-gray-200 focus:ring-2 focus:ring-green-500 outline-none transition-all" />
+          {!clientSecret ? (
+            <form onSubmit={handleStartPayment} className="space-y-8">
+              <div className="bg-gray-50 p-8 rounded-3xl border border-gray-100">
+                <h2 className="text-xl font-bold mb-6 flex items-center gap-2 italic uppercase"><MapPin size={22} className="text-green-600"/> Dados de Entrega</h2>
+                <div className="grid md:grid-cols-2 gap-5">
+                  <input placeholder="NOME COMPLETO *" onChange={e => setFormData({...formData, nome: e.target.value})} required className="p-4 rounded-2xl border-gray-200 outline-none focus:ring-2 focus:ring-green-500" />
+                  <input placeholder="E-MAIL *" type="email" onChange={e => setFormData({...formData, email: e.target.value})} required className="p-4 rounded-2xl border-gray-200 outline-none focus:ring-2 focus:ring-green-500" />
+                  <input placeholder="POSTCODE *" value={formData.postcode} onChange={e => setFormData({...formData, postcode: e.target.value.toUpperCase()})} required className="p-4 rounded-2xl border-gray-200 font-black" />
+                  <input placeholder="ENDEREÇO E NÚMERO *" onChange={e => setFormData({...formData, endereco: e.target.value})} required className="p-4 rounded-2xl border-gray-200 outline-none focus:ring-2 focus:ring-green-500" />
+                </div>
               </div>
+              <button type="submit" disabled={loading || !deliveryInfo.valid} className="w-full bg-green-600 text-white py-6 rounded-3xl font-black text-2xl uppercase italic hover:bg-green-700 shadow-xl disabled:bg-gray-200">
+                {loading ? "PROCESSANDO..." : "PROSSEGUIR PARA PAGAMENTO"}
+              </button>
+            </form>
+          ) : (
+            <div className="bg-white p-8 rounded-3xl border-2 border-green-100 shadow-lg">
+              <h2 className="text-xl font-bold mb-6 flex items-center gap-2 italic uppercase text-green-700">
+                <Lock size={22}/> Pagamento Seguro via Stripe
+              </h2>
+              <Elements stripe={stripePromise} options={{ clientSecret }}>
+                <CheckoutForm onOrderComplete={() => {
+                   setIsSuccess(true);
+                   clearCart();
+                }} />
+              </Elements>
+              <button onClick={() => setClientSecret('')} className="mt-4 text-sm text-gray-500 underline">Alterar dados de entrega</button>
             </div>
-
-            <div className="bg-gray-50 p-8 rounded-3xl border border-gray-100">
-              <h2 className="text-xl font-bold mb-6 flex items-center gap-2 italic uppercase"><Truck size={22} className="text-green-600"/> Opções de Envio</h2>
-              <div className="grid grid-cols-2 gap-4">
-                <button type="button" onClick={() => setDeliveryDay('weekday')} className={`p-5 border-2 rounded-2xl text-left transition-all ${deliveryDay === 'weekday' ? 'border-green-600 bg-white shadow-md' : 'border-transparent bg-white/50'}`}>
-                  <p className="font-black text-sm uppercase">Terça a Sexta</p>
-                  <p className="text-xs font-bold text-gray-500">£5.99 (Grátis acima de £70)</p>
-                </button>
-                <button type="button" onClick={() => setDeliveryDay('saturday')} className={`p-5 border-2 rounded-2xl text-left transition-all ${deliveryDay === 'saturday' ? 'border-green-600 bg-white shadow-md' : 'border-transparent bg-white/50'}`}>
-                  <p className="font-black text-sm uppercase">Sábado</p>
-                  <p className="text-xs font-bold text-gray-500">£6.99 (Grátis acima de £100)</p>
-                </button>
-              </div>
-              {!deliveryInfo.valid && formData.postcode.length > 2 && (
-                <p className="mt-4 text-red-600 font-black text-sm p-4 bg-red-50 rounded-xl border border-red-100 italic">⚠️ Atenção: Para Offshore/Islands, o frete é sob consulta via WhatsApp.</p>
-              )}
-            </div>
-            
-            <button type="submit" disabled={loading || !deliveryInfo.valid} className="w-full bg-green-600 text-white py-6 rounded-3xl font-black text-2xl uppercase italic hover:bg-green-700 transition-all shadow-xl active:scale-[0.98] disabled:bg-gray-200">
-              {loading ? "PROCESSANDO..." : "PAGAR AGORA"}
-            </button>
-          </form>
+          )}
         </div>
 
         <div className="lg:col-span-1">
@@ -137,7 +131,7 @@ export default function CheckoutClient() {
                   {deliveryInfo.isFree ? 'GRÁTIS' : `£${deliveryInfo.cost.toFixed(2)}`}
                 </span>
               </div>
-              <div className="flex justify-between text-gray-400 text-sm"><span>Manuseio/Sacola</span><span>£{handlingFee.toFixed(2)}</span></div>
+              <div className="flex justify-between text-gray-400 text-sm"><span>Sacola</span><span>£{handlingFee.toFixed(2)}</span></div>
               <div className="flex justify-between font-black text-4xl pt-6 border-t border-dashed text-green-700 mt-6 tracking-tighter">
                 <span>TOTAL</span><span>£{totalGeral.toFixed(2)}</span>
               </div>
