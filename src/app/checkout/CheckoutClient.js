@@ -10,14 +10,14 @@ import { loadStripe } from '@stripe/stripe-js';
 import { Elements } from '@stripe/react-stripe-js';
 import CheckoutForm from './CheckoutForm';
 
-// IMPORTANTE: Esta variável deve ser pk_test_... na Vercel
+// Inicializa o Stripe com a chave pública
 const stripePromise = loadStripe(process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY);
 
 const MAINLAND_PREFIXES = ['E1', 'E2', 'E3', 'E4', 'E5', 'E6', 'E7', 'E8', 'E9', 'N1', 'NW1', 'SE1', 'SW1', 'W', 'WC', 'BR', 'CR', 'HA', 'IG', 'KT', 'RM', 'SM', 'TW', 'UB', 'AB', 'AL', 'B', 'BA', 'BB', 'BD', 'BH', 'BL', 'BN', 'BS', 'CA', 'CB', 'CF', 'CH', 'CM', 'CO', 'CT', 'CV', 'CW', 'DA', 'DD', 'DE', 'DG', 'DH', 'DL', 'DN', 'DT', 'DY', 'EN', 'EH', 'EX', 'FK', 'FY', 'G', 'GL', 'GU', 'HD', 'HG', 'HP', 'HR', 'HU', 'HX', 'IP', 'KA', 'KY', 'L', 'LA', 'LD', 'LE', 'LL', 'LN', 'LS', 'LU', 'M', 'ME', 'MK', 'ML', 'NE', 'NG', 'NN', 'NP', 'NR', 'OL', 'OX', 'PA', 'PE', 'PH', 'PL', 'PO', 'PR', 'RG', 'RH', 'S', 'SA', 'SG', 'SK', 'SL', 'SN', 'SO', 'SP', 'SR', 'SS', 'ST', 'SY', 'TA', 'TD', 'TF', 'TN', 'TQ', 'TR', 'TS', 'WA', 'WD', 'WF', 'WN', 'WR', 'WS', 'WV', 'YO'];
 
 export default function CheckoutClient() {
   const router = useRouter();
-  const { getCartTotal, clearCart } = useCart();
+  const { cart, getCartTotal, clearCart } = useCart();
   const [orderNumber, setOrderNumber] = useState('');
   const [deliveryDay, setDeliveryDay] = useState('weekday');
   const [loading, setLoading] = useState(false);
@@ -64,11 +64,10 @@ export default function CheckoutClient() {
       if (res.ok && data.clientSecret) {
         setClientSecret(data.clientSecret);
       } else {
-        // Se cair aqui, a mensagem de erro da Stripe dirá o que está errado na Vercel
-        alert("Erro de Processamento: " + (data.error || "Verifique as chaves sk_ no backend."));
+        alert("Erro no Stripe: " + (data.error || "Verifique suas chaves na Vercel."));
       }
     } catch (err) {
-      alert("Erro crítico: Não foi possível conectar ao servidor de pagamento.");
+      alert("Erro de conexão com o servidor.");
     } finally {
       setLoading(false);
     }
@@ -101,4 +100,45 @@ export default function CheckoutClient() {
                   <input placeholder="ENDEREÇO E NÚMERO *" onChange={e => setFormData({...formData, endereco: e.target.value})} required className="p-4 rounded-2xl border-gray-200 outline-none focus:ring-2 focus:ring-green-500" />
                 </div>
               </div>
-              <button type="submit" disabled={
+              <button type="submit" disabled={loading || !deliveryInfo.valid} className="w-full bg-green-600 text-white py-6 rounded-3xl font-black text-2xl uppercase italic hover:bg-green-700 shadow-xl disabled:bg-gray-200">
+                {loading ? "PROCESSANDO..." : "PROSSEGUIR PARA PAGAMENTO"}
+              </button>
+            </form>
+          ) : (
+            <div className="bg-white p-8 rounded-3xl border-2 border-green-100 shadow-lg">
+              <h2 className="text-xl font-bold mb-6 flex items-center gap-2 italic uppercase text-green-700">
+                <Lock size={22}/> Pagamento Seguro via Stripe
+              </h2>
+              <Elements stripe={stripePromise} options={{ clientSecret }}>
+                <CheckoutForm onOrderComplete={() => {
+                   setIsSuccess(true);
+                   clearCart();
+                }} />
+              </Elements>
+              <button onClick={() => setClientSecret('')} className="mt-4 text-sm text-gray-500 underline">Alterar dados de entrega</button>
+            </div>
+          )}
+        </div>
+
+        <div className="lg:col-span-1">
+          <div className="bg-white p-8 rounded-3xl border-2 border-gray-50 h-fit sticky top-10 shadow-sm">
+            <h3 className="font-black text-2xl mb-6 italic uppercase border-b pb-4">Resumo</h3>
+            <div className="space-y-4 font-bold text-base">
+              <div className="flex justify-between text-gray-600"><span>Produtos</span><span>£{subtotal.toFixed(2)}</span></div>
+              <div className="flex justify-between text-gray-600">
+                <span>Entrega</span>
+                <span className={deliveryInfo.isFree ? "text-green-600 font-black" : ""}>
+                  {deliveryInfo.isFree ? 'GRÁTIS' : `£${deliveryInfo.cost.toFixed(2)}`}
+                </span>
+              </div>
+              <div className="flex justify-between text-gray-400 text-sm"><span>Sacola</span><span>£{handlingFee.toFixed(2)}</span></div>
+              <div className="flex justify-between font-black text-4xl pt-6 border-t border-dashed text-green-700 mt-6 tracking-tighter">
+                <span>TOTAL</span><span>£{totalGeral.toFixed(2)}</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
