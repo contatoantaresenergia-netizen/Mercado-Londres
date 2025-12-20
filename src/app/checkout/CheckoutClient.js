@@ -5,19 +5,17 @@ import { useRouter } from 'next/navigation';
 import { useCart } from '@/app/context/CartContext';
 import { CheckCircle, MapPin, Lock } from 'lucide-react';
 
-// Integração com Stripe
 import { loadStripe } from '@stripe/stripe-js';
 import { Elements } from '@stripe/react-stripe-js';
 import CheckoutForm from './CheckoutForm';
 
-// Inicializa o Stripe com a chave pública
 const stripePromise = loadStripe(process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY);
 
 const MAINLAND_PREFIXES = ['E1', 'E2', 'E3', 'E4', 'E5', 'E6', 'E7', 'E8', 'E9', 'N1', 'NW1', 'SE1', 'SW1', 'W', 'WC', 'BR', 'CR', 'HA', 'IG', 'KT', 'RM', 'SM', 'TW', 'UB', 'AB', 'AL', 'B', 'BA', 'BB', 'BD', 'BH', 'BL', 'BN', 'BS', 'CA', 'CB', 'CF', 'CH', 'CM', 'CO', 'CT', 'CV', 'CW', 'DA', 'DD', 'DE', 'DG', 'DH', 'DL', 'DN', 'DT', 'DY', 'EN', 'EH', 'EX', 'FK', 'FY', 'G', 'GL', 'GU', 'HD', 'HG', 'HP', 'HR', 'HU', 'HX', 'IP', 'KA', 'KY', 'L', 'LA', 'LD', 'LE', 'LL', 'LN', 'LS', 'LU', 'M', 'ME', 'MK', 'ML', 'NE', 'NG', 'NN', 'NP', 'NR', 'OL', 'OX', 'PA', 'PE', 'PH', 'PL', 'PO', 'PR', 'RG', 'RH', 'S', 'SA', 'SG', 'SK', 'SL', 'SN', 'SO', 'SP', 'SR', 'SS', 'ST', 'SY', 'TA', 'TD', 'TF', 'TN', 'TQ', 'TR', 'TS', 'WA', 'WD', 'WF', 'WN', 'WR', 'WS', 'WV', 'YO'];
 
 export default function CheckoutClient() {
   const router = useRouter();
-  const { cart, getCartTotal, clearCart } = useCart();
+  const { getCartTotal, clearCart } = useCart();
   const [orderNumber, setOrderNumber] = useState('');
   const [deliveryDay, setDeliveryDay] = useState('weekday');
   const [loading, setLoading] = useState(false);
@@ -47,27 +45,20 @@ export default function CheckoutClient() {
     e.preventDefault();
     if (!deliveryInfo.valid) return;
     setLoading(true);
-
     try {
       const res = await fetch('/api/checkout', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ 
-          total: totalGeral, 
-          orderNumber, 
-          customer: formData 
-        }),
+        body: JSON.stringify({ total: totalGeral, orderNumber, customer: formData }),
       });
-
       const data = await res.json();
-
       if (res.ok && data.clientSecret) {
         setClientSecret(data.clientSecret);
       } else {
-        alert("Erro no Stripe: " + (data.error || "Verifique suas chaves na Vercel."));
+        alert("Erro no Stripe: " + (data.error || "Erro desconhecido"));
       }
     } catch (err) {
-      alert("Erro de conexão com o servidor.");
+      alert("Erro de conexão.");
     } finally {
       setLoading(false);
     }
@@ -83,8 +74,7 @@ export default function CheckoutClient() {
       </div>
     </div>
   );
-
-  return (
+return (
     <div className="max-w-6xl mx-auto py-10 px-4">
       <h1 className="text-3xl font-black mb-8 italic uppercase tracking-tighter">Finalizar Compra</h1>
       <div className="grid lg:grid-cols-3 gap-12">
@@ -110,10 +100,7 @@ export default function CheckoutClient() {
                 <Lock size={22}/> Pagamento Seguro via Stripe
               </h2>
               <Elements stripe={stripePromise} options={{ clientSecret }}>
-                <CheckoutForm onOrderComplete={() => {
-                   setIsSuccess(true);
-                   clearCart();
-                }} />
+                <CheckoutForm onOrderComplete={() => { setIsSuccess(true); clearCart(); }} />
               </Elements>
               <button onClick={() => setClientSecret('')} className="mt-4 text-sm text-gray-500 underline">Alterar dados de entrega</button>
             </div>
