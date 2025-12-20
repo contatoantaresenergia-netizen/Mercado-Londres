@@ -1,16 +1,13 @@
 'use client'
-
 import React, { useState, useEffect, useMemo } from 'react';
 import { useRouter } from 'next/navigation';
 import { useCart } from '@/app/context/CartContext';
 import { CheckCircle, MapPin, Lock } from 'lucide-react';
-
 import { loadStripe } from '@stripe/stripe-js';
 import { Elements } from '@stripe/react-stripe-js';
 import CheckoutForm from './CheckoutForm';
 
 const stripePromise = loadStripe(process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY);
-
 const MAINLAND_PREFIXES = ['E1', 'E2', 'E3', 'E4', 'E5', 'E6', 'E7', 'E8', 'E9', 'N1', 'NW1', 'SE1', 'SW1', 'W', 'WC', 'BR', 'CR', 'HA', 'IG', 'KT', 'RM', 'SM', 'TW', 'UB', 'AB', 'AL', 'B', 'BA', 'BB', 'BD', 'BH', 'BL', 'BN', 'BS', 'CA', 'CB', 'CF', 'CH', 'CM', 'CO', 'CT', 'CV', 'CW', 'DA', 'DD', 'DE', 'DG', 'DH', 'DL', 'DN', 'DT', 'DY', 'EN', 'EH', 'EX', 'FK', 'FY', 'G', 'GL', 'GU', 'HD', 'HG', 'HP', 'HR', 'HU', 'HX', 'IP', 'KA', 'KY', 'L', 'LA', 'LD', 'LE', 'LL', 'LN', 'LS', 'LU', 'M', 'ME', 'MK', 'ML', 'NE', 'NG', 'NN', 'NP', 'NR', 'OL', 'OX', 'PA', 'PE', 'PH', 'PL', 'PO', 'PR', 'RG', 'RH', 'S', 'SA', 'SG', 'SK', 'SL', 'SN', 'SO', 'SP', 'SR', 'SS', 'ST', 'SY', 'TA', 'TD', 'TF', 'TN', 'TQ', 'TR', 'TS', 'WA', 'WD', 'WF', 'WN', 'WR', 'WS', 'WV', 'YO'];
 
 export default function CheckoutClient() {
@@ -23,13 +20,10 @@ export default function CheckoutClient() {
   const [isSuccess, setIsSuccess] = useState(false);
   const [clientSecret, setClientSecret] = useState('');
 
-  useEffect(() => {
-    setOrderNumber(Math.random().toString(36).substr(2, 9).toUpperCase());
-  }, []);
+  useEffect(() => { setOrderNumber(Math.random().toString(36).substr(2, 9).toUpperCase()); }, []);
 
   const subtotal = getCartTotal();
   const handlingFee = 1.99;
-
   const deliveryInfo = useMemo(() => {
     const pc = formData.postcode.toUpperCase().trim();
     if (pc.length < 2) return { cost: 5.99, valid: true };
@@ -52,16 +46,9 @@ export default function CheckoutClient() {
         body: JSON.stringify({ total: totalGeral, orderNumber, customer: formData }),
       });
       const data = await res.json();
-      if (res.ok && data.clientSecret) {
-        setClientSecret(data.clientSecret);
-      } else {
-        alert("Erro no Stripe: " + (data.error || "Erro desconhecido"));
-      }
-    } catch (err) {
-      alert("Erro de conexão.");
-    } finally {
-      setLoading(false);
-    }
+      if (res.ok && data.clientSecret) { setClientSecret(data.clientSecret); } 
+      else { alert("Erro Stripe: " + (data.error || "Verifique chaves na Vercel")); }
+    } catch (err) { alert("Erro de conexão."); } finally { setLoading(false); }
   };
 
   if (isSuccess) return (
@@ -74,7 +61,8 @@ export default function CheckoutClient() {
       </div>
     </div>
   );
-return (
+
+  return (
     <div className="max-w-6xl mx-auto py-10 px-4">
       <h1 className="text-3xl font-black mb-8 italic uppercase tracking-tighter">Finalizar Compra</h1>
       <div className="grid lg:grid-cols-3 gap-12">
@@ -96,32 +84,22 @@ return (
             </form>
           ) : (
             <div className="bg-white p-8 rounded-3xl border-2 border-green-100 shadow-lg">
-              <h2 className="text-xl font-bold mb-6 flex items-center gap-2 italic uppercase text-green-700">
-                <Lock size={22}/> Pagamento Seguro via Stripe
-              </h2>
+              <h2 className="text-xl font-bold mb-6 flex items-center gap-2 italic uppercase text-green-700"><Lock size={22}/> Pagamento Seguro</h2>
               <Elements stripe={stripePromise} options={{ clientSecret }}>
                 <CheckoutForm onOrderComplete={() => { setIsSuccess(true); clearCart(); }} />
               </Elements>
-              <button onClick={() => setClientSecret('')} className="mt-4 text-sm text-gray-500 underline">Alterar dados de entrega</button>
+              <button onClick={() => setClientSecret('')} className="mt-4 text-sm text-gray-500 underline">Alterar dados</button>
             </div>
           )}
         </div>
-
         <div className="lg:col-span-1">
           <div className="bg-white p-8 rounded-3xl border-2 border-gray-50 h-fit sticky top-10 shadow-sm">
             <h3 className="font-black text-2xl mb-6 italic uppercase border-b pb-4">Resumo</h3>
             <div className="space-y-4 font-bold text-base">
               <div className="flex justify-between text-gray-600"><span>Produtos</span><span>£{subtotal.toFixed(2)}</span></div>
-              <div className="flex justify-between text-gray-600">
-                <span>Entrega</span>
-                <span className={deliveryInfo.isFree ? "text-green-600 font-black" : ""}>
-                  {deliveryInfo.isFree ? 'GRÁTIS' : `£${deliveryInfo.cost.toFixed(2)}`}
-                </span>
-              </div>
+              <div className="flex justify-between text-gray-600"><span>Entrega</span><span className={deliveryInfo.isFree ? "text-green-600 font-black" : ""}>{deliveryInfo.isFree ? 'GRÁTIS' : `£${deliveryInfo.cost.toFixed(2)}`}</span></div>
               <div className="flex justify-between text-gray-400 text-sm"><span>Sacola</span><span>£{handlingFee.toFixed(2)}</span></div>
-              <div className="flex justify-between font-black text-4xl pt-6 border-t border-dashed text-green-700 mt-6 tracking-tighter">
-                <span>TOTAL</span><span>£{totalGeral.toFixed(2)}</span>
-              </div>
+              <div className="flex justify-between font-black text-4xl pt-6 border-t border-dashed text-green-700 mt-6 tracking-tighter"><span>TOTAL</span><span>£{totalGeral.toFixed(2)}</span></div>
             </div>
           </div>
         </div>
