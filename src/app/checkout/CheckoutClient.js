@@ -5,12 +5,12 @@ import { useRouter } from 'next/navigation';
 import { useCart } from '@/app/context/CartContext';
 import { CheckCircle, MapPin, Truck, Lock } from 'lucide-react';
 
-// Integração com Stripe
 import { loadStripe } from '@stripe/stripe-js';
 import { Elements } from '@stripe/react-stripe-js';
 import CheckoutForm from './CheckoutForm';
 
-// Use sua chave pública de teste (pk_test_...)
+// Inicializa o Stripe com a chave pública. 
+// O prefixo NEXT_PUBLIC_ é obrigatório para que o navegador consiga ler a chave
 const stripePromise = loadStripe(process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY);
 
 const MAINLAND_PREFIXES = ['E1', 'E2', 'E3', 'E4', 'E5', 'E6', 'E7', 'E8', 'E9', 'N1', 'NW1', 'SE1', 'SW1', 'W', 'WC', 'BR', 'CR', 'HA', 'IG', 'KT', 'RM', 'SM', 'TW', 'UB', 'AB', 'AL', 'B', 'BA', 'BB', 'BD', 'BH', 'BL', 'BN', 'BS', 'CA', 'CB', 'CF', 'CH', 'CM', 'CO', 'CT', 'CV', 'CW', 'DA', 'DD', 'DE', 'DG', 'DH', 'DL', 'DN', 'DT', 'DY', 'EN', 'EH', 'EX', 'FK', 'FY', 'G', 'GL', 'GU', 'HD', 'HG', 'HP', 'HR', 'HU', 'HX', 'IP', 'KA', 'KY', 'L', 'LA', 'LD', 'LE', 'LL', 'LN', 'LS', 'LU', 'M', 'ME', 'MK', 'ML', 'NE', 'NG', 'NN', 'NP', 'NR', 'OL', 'OX', 'PA', 'PE', 'PH', 'PL', 'PO', 'PR', 'RG', 'RH', 'S', 'SA', 'SG', 'SK', 'SL', 'SN', 'SO', 'SP', 'SR', 'SS', 'ST', 'SY', 'TA', 'TD', 'TF', 'TN', 'TQ', 'TR', 'TS', 'WA', 'WD', 'WF', 'WN', 'WR', 'WS', 'WV', 'YO'];
@@ -64,7 +64,8 @@ export default function CheckoutClient() {
       if (res.ok && data.clientSecret) {
         setClientSecret(data.clientSecret);
       } else {
-        alert("Erro no Stripe: " + (data.error || "Verifique suas chaves na Vercel."));
+        // Exibe o erro vindo diretamente da Stripe para diagnóstico
+        alert("Erro no Stripe: " + (data.error || "Verifique se a STRIPE_SECRET_KEY está correta na Vercel."));
       }
     } catch (err) {
       alert("Erro de conexão com o servidor.");
