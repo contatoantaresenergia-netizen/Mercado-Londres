@@ -1,7 +1,10 @@
 import { NextResponse } from 'next/server';
 import Stripe from 'stripe';
 
-// IMPORTANTE: Esta variável deve ser sk_test_... na Vercel
+// Este log aparecerá apenas nos Logs da Vercel (não no navegador)
+// Serve para confirmar se a Vercel está lendo a chave sk_test_...
+console.log('Stripe Key Prefix:', process.env.STRIPE_SECRET_KEY?.slice(0, 7));
+
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
 
 export async function POST(req) {
@@ -9,11 +12,9 @@ export async function POST(req) {
     const body = await req.json();
     const { total, orderNumber, customer } = body;
 
-    // Log para você ver o que está acontecendo nos logs da Vercel
-    console.log(`Iniciando checkout para pedido: ${orderNumber}`);
-
+    // Criando o PaymentIntent (Exige obrigatoriamente a Secret Key)
     const paymentIntent = await stripe.paymentIntents.create({
-      amount: Math.round(total * 100), // Converte £ para centavos
+      amount: Math.round(total * 100), // Converte para centavos
       currency: 'gbp',
       metadata: { 
         orderNumber: orderNumber,
@@ -27,11 +28,13 @@ export async function POST(req) {
       clientSecret: paymentIntent.client_secret,
       success: true 
     });
+
   } catch (error) {
-    // Se o erro de "publishable key" aparecer aqui, o problema é a chave na Vercel
-    console.error("ERRO CRÍTICO STRIPE BACKEND:", error.message);
+    // Log detalhado para diagnóstico em caso de falha
+    console.error("Erro Stripe Backend:", error.message);
+    
     return NextResponse.json(
-      { error: "Erro no servidor de pagamento: " + error.message }, 
+      { error: error.message }, 
       { status: 500 }
     );
   }
