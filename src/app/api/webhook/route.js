@@ -2,8 +2,10 @@ import { createClient } from '@supabase/supabase-js';
 import { NextResponse } from 'next/server';
 import Stripe from 'stripe';
 
+export const dynamic = 'force-dynamic'; // Força a rota a ser dinâmica e ignora validação estática no build
+
 export async function POST(req) {
-  // 1. Inicializa o Stripe e Supabase apenas dentro da execução
+  // Inicialização INTERNA - Só acontece quando a rota é chamada de verdade
   const stripe = new Stripe(process.env.STRIPE_SECRET_KEY || '');
   const supabase = createClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL || 'https://placeholder.supabase.co',
@@ -18,7 +20,7 @@ export async function POST(req) {
 
   try {
     if (!sig || !webhookSecret) {
-      return NextResponse.json({ error: 'Faltam chaves de segurança' }, { status: 400 });
+      return NextResponse.json({ error: 'Security keys missing' }, { status: 400 });
     }
     event = stripe.webhooks.constructEvent(body, sig, webhookSecret);
   } catch (err) {
@@ -28,7 +30,7 @@ export async function POST(req) {
   if (event.type === 'checkout.session.completed') {
     const session = event.data.object;
 
-    // Tenta inserir no banco
+    // Inserção na tabela 'orders' do seu print
     const { error } = await supabase
       .from('orders')
       .insert([{
@@ -37,11 +39,8 @@ export async function POST(req) {
         status: 'pago'
       }]);
 
-    if (error) console.error("Erro Supabase:", error.message);
+    if (error) console.error("Erro no Supabase:", error.message);
   }
 
   return NextResponse.json({ received: true }, { status: 200 });
 }
-
-// Isso avisa ao Next.js para não validar esta rota como estática
-export const dynamic = 'force-dynamic';
