@@ -8,11 +8,11 @@ import { getDictionary } from '../../lib/get-dictionary';
 
 export default function HomePage() {
   const router = useRouter();
-  const params = useParams(); // Use useParams hook em vez de receber via props
+  const params = useParams();
   const [featuredProducts, setFeaturedProducts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [dict, setDict] = useState(null);
-  const lang = params.lang || 'pt'; // Acesso direto, sem await
+  const lang = params.lang || 'pt';
 
   useEffect(() => {
     async function loadData() {
