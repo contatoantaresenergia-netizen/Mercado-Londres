@@ -1,12 +1,11 @@
 import './globals.css'
-// Ajuste de caminhos: subimos dois níveis (../../) para sair de [lang] e app e chegar em src
+// Ajuste de caminhos usando navegação relativa para evitar erros de build
 import { CartProvider } from '../../context/CartContext'
 import Header from '../../components/Header'
 import Footer from '../../components/Footer'
 import WhatsAppButton from '../../components/WhatsAppButton'
 import { getDictionary } from '../../lib/get-dictionary'
 
-// Configuração de Metadados e Favicon
 export const metadata = {
   title: 'Prime Brasil Market',
   description: 'O melhor mercado brasileiro em Londres',
@@ -18,10 +17,10 @@ export const metadata = {
 }
 
 export default async function RootLayout({ children, params }) {
-  // No Next.js 15, params é assíncrono
+  // No Next.js 15, params é uma Promise e deve ser aguardada
   const { lang } = await params;
 
-  // Carregamos o dicionário para traduzir o site
+  // Carrega as traduções baseadas no idioma da URL
   const dict = await getDictionary(lang);
 
   return (
@@ -31,7 +30,7 @@ export default async function RootLayout({ children, params }) {
       </head>
       <body>
         <CartProvider>
-          {/* Passamos dict e lang para o Header poder exibir os menus traduzidos e as bandeiras */}
+          {/* Passamos o dicionário para que o Header mude os nomes dos menus */}
           <Header dict={dict} lang={lang} />
           <main>
             {children}
