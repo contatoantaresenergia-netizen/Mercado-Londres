@@ -1,5 +1,4 @@
 import './globals.css'
-// Importando das novas pastas privadas (com sublinhado)
 import { CartProvider } from '../_context/CartContext'
 import Header from '../_components/Header'
 import Footer from '../_components/Footer'
@@ -15,17 +14,20 @@ export const metadata = {
 }
 
 export default async function RootLayout({ children, params }) {
-  // Garantindo a compatibilidade com Next.js 14/15
+  // No Next.js 14/15, extraímos o idioma dos parâmetros da URL
   const { lang } = params;
 
-  // Carrega as traduções baseadas no idioma da URL
+  // Carrega as traduções baseadas no idioma (pt ou en)
   const dict = await getDictionary(lang);
 
   return (
     <html lang={lang}>
+      <head>
+        <link rel="icon" href="https://vpqevrxwiglfpyrwxmne.supabase.co/storage/v1/object/public/images/fav.icon/89036172-8A4B-4886-89B7-1B20DCD9FC45-removebg-preview.png" />
+      </head>
       <body className="antialiased">
         <CartProvider>
-          {/* Passamos dict e lang para o Header renderizar as bandeiras e menus */}
+          {/* Passamos o dicionário (dict) para as bandeiras e menus funcionarem */}
           <Header dict={dict} lang={lang} />
           <main className="min-h-screen">
             {children}
