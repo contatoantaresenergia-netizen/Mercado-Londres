@@ -6,7 +6,7 @@ import { MessageCircle } from 'lucide-react';
 export default function WhatsAppButton() {
   // Substitua pelo seu número real (com código do país e sem espaços)
   // Exemplo para Londres: 44 + número
-  const phoneNumber = "442012345678"; 
+  const phoneNumber = "447860280496"; 
   const message = encodeURIComponent("Olá! Estou no site Prime Brasil Market e gostaria de informações.");
   const whatsappUrl = `https://wa.me/${phoneNumber}?text=${message}`;
 
