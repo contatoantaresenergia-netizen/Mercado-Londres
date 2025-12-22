@@ -1,14 +1,17 @@
 'use client'
 
 import React, { useState, useEffect, Suspense } from 'react';
-import { useSearchParams, useRouter } from 'next/navigation';
+import { useSearchParams, useRouter, useParams } from 'next/navigation'; // useParams adicionado
 import { supabase } from '@/lib/supabase';
-import ProductCard from '@/app/components/ProductCard';
+import ProductCard from '../_components/ProductCard'; // CAMINHO CORRIGIDO
 import { Search, Filter } from 'lucide-react';
 
 function ProdutosContent() {
   const searchParams = useSearchParams();
   const router = useRouter();
+  const params = useParams(); // Captura o idioma atual da URL (ex: 'pt' ou 'en')
+  const lang = params.lang || 'pt';
+  
   const categoriaAtiva = searchParams.get('categoria') || 'Todos';
   
   const [produtos, setProdutos] = useState([]);
@@ -59,7 +62,13 @@ function ProdutosContent() {
               {categorias.map((cat) => (
                 <li key={cat}>
                   <button
-                    onClick={() => router.push(cat === 'Todos' ? '/produtos' : `/produtos?categoria=${cat.toLowerCase()}`)}
+                    onClick={() => {
+                      // NAVEGAÇÃO CORRIGIDA: Mantém o idioma na URL
+                      const link = cat === 'Todos' 
+                        ? `/${lang}/produtos` 
+                        : `/${lang}/produtos?categoria=${cat.toLowerCase()}`;
+                      router.push(link);
+                    }}
                     className={`w-full text-left px-4 py-2 rounded-lg transition ${
                       categoriaAtiva.toLowerCase() === cat.toLowerCase()
                         ? 'bg-green-600 text-white font-bold'
@@ -76,7 +85,6 @@ function ProdutosContent() {
 
         {/* ÁREA PRINCIPAL (Busca + Produtos) */}
         <main className="flex-1">
-          {/* BARRA DE PESQUISA */}
           <div className="relative mb-8">
             <input
               type="text"
