@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server'
 
-let locales = ['pt', 'en']
+const locales = ['pt', 'en']
 
 export function middleware(request) {
   const { pathname } = request.nextUrl
@@ -9,9 +9,9 @@ export function middleware(request) {
   const pathnameHasLocale = locales.some(
     (locale) => pathname.startsWith(`/${locale}/`) || pathname === `/${locale}`
   )
-
+  
   if (pathnameHasLocale) return
-
+  
   // Se não tiver idioma, redireciona para o padrão (pt)
   request.nextUrl.pathname = `/pt${pathname}`
   return NextResponse.redirect(request.nextUrl)
