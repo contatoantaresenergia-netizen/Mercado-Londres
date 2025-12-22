@@ -1,7 +1,51 @@
 {
   "header": {
-    "cart": "Carrinho",
+    "home": "Início",
+    "products": "Produtos",
+    "about": "Sobre",
     "contact": "Contato",
-    "about": "Sobre"
+    "cart": "Carrinho"
+  },
+  "home": {
+    "welcome": "O melhor mercado brasileiro de Londres",
+    "hero": {
+      "title": "OFERTAS DE NATAL 🎁",
+      "subtitle": "Até 30% OFF em produtos selecionados",
+      "cta": "Comprar Agora"
+    },
+    "featuredTitle": "Produtos em Destaque",
+    "categoriesTitle": "Nossas Categorias"
+  },
+  "footer": {
+    "rights": "Todos os direitos reservados",
+    "about": "Sobre",
+    "products": "Produtos",
+    "contact": "Contato"
+  },
+  "products": {
+    "title": "Todos os Produtos",
+    "addToCart": "Adicionar ao Carrinho",
+    "viewDetails": "Ver Detalhes",
+    "price": "Preço",
+    "loading": "Carregando produtos..."
+  },
+  "cart": {
+    "title": "Carrinho de Compras",
+    "empty": "Seu carrinho está vazio",
+    "total": "Total",
+    "checkout": "Finalizar Pedido",
+    "remove": "Remover",
+    "quantity": "Quantidade",
+    "continueShopping": "Continuar Comprando"
+  },
+  "about": {
+    "title": "Sobre Nós",
+    "description": "Somos o melhor mercado brasileiro de Londres"
+  },
+  "contact": {
+    "title": "Contato",
+    "phone": "Telefone",
+    "email": "E-mail",
+    "address": "Endereço"
   }
 }
