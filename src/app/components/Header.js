@@ -2,12 +2,11 @@
 
 import React, { useState } from 'react';
 import Link from 'next/link';
-import { usePathname } from 'next/navigation';
+import { usePathname } from 'next/navigation'; // Necessário para as bandeiras
 import { ShoppingCart, Menu } from 'lucide-react';
 import { useCart } from '@/app/context/CartContext';
 import MobileMenu from './MobileMenu';
 
-// Recebemos dict e lang como propriedades (props)
 export default function Header({ dict, lang }) {
   const { getCartCount } = useCart();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -15,9 +14,9 @@ export default function Header({ dict, lang }) {
   
   const logoSupabase = "https://vpqevrxwiglfpyrwxmne.supabase.co/storage/v1/object/public/images/logo.png/logomarca.png";
 
-  // Função para trocar o idioma na URL sem perder a página onde o usuário está
+  // Função para trocar o idioma na URL sem perder a página atual
   const redirectedPathName = (locale) => {
-    if (!pathname) return '/';
+    if (!pathname) return `/${locale}`;
     const segments = pathname.split('/');
     segments[1] = locale;
     return segments.join('/');
@@ -28,16 +27,15 @@ export default function Header({ dict, lang }) {
       <div className="container mx-auto px-4">
         <div className="flex items-center justify-between h-20">
           
-          {/* LADO ESQUERDO: LOGO + NOME */}
+          {/* LADO ESQUERDO: LOGO */}
           <Link href={`/${lang}`} className="flex items-center gap-2 hover:opacity-90 transition group">
-            <div className="h-12 w-12 md:h-16 md:w-16 flex-shrink-0">
+            <div className="h-16 w-16 flex-shrink-0">
               <img 
                 src={logoSupabase} 
                 alt="Prime Brasil Logo" 
                 className="h-full w-full object-contain" 
               />
             </div>
-            
             <div className="flex flex-col leading-tight">
               <span className="text-green-700 font-bold text-lg md:text-xl uppercase tracking-tight">
                 Prime Brasil
@@ -48,7 +46,7 @@ export default function Header({ dict, lang }) {
             </div>
           </Link>
           
-          {/* CENTRO: NAVEGAÇÃO DESKTOP (Usando o dicionário) */}
+          {/* CENTRO: NAVEGAÇÃO DESKTOP (Agora usando traduções) */}
           <nav className="hidden md:flex items-center gap-8">
             <Link href={`/${lang}`} className="hover:text-yellow-500 transition font-semibold text-sm uppercase">
               {dict?.header?.home || 'Início'}
@@ -65,22 +63,22 @@ export default function Header({ dict, lang }) {
           </nav>
           
           {/* LADO DIREITO: BANDEIRAS + CARRINHO */}
-          <div className="flex items-center gap-2 md:gap-4">
+          <div className="flex items-center gap-4">
             
-            {/* SELETOR DE IDIOMAS */}
-            <div className="flex items-center gap-2 border-r pr-4 border-gray-200">
-              <Link href={redirectedPathName('pt')} title="Português">
+            {/* NOVO: SELETOR DE IDIOMAS (Bandeiras) */}
+            <div className="flex items-center gap-3 border-r pr-4 border-gray-200">
+              <Link href={redirectedPathName('pt')} className="hover:scale-110 transition">
                 <img 
                   src="https://flagcdn.com/w40/br.png" 
-                  alt="BR" 
-                  className={`w-6 h-4 transition ${lang === 'pt' ? 'ring-2 ring-yellow-400 opacity-100' : 'opacity-40 hover:opacity-100'}`}
+                  alt="Português" 
+                  className={`w-6 h-4 object-cover rounded-sm ${lang === 'pt' ? 'ring-2 ring-yellow-400 opacity-100' : 'opacity-40'}`} 
                 />
               </Link>
-              <Link href={redirectedPathName('en')} title="English">
+              <Link href={redirectedPathName('en')} className="hover:scale-110 transition">
                 <img 
                   src="https://flagcdn.com/w40/gb.png" 
-                  alt="EN" 
-                  className={`w-6 h-4 transition ${lang === 'en' ? 'ring-2 ring-yellow-400 opacity-100' : 'opacity-40 hover:opacity-100'}`}
+                  alt="English" 
+                  className={`w-6 h-4 object-cover rounded-sm ${lang === 'en' ? 'ring-2 ring-yellow-400 opacity-100' : 'opacity-40'}`} 
                 />
               </Link>
             </div>
@@ -100,7 +98,6 @@ export default function Header({ dict, lang }) {
             <button 
               className="md:hidden p-2 text-green-700 hover:bg-gray-100 rounded transition"
               onClick={() => setMobileMenuOpen(true)}
-              aria-label="Menu"
             >
               <Menu className="w-6 h-6" />
             </button>
@@ -108,12 +105,7 @@ export default function Header({ dict, lang }) {
         </div>
       </div>
       
-      <MobileMenu 
-        isOpen={mobileMenuOpen} 
-        onClose={() => setMobileMenuOpen(false)} 
-        dict={dict} 
-        lang={lang} 
-      />
+      <MobileMenu isOpen={mobileMenuOpen} onClose={() => setMobileMenuOpen(false)} dict={dict} lang={lang} />
     </header>
   );
 }
