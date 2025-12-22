@@ -23,7 +23,7 @@ export default function CheckoutClient() {
   useEffect(() => { setOrderNumber(Math.random().toString(36).substr(2, 9).toUpperCase()); }, []);
 
   const subtotal = getCartTotal();
-  const handlingFee = 1.99;
+  const handlingFee = 0.00;
   const deliveryInfo = useMemo(() => {
     const pc = formData.postcode.toUpperCase().trim();
     if (pc.length < 2) return { cost: 5.99, valid: true };
