@@ -7,7 +7,6 @@ import { useCart } from '../_context/CartContext';
 
 export default function Header({ lang }) {
   const { cart } = useCart() || { cart: [] };
-  const cartCount = cart?.length || 0;
   const currentLang = lang || 'pt';
 
   return (
@@ -18,27 +17,21 @@ export default function Header({ lang }) {
         </Link>
 
         <div className="flex items-center gap-4">
-          {/* BANDEIRAS DIRETAS */}
-          <div className="flex items-center gap-2 bg-gray-50 p-1.5 rounded-full border border-gray-200">
-            <Link 
-              href="/pt" 
-              className={`p-1 rounded-full transition ${currentLang === 'pt' ? 'bg-white shadow-sm ring-1 ring-black/5' : 'opacity-40 hover:opacity-100'}`}
-            >
-              <img src="https://flagcdn.com/w40/br.png" className="w-5 h-5 object-cover rounded-full" alt="BR" />
+          {/* BANDEIRAS */}
+          <div className="flex items-center gap-2 bg-gray-100 p-1 rounded-full border">
+            <Link href="/pt" className={`p-1 rounded-full ${currentLang === 'pt' ? 'bg-white shadow-sm' : 'opacity-40'}`}>
+              <img src="https://flagcdn.com/w40/br.png" className="w-5 h-5 rounded-full object-cover" alt="PT" />
             </Link>
-            <Link 
-              href="/en" 
-              className={`p-1 rounded-full transition ${currentLang === 'en' ? 'bg-white shadow-sm ring-1 ring-black/5' : 'opacity-40 hover:opacity-100'}`}
-            >
-              <img src="https://flagcdn.com/w40/gb.png" className="w-5 h-5 object-cover rounded-full" alt="EN" />
+            <Link href="/en" className={`p-1 rounded-full ${currentLang === 'en' ? 'bg-white shadow-sm' : 'opacity-40'}`}>
+              <img src="https://flagcdn.com/w40/gb.png" className="w-5 h-5 rounded-full object-cover" alt="EN" />
             </Link>
           </div>
 
-          <Link href={`/${currentLang}/carrinho`} className="relative p-2 text-gray-600">
-            <ShoppingCart className="w-6 h-6" />
-            {cartCount > 0 && (
-              <span className="absolute -top-1 -right-1 bg-red-500 text-white text-[10px] font-bold w-5 h-5 flex items-center justify-center rounded-full">
-                {cartCount}
+          <Link href={`/${currentLang}/carrinho`} className="relative p-2">
+            <ShoppingCart className="w-6 h-6 text-gray-600" />
+            {cart?.length > 0 && (
+              <span className="absolute -top-1 -right-1 bg-red-500 text-white text-[10px] w-5 h-5 flex items-center justify-center rounded-full">
+                {cart.length}
               </span>
             )}
           </Link>
