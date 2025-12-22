@@ -1,4 +1,5 @@
 import './globals.css'
+// Ajuste de caminhos: subimos dois níveis (../../) para sair de [lang] e app e chegar em src
 import { CartProvider } from '../../context/CartContext'
 import Header from '../../components/Header'
 import Footer from '../../components/Footer'
@@ -17,10 +18,10 @@ export const metadata = {
 }
 
 export default async function RootLayout({ children, params }) {
-  // 1. No Next.js 15, params é uma Promise e deve ser aguardada
+  // No Next.js 15, params é assíncrono
   const { lang } = await params;
 
-  // 2. Carregamos o dicionário para passar aos componentes que precisam de tradução
+  // Carregamos o dicionário para traduzir o site
   const dict = await getDictionary(lang);
 
   return (
@@ -30,7 +31,7 @@ export default async function RootLayout({ children, params }) {
       </head>
       <body>
         <CartProvider>
-          {/* 3. Passamos o dicionário e o idioma para o Header e Footer */}
+          {/* Passamos dict e lang para o Header poder exibir os menus traduzidos e as bandeiras */}
           <Header dict={dict} lang={lang} />
           <main>
             {children}
