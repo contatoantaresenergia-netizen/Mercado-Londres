@@ -1,0 +1,10 @@
+{
+  "header": {
+    "cart": "Carrinho",
+    "contact": "Contato",
+    "about": "Sobre"
+  },
+  "home": {
+    "welcome": "O melhor mercado brasileiro em Londres"
+  }
+}
