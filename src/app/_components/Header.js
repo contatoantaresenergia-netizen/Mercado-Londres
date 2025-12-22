@@ -21,15 +21,15 @@ export default function Header({ dict, lang }) {
         <div className="flex items-center gap-4">
           {/* SELETOR DE IDIOMAS (BANDEIRAS) */}
           <div className="flex items-center gap-2 bg-gray-100 p-1 rounded-full border">
-            <Link href="/pt" title="Português" className={`p-1 rounded-full transition ${lang === 'pt' ? 'bg-white shadow-sm' : 'opacity-40'}`}>
+            <Link href="/pt" title="Português" className={`p-1 rounded-full transition ${lang === 'pt' ? 'bg-white shadow-sm' : 'opacity-40 hover:opacity-100'}`}>
               <img src="https://flagcdn.com/w40/br.png" className="w-5 h-5 rounded-full object-cover" alt="PT" />
             </Link>
-            <Link href="/en" title="English" className={`p-1 rounded-full transition ${lang === 'en' ? 'bg-white shadow-sm' : 'opacity-40'}`}>
+            <Link href="/en" title="English" className={`p-1 rounded-full transition ${lang === 'en' ? 'bg-white shadow-sm' : 'opacity-40 hover:opacity-100'}`}>
               <img src="https://flagcdn.com/w40/gb.png" className="w-5 h-5 rounded-full object-cover" alt="EN" />
             </Link>
           </div>
 
-          <Link href={`/${lang}/carrinho`} className="relative p-2 text-gray-600 hover:text-green-700">
+          <Link href={`/${lang}/carrinho`} className="relative p-2 text-gray-600">
             <ShoppingCart className="w-6 h-6" />
             {cartCount > 0 && (
               <span className="absolute -top-1 -right-1 bg-red-500 text-white text-[10px] font-bold w-5 h-5 flex items-center justify-center rounded-full">
