@@ -1,9 +1,10 @@
 'use client'
+
 import React from 'react';
 import Link from 'next/link';
 import { X } from 'lucide-react';
 
-export default function MobileMenu({ isOpen, onClose }) {
+export default function MobileMenu({ isOpen, onClose, dict, lang }) {
   if (!isOpen) return null;
   
   return (
@@ -28,42 +29,42 @@ export default function MobileMenu({ isOpen, onClose }) {
           </button>
         </div>
         
-        {/* Links do Menu */}
+        {/* Links do Menu - Agora com suporte a Idiomas */}
         <nav className="flex flex-col p-4">
           <Link 
-            href="/" 
-            className="py-3 px-4 text-gray-700 hover:bg-green-50 hover:text-green-700 rounded transition"
+            href={`/${lang}`} 
+            className="py-3 px-4 text-gray-700 hover:bg-green-50 hover:text-green-700 rounded transition font-medium"
             onClick={onClose}
           >
-            🏠 Início
+            🏠 {dict?.header?.home || 'Início'}
           </Link>
           <Link 
-            href="/produtos" 
-            className="py-3 px-4 text-gray-700 hover:bg-green-50 hover:text-green-700 rounded transition"
+            href={`/${lang}/produtos`} 
+            className="py-3 px-4 text-gray-700 hover:bg-green-50 hover:text-green-700 rounded transition font-medium"
             onClick={onClose}
           >
-            🛍️ Produtos
+            🛍️ {dict?.header?.products || 'Produtos'}
           </Link>
           <Link 
-            href="/sobre" 
-            className="py-3 px-4 text-gray-700 hover:bg-green-50 hover:text-green-700 rounded transition"
+            href={`/${lang}/sobre`} 
+            className="py-3 px-4 text-gray-700 hover:bg-green-50 hover:text-green-700 rounded transition font-medium"
             onClick={onClose}
           >
-            ℹ️ Sobre
+            ℹ️ {dict?.header?.about || 'Sobre'}
           </Link>
           <Link 
-            href="/contato" 
-            className="py-3 px-4 text-gray-700 hover:bg-green-50 hover:text-green-700 rounded transition"
+            href={`/${lang}/contato`} 
+            className="py-3 px-4 text-gray-700 hover:bg-green-50 hover:text-green-700 rounded transition font-medium"
             onClick={onClose}
           >
-            📧 Contato
+            📧 {dict?.header?.contact || 'Contato'}
           </Link>
           <Link 
-            href="/carrinho" 
-            className="py-3 px-4 text-gray-700 hover:bg-green-50 hover:text-green-700 rounded transition border-t border-gray-200 mt-2"
+            href={`/${lang}/carrinho`} 
+            className="py-3 px-4 text-gray-700 hover:bg-green-50 hover:text-green-700 rounded transition border-t border-gray-200 mt-2 font-medium"
             onClick={onClose}
           >
-            🛒 Carrinho
+            🛒 {dict?.cart?.title || 'Carrinho'}
           </Link>
         </nav>
       </div>
