@@ -96,8 +96,8 @@ export default function ContatoPage() {
                       Endereço
                     </h3>
                     <p className="text-gray-600">
-                      123 Brazilian Street<br />
-                      London, SW1A 1AA<br />
+                      244 Horton Road<br />
+                      London, SL3 9HN<br />
                       United Kingdom
                     </p>
                   </div>
