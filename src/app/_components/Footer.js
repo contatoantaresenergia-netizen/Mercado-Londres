@@ -47,7 +47,7 @@ export default function Footer({ dict, lang }) {
             <ul className="space-y-3 text-sm text-gray-400">
               <li className="flex items-center gap-2">
                 <Phone className="w-4 h-4 text-green-500" />
-                +44 7459 413442 
+                +44 78602 80496
               </li>
               <li className="flex items-center gap-2">
                 <Mail className="w-4 h-4 text-green-500" />
