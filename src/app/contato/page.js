@@ -65,7 +65,7 @@ export default function ContatoPage() {
                     <h3 className="font-bold text-lg text-gray-800 mb-1">
                       Telefone
                     </h3>
-                    <p className="text-gray-600">+44 20 1234 5678</p>
+                    <p className="text-gray-600">+44 78 60280496</p>
                     <p className="text-sm text-gray-500 mt-1">
                       WhatsApp disponível
                     </p>
