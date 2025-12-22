@@ -1,10 +1,51 @@
 {
   "header": {
-    "cart": "Cart",
+    "home": "Home",
+    "products": "Products",
+    "about": "About Us",
     "contact": "Contact",
-    "about": "About Us"
+    "cart": "Cart"
   },
   "home": {
-    "welcome": "The best Brazilian market in London"
+    "welcome": "The best Brazilian market in London",
+    "hero": {
+      "title": "CHRISTMAS OFFERS 🎁",
+      "subtitle": "Up to 30% OFF on selected products",
+      "cta": "Shop Now"
+    },
+    "featuredTitle": "Featured Products",
+    "categoriesTitle": "Our Categories"
+  },
+  "footer": {
+    "rights": "All rights reserved",
+    "about": "About",
+    "products": "Products",
+    "contact": "Contact"
+  },
+  "products": {
+    "title": "All Products",
+    "addToCart": "Add to Cart",
+    "viewDetails": "View Details",
+    "price": "Price",
+    "loading": "Loading products..."
+  },
+  "cart": {
+    "title": "Shopping Cart",
+    "empty": "Your cart is empty",
+    "total": "Total",
+    "checkout": "Checkout",
+    "remove": "Remove",
+    "quantity": "Quantity",
+    "continueShopping": "Continue Shopping"
+  },
+  "about": {
+    "title": "About Us",
+    "description": "We are the best Brazilian market in London"
+  },
+  "contact": {
+    "title": "Contact",
+    "phone": "Phone",
+    "email": "Email",
+    "address": "Address"
   }
 }
