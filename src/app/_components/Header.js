@@ -5,7 +5,7 @@ import { ShoppingCart } from 'lucide-react';
 import { useCart } from '../_context/CartContext';
 import { usePathname } from 'next/navigation';
 
-export default function Header({ lang }) {
+export default function Header({ lang, dict }) {
   const { cart } = useCart() || { cart: [] };
   const currentLang = lang || 'pt';
   const pathname = usePathname();
@@ -17,11 +17,26 @@ export default function Header({ lang }) {
     <header className="sticky top-0 z-50 bg-white shadow-sm border-b h-20">
       <div className="container mx-auto px-4 h-full flex items-center justify-between">
         <Link 
-          href={`/${currentLang}`} 
+          href={`/${currentLang}`}
           className="font-black text-xl text-green-700 uppercase"
         >
           PRIME BRASIL <span className="text-yellow-500">MARKET</span>
         </Link>
+        
+        <nav className="hidden md:flex items-center gap-6">
+          <Link href={`/${currentLang}`} className="hover:text-green-700 transition-colors">
+            {dict?.header?.home || 'INÍCIO'}
+          </Link>
+          <Link href={`/${currentLang}/produtos`} className="hover:text-green-700 transition-colors">
+            {dict?.header?.products || 'PRODUTOS'}
+          </Link>
+          <Link href={`/${currentLang}/sobre`} className="hover:text-green-700 transition-colors">
+            {dict?.header?.about || 'SOBRE'}
+          </Link>
+          <Link href={`/${currentLang}/contato`} className="hover:text-green-700 transition-colors">
+            {dict?.header?.contact || 'CONTATO'}
+          </Link>
+        </nav>
         
         <div className="flex items-center gap-4">
           {/* BANDEIRAS */}
@@ -52,7 +67,7 @@ export default function Header({ lang }) {
           
           {/* CARRINHO */}
           <Link 
-            href={`/${currentLang}/carrinho`} 
+            href={`/${currentLang}/carrinho`}
             className="relative p-2"
           >
             <ShoppingCart className="w-6 h-6 text-gray-600" />
