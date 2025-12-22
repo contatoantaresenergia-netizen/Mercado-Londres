@@ -10,14 +10,15 @@ export async function generateStaticParams() {
 }
 
 export default async function RootLayout({ children, params }) {
-  const lang = params.lang || 'pt';
+  // Await params primeiro
+  const resolvedParams = await params;
+  const lang = resolvedParams.lang || 'pt';
   const dict = await getDictionary(lang);
 
   return (
     <html lang={lang}>
       <body className="antialiased">
         <CartProvider>
-          {/* Passamos o dicionário e o idioma para o Header */}
           <Header dict={dict} lang={lang} />
           <main>{children}</main>
           <Footer dict={dict} lang={lang} />
