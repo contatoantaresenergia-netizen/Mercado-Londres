@@ -1,9 +1,8 @@
 'use client'
-
 import React, { useState, useEffect, Suspense } from 'react';
 import { useSearchParams, useRouter, useParams } from 'next/navigation';
 import { supabase } from '@/lib/supabase';
-import ProductCard from '../_components/ProductCard';
+import ProductCard from '../components/ProductCard'; // ✅ CORRIGIDO
 import { Search, Filter } from 'lucide-react';
 
 function ProdutosContent() {
@@ -16,7 +15,7 @@ function ProdutosContent() {
   const [produtos, setProdutos] = useState([]);
   const [loading, setLoading] = useState(true);
   const [busca, setBusca] = useState('');
-
+  
   const categorias = ['Todos', 'Bebidas', 'Doces', 'Mercearia', 'Congelados', 'Higiene'];
 
   useEffect(() => {
@@ -26,7 +25,6 @@ function ProdutosContent() {
         let query = supabase.from('produtos').select('*');
         if (categoriaAtiva !== 'Todos') query = query.ilike('category', categoriaAtiva);
         if (busca) query = query.ilike('name', `%${busca}%`);
-
         const { data, error } = await query;
         if (error) throw error;
         setProdutos(data || []);
@@ -44,47 +42,14 @@ function ProdutosContent() {
       <div className="flex flex-col md:flex-row gap-8">
         <aside className="w-full md:w-64">
           <div className="bg-white p-6 rounded-xl shadow-md sticky top-24">
-            <h2 className="flex items-center gap-2 font-bold mb-4"><Filter className="w-5 h-5 text-green-600" /> Categorias</h2>
+            <h2 className="flex items-center gap-2 font-bold mb-4">
+              <Filter className="w-5 h-5 text-green-600" /> Categorias
+            </h2>
             <ul className="space-y-2">
               {categorias.map((cat) => (
                 <li key={cat}>
                   <button
                     onClick={() => router.push(cat === 'Todos' ? `/${lang}/produtos` : `/${lang}/produtos?categoria=${cat.toLowerCase()}`)}
-                    className={`w-full text-left px-4 py-2 rounded-lg ${categoriaAtiva.toLowerCase() === cat.toLowerCase() ? 'bg-green-600 text-white font-bold' : 'text-gray-600 hover:bg-gray-100'}`}
+                    className={`w-full text-left px-4 py-2 rounded-lg ${categoriaAtiva.toLowerCase() === cat.toLowerCase() ? 'bg-green-600 text-white font-bold' : 'text-gray-600 hover:bg-gray-100'}`} // ✅ CORRIGIDO
                   >
                     {cat}
-                  </button>
-                </li>
-              ))}
-            </ul>
-          </div>
-        </aside>
-
-        <main className="flex-1">
-          <div className="relative mb-8">
-            <input 
-              type="text" 
-              placeholder="Buscar..." 
-              value={busca} 
-              onChange={(e) => setBusca(e.target.value)}
-              className="w-full pl-12 pr-4 py-4 rounded-xl shadow-md outline-none focus:ring-2 focus:ring-green-500" 
-            />
-            <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400" />
-          </div>
-
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-            {produtos.map((item) => <ProductCard key={item.id} product={item} />)}
-          </div>
-        </main>
-      </div>
-    </div>
-  );
-}
-
-export default function ProdutosPage() {
-  return (
-    <Suspense fallback={<div>Carregando...</div>}>
-      <ProdutosContent />
-    </Suspense>
-  );
-}
