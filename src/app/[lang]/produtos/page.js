@@ -56,7 +56,7 @@ function ProdutosContent() {
   }, [categoriaAtiva, busca]);
 
   return (
-    <div className="min-h-screen bg-white">
+    <div className="min-h-screen bg-gray-50">
       <div className="container mx-auto px-4 py-8">
         <div className="flex flex-col lg:flex-row gap-8">
           
@@ -159,7 +159,7 @@ function ProdutosContent() {
 export default function ProdutosPage() {
   return (
     <Suspense fallback={
-      <div className="min-h-screen flex items-center justify-center bg-white">
+      <div className="min-h-screen flex items-center justify-center bg-gray-50">
         <div className="animate-spin rounded-full h-16 w-16 border-b-4 border-green-600"></div>
       </div>
     }>
