@@ -12,7 +12,7 @@ export default function Header({ lang, dict }) {
   
   // Remove o idioma atual do pathname para reutilizar na troca de idioma
   const pathnameWithoutLang = pathname.replace(`/${currentLang}`, '') || '/';
-
+  
   return (
     <header className="sticky top-0 z-50 bg-white shadow-sm border-b h-20">
       <div className="container mx-auto px-4 h-full flex items-center justify-between">
