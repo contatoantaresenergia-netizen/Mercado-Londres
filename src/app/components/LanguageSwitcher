@@ -1,25 +1,6 @@
 'use client'
 import { useRouter, usePathname } from 'next/navigation'
 
-const BrazilFlag = () => (
-  <svg width="24" height="18" viewBox="0 0 28 20" fill="none" xmlns="http://www.w3.org/2000/svg">
-    <rect width="28" height="20" fill="#009B3A"/>
-    <path d="M14 2L26 10L14 18L2 10L14 2Z" fill="#FEDF00"/>
-    <circle cx="14" cy="10" r="4" fill="#002776"/>
-    <path d="M10 10Q14 8 18 10" stroke="white" strokeWidth="0.5" fill="none"/>
-  </svg>
-)
-
-const UKFlag = () => (
-  <svg width="24" height="18" viewBox="0 0 28 20" fill="none" xmlns="http://www.w3.org/2000/svg">
-    <rect width="28" height="20" fill="#012169"/>
-    <path d="M0 0L28 20M28 0L0 20" stroke="white" strokeWidth="4"/>
-    <path d="M0 0L28 20M28 0L0 20" stroke="#C8102E" strokeWidth="2.5"/>
-    <path d="M14 0V20M0 10H28" stroke="white" strokeWidth="6"/>
-    <path d="M14 0V20M0 10H28" stroke="#C8102E" strokeWidth="4"/>
-  </svg>
-)
-
 export default function LanguageSwitcher() {
   const router = useRouter()
   const pathname = usePathname()
@@ -30,6 +11,7 @@ export default function LanguageSwitcher() {
     router.push(segments.join('/'))
   }
   
+  // Detecta o idioma atual do pathname
   const currentLang = pathname.split('/')[1] || 'pt'
   
   return (
@@ -37,27 +19,35 @@ export default function LanguageSwitcher() {
       <button 
         onClick={() => changeLanguage('pt')} 
         className={`
-          hover:scale-110 hover:brightness-110 transition-all duration-200 
-          p-2 rounded-md
-          ${currentLang === 'pt' ? 'ring-2 ring-green-600 bg-green-50' : 'hover:bg-gray-100'}
+          relative flex items-center justify-center
+          w-10 h-10 rounded-lg
+          hover:scale-110 transition-all duration-200
+          ${currentLang === 'pt' 
+            ? 'ring-2 ring-yellow-400 bg-green-50 shadow-md' 
+            : 'hover:bg-gray-100'
+          }
         `}
         title="Português"
         aria-label="Mudar para Português"
       >
-        <BrazilFlag />
+        <span className="text-3xl leading-none">🇧🇷</span>
       </button>
       
       <button 
         onClick={() => changeLanguage('en')} 
         className={`
-          hover:scale-110 hover:brightness-110 transition-all duration-200 
-          p-2 rounded-md
-          ${currentLang === 'en' ? 'ring-2 ring-green-600 bg-green-50' : 'hover:bg-gray-100'}
+          relative flex items-center justify-center
+          w-10 h-10 rounded-lg
+          hover:scale-110 transition-all duration-200
+          ${currentLang === 'en' 
+            ? 'ring-2 ring-yellow-400 bg-green-50 shadow-md' 
+            : 'hover:bg-gray-100'
+          }
         `}
         title="English"
         aria-label="Switch to English"
       >
-        <UKFlag />
+        <span className="text-3xl leading-none">🇬🇧</span>
       </button>
     </div>
   )
