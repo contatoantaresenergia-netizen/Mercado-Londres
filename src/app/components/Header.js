@@ -13,15 +13,23 @@ export default function Header({ lang, dict }) {
   // Remove o idioma atual do pathname
   const pathnameWithoutLang = pathname.replace(`/${currentLang}`, '') || '/';
   
+  const logoSupabase = "https://vpqevrxwiglfpyrwxmne.supabase.co/storage/v1/object/public/images/logo.png/logomarca.png";
+  
   return (
     <header className="sticky top-0 z-50 bg-white shadow-sm border-b h-20">
       <div className="container mx-auto px-4 h-full flex items-center justify-between">
         {/* LOGO */}
         <Link 
           href={`/${currentLang}`}
-          className="font-black text-xl text-green-700 uppercase"
+          className="flex items-center gap-2 hover:opacity-90 transition"
         >
-          PRIME BRASIL <span className="text-yellow-500">MARKET</span>
+          <div className="h-14 w-14 flex-shrink-0">
+            <img src={logoSupabase} alt="Logo" className="h-full w-full object-contain" />
+          </div>
+          <div className="flex flex-col leading-tight hidden sm:flex">
+            <span className="text-green-700 font-bold text-lg uppercase">Prime Brasil</span>
+            <span className="text-yellow-500 font-semibold text-[10px] tracking-widest uppercase">Market</span>
+          </div>
         </Link>
         
         {/* MENU DESKTOP */}
