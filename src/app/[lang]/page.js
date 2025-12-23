@@ -2,7 +2,7 @@
 import React, { useState, useEffect } from 'react';
 import { useRouter, useParams } from 'next/navigation';
 import { ArrowRight } from 'lucide-react';
-import ProductCard from '../components/ProductCard'; // ✅ CORRIGIDO
+import ProductCard from '../../components/ProductCard';
 import { supabase } from '../../lib/supabase';
 import { getDictionary } from '../../lib/get-dictionary';
 
@@ -13,7 +13,7 @@ export default function HomePage() {
   const [loading, setLoading] = useState(true);
   const [dict, setDict] = useState(null);
   const lang = params.lang || 'pt';
-
+  
   useEffect(() => {
     async function loadData() {
       try {
@@ -37,7 +37,7 @@ export default function HomePage() {
     
     loadData();
   }, [lang]);
-
+  
   if (!dict) {
     return (
       <div className="min-h-screen flex items-center justify-center">
@@ -45,7 +45,7 @@ export default function HomePage() {
       </div>
     );
   }
-
+  
   return (
     <div className="min-h-screen">
       <section className="relative h-[500px] flex items-center justify-center bg-green-700 text-white">
@@ -54,7 +54,7 @@ export default function HomePage() {
             {dict.home?.hero?.title || (lang === 'pt' ? 'BOLOS DE NATAL 🎄' : 'CHRISTMAS CAKES 🎄')}
           </h2>
           <button 
-            onClick={() => router.push(`/${lang}/produtos`)} // ✅ CORRIGIDO
+            onClick={() => router.push(`/${lang}/produtos`)}
             className="bg-yellow-400 text-green-900 font-bold px-8 py-4 rounded-lg flex items-center gap-2 mx-auto hover:bg-yellow-500 transition-colors"
           >
             {dict.home?.hero?.cta || (lang === 'pt' ? 'Comprar Agora' : 'Shop Now')} 
@@ -62,7 +62,7 @@ export default function HomePage() {
           </button>
         </div>
       </section>
-
+      
       <section className="py-16 text-center">
         <h2 className="text-4xl font-bold mb-8">
           {dict.home?.featuredTitle || (lang === 'pt' ? 'Produtos em Destaque' : 'Featured Products')}
