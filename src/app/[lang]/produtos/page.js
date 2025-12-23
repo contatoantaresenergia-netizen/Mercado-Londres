@@ -2,7 +2,7 @@
 import React, { useState, useEffect, Suspense } from 'react';
 import { useSearchParams, useRouter, useParams } from 'next/navigation';
 import { supabase } from '@/lib/supabase';
-import ProductCard from '../components/ProductCard';
+import ProductCard from '../../components/ProductCard';
 import { Search, Filter } from 'lucide-react';
 
 function ProdutosContent() {
