@@ -3,23 +3,13 @@ import React, { useState } from 'react';
 import { ShoppingCart, Check } from 'lucide-react';
 import { useCart } from '../context/CartContext';
 
-export default function ProductCard({ product, lang }) {
+export default function ProductCard({ product, lang = 'pt' }) {
   const context = useCart();
   const addToCart = context ? context.addToCart : null;
   const [added, setAdded] = useState(false);
   
-  const currentLang = lang || 'pt';
   const stock = product?.stock ?? 0;
   const price = Number(product?.price || 0);
-  
-  // Traduções
-  const t = {
-    inStock: currentLang === 'pt' ? 'em estoque' : 'in stock',
-    outOfStock: currentLang === 'pt' ? 'Esgotado' : 'Out of Stock',
-    addToCart: currentLang === 'pt' ? 'Adicionar ao Carrinho' : 'Add to Cart',
-    added: currentLang === 'pt' ? 'Adicionado!' : 'Added!',
-    product: currentLang === 'pt' ? 'Produto' : 'Product'
-  };
   
   const handleAddToCart = () => {
     if (stock > 0 && addToCart) {
@@ -28,33 +18,44 @@ export default function ProductCard({ product, lang }) {
       setTimeout(() => setAdded(false), 2000);
     }
   };
+
+  const texts = {
+    pt: {
+      inStock: 'em estoque',
+      outOfStock: 'Esgotado',
+      addToCart: 'Adicionar ao Carrinho',
+      added: 'Adicionado!'
+    },
+    en: {
+      inStock: 'in stock',
+      outOfStock: 'Out of Stock',
+      addToCart: 'Add to Cart',
+      added: 'Added!'
+    }
+  };
+
+  const t = texts[lang] || texts.pt;
   
   return (
     <div className="bg-white rounded-xl shadow-lg overflow-hidden hover:shadow-2xl transition-all duration-300 border flex flex-col h-full">
       {/* Imagem do Produto */}
-      <div className="relative h-48 bg-white flex items-center justify-center p-4">
+      <div className="relative h-48 bg-gray-50 flex items-center justify-center p-4">
         {product?.image_url ? (
           <img 
             src={product.image_url} 
-            alt={product.name || t.product} 
-            className="max-h-full max-w-full object-contain"
-            onError={(e) => {
-              e.target.src = 'https://via.placeholder.com/300x200?text=Sem+Imagem';
-            }}
+            alt={product.name} 
+            className="h-full w-full object-contain"
           />
         ) : (
-          <div className="text-gray-400 text-center">
-            <div className="text-4xl mb-2">📦</div>
-            <div className="text-sm">{t.product}</div>
-          </div>
+          <div className="text-gray-300 text-4xl">📦</div>
         )}
       </div>
       
-      {/* Informações do Produto */}
+      {/* Conteúdo do Card */}
       <div className="p-4 flex flex-col flex-grow">
         {/* Nome do Produto */}
-        <h3 className="font-bold text-gray-800 mb-3 line-clamp-2 min-h-[3rem]">
-          {product?.name || t.product}
+        <h3 className="font-bold text-gray-800 mb-3 line-clamp-2 min-h-[3rem] text-base">
+          {product?.name || 'Produto'}
         </h3>
         
         {/* Preço e Estoque */}
@@ -62,7 +63,7 @@ export default function ProductCard({ product, lang }) {
           <span className="text-2xl font-bold text-green-700">
             £{price.toFixed(2)}
           </span>
-          <span className={`text-xs px-3 py-1 rounded-full font-semibold whitespace-nowrap ${
+          <span className={`text-xs px-3 py-1 rounded-full font-medium ${
             stock > 0 
               ? 'bg-green-100 text-green-700' 
               : 'bg-red-100 text-red-700'
@@ -71,27 +72,29 @@ export default function ProductCard({ product, lang }) {
           </span>
         </div>
         
-        {/* Botão - sempre no final */}
+        {/* Botão Adicionar ao Carrinho */}
         <button
           onClick={handleAddToCart}
           disabled={stock === 0 || !addToCart || added}
-          className={`w-full py-3 rounded-lg font-semibold transition-all duration-200 flex items-center justify-center gap-2 mt-auto ${
+          className={`w-full py-3 px-4 rounded-lg font-semibold transition-all duration-200 flex items-center justify-center gap-2 text-sm mt-auto ${
             added 
               ? 'bg-green-500 text-white'
               : stock > 0 && addToCart
-              ? 'bg-green-600 hover:bg-green-700 text-white'
+              ? 'bg-green-600 hover:bg-green-700 text-white shadow-md hover:shadow-lg'
               : 'bg-gray-300 text-gray-500 cursor-not-allowed'
           }`}
         >
           {added ? (
             <>
-              <Check className="w-5 h-5" />
-              {t.added}
+              <Check className="w-5 h-5 flex-shrink-0" />
+              <span className="truncate">{t.added}</span>
             </>
           ) : (
             <>
-              <ShoppingCart className="w-5 h-5" />
-              {stock > 0 ? t.addToCart : t.outOfStock}
+              <ShoppingCart className="w-5 h-5 flex-shrink-0" />
+              <span className="truncate">
+                {stock > 0 ? t.addToCart : t.outOfStock}
+              </span>
             </>
           )}
         </button>
