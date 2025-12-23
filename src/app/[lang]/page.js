@@ -2,9 +2,9 @@
 import React, { useState, useEffect } from 'react';
 import { useRouter, useParams } from 'next/navigation';
 import { ArrowRight } from 'lucide-react';
-import ProductCard from '../../components/ProductCard';
-import { supabase } from '../../lib/supabase';
-import { getDictionary } from '../../lib/get-dictionary';
+import ProductCard from '../components/ProductCard';
+import { supabase } from '@/lib/supabase';
+import { getDictionary } from '@/lib/get-dictionary';
 
 export default function HomePage() {
   const router = useRouter();
