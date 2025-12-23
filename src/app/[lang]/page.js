@@ -1,6 +1,7 @@
 // ============================================
-// 1. HOMEPAGE (app/[lang]/page.js)
+// ARQUIVO 1: app/[lang]/page.js
 // ============================================
+
 'use client'
 import React, { useState, useEffect } from 'react';
 import { useRouter, useParams } from 'next/navigation';
@@ -41,7 +42,6 @@ export default function HomePage() {
     loadData();
   }, [lang]);
 
-  // Auto-slide
   useEffect(() => {
     const timer = setInterval(() => {
       setCurrentSlide((prev) => (prev + 1) % 3);
@@ -100,7 +100,6 @@ export default function HomePage() {
 
   return (
     <div className="min-h-screen bg-gray-50">
-      {/* Hero Section com Banner Rotativo */}
       <section className="relative h-[500px] overflow-hidden">
         {banners.map((banner, index) => (
           <div 
@@ -134,7 +133,6 @@ export default function HomePage() {
           </div>
         ))}
 
-        {/* Indicadores */}
         <div className="absolute bottom-8 left-1/2 transform -translate-x-1/2 flex gap-2 z-20">
           {banners.map((_, index) => (
             <button
@@ -148,7 +146,6 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* Categorias */}
       <section className="py-16 bg-gray-50">
         <div className="container mx-auto px-4">
           <div className="text-center mb-12">
@@ -185,7 +182,6 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* Produtos em Destaque */}
       <section className="py-16 bg-white">
         <div className="container mx-auto px-4">
           <h2 className="text-4xl font-bold mb-12 text-gray-800 text-center">
@@ -215,8 +211,10 @@ export default function HomePage() {
 
 
 // ============================================
-// 2. PÁGINA DE PRODUTOS (app/[lang]/produtos/page.js)
+// ARQUIVO 2: app/[lang]/produtos/page.js
+// COPIE ESTE CÓDIGO PARA UM ARQUIVO SEPARADO!
 // ============================================
+
 'use client'
 
 import React, { useState, useEffect, Suspense } from 'react';
@@ -277,7 +275,6 @@ function ProdutosContent() {
       <div className="container mx-auto px-4 py-8">
         <div className="flex flex-col lg:flex-row gap-8">
           
-          {/* SIDEBAR - Categorias */}
           <aside className="w-full lg:w-64 flex-shrink-0">
             <div className="bg-white p-6 rounded-lg shadow-md lg:sticky lg:top-4">
               <h2 className="flex items-center gap-2 font-bold text-xl mb-6 text-gray-800">
@@ -307,10 +304,8 @@ function ProdutosContent() {
             </div>
           </aside>
 
-          {/* MAIN CONTENT */}
           <main className="flex-1 min-w-0">
             
-            {/* Barra de Busca */}
             <div className="bg-white rounded-lg shadow-md p-4 mb-6">
               <div className="relative">
                 <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
@@ -324,7 +319,6 @@ function ProdutosContent() {
               </div>
             </div>
 
-            {/* Header */}
             <div className="mb-6">
               <h1 className="text-3xl font-bold text-gray-800 mb-2 capitalize">
                 {categoriaAtiva === 'todos' 
@@ -338,7 +332,6 @@ function ProdutosContent() {
               </p>
             </div>
 
-            {/* Grid de Produtos */}
             {loading ? (
               <div className="flex justify-center items-center py-20">
                 <div className="animate-spin rounded-full h-16 w-16 border-b-4 border-green-600"></div>
