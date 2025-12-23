@@ -1,142 +1,101 @@
 'use client'
-import React, { useState, useEffect, Suspense } from 'react';
-import { useSearchParams, useRouter, useParams } from 'next/navigation';
-import { supabase } from '@/lib/supabase';
-import ProductCard from '../../components/ProductCard';
-import { Search, Filter } from 'lucide-react';
+import React, { useState } from 'react';
+import { ShoppingCart, Check } from 'lucide-react';
+import { useCart } from '../context/CartContext';
 
-function ProdutosContent() {
-  const searchParams = useSearchParams();
-  const router = useRouter();
-  const params = useParams();
-  const lang = params.lang || 'pt';
+export default function ProductCard({ product, lang }) {
+  const context = useCart();
+  const addToCart = context ? context.addToCart : null;
+  const [added, setAdded] = useState(false);
   
-  const categoriaAtiva = searchParams.get('categoria') || 'Todos';
-  const [produtos, setProdutos] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [busca, setBusca] = useState('');
+  const currentLang = lang || 'pt';
+  const stock = product?.stock ?? 0;
+  const price = Number(product?.price || 0);
   
-  const categorias = [
-    { key: 'Todos', pt: 'Todos', en: 'All' },
-    { key: 'Bebidas', pt: 'Bebidas', en: 'Beverages' },
-    { key: 'Doces', pt: 'Doces', en: 'Sweets' },
-    { key: 'Mercearia', pt: 'Mercearia', en: 'Grocery' },
-    { key: 'Congelados', pt: 'Congelados', en: 'Frozen' },
-    { key: 'Higiene', pt: 'Higiene', en: 'Hygiene' }
-  ];
-
-  useEffect(() => {
-    async function carregar() {
-      try {
-        setLoading(true);
-        let query = supabase.from('produtos').select('*');
-        
-        if (categoriaAtiva !== 'Todos') {
-          query = query.ilike('category', categoriaAtiva);
-        }
-        
-        if (busca) {
-          query = query.ilike('name', `%${busca}%`);
-        }
-        
-        const { data, error } = await query;
-        
-        if (error) throw error;
-        
-        setProdutos(data || []);
-      } catch (err) {
-        console.error('Erro ao carregar produtos:', err);
-      } finally {
-        setLoading(false);
-      }
+  // Traduções
+  const t = {
+    inStock: currentLang === 'pt' ? 'em estoque' : 'in stock',
+    outOfStock: currentLang === 'pt' ? 'Esgotado' : 'Out of Stock',
+    addToCart: currentLang === 'pt' ? 'Adicionar ao Carrinho' : 'Add to Cart',
+    added: currentLang === 'pt' ? 'Adicionado!' : 'Added!',
+    product: currentLang === 'pt' ? 'Produto' : 'Product'
+  };
+  
+  const handleAddToCart = () => {
+    if (stock > 0 && addToCart) {
+      addToCart(product);
+      setAdded(true);
+      setTimeout(() => setAdded(false), 2000);
     }
-    
-    carregar();
-  }, [categoriaAtiva, busca]);
-
+  };
+  
   return (
-    <div className="container mx-auto px-4 py-8 min-h-screen">
-      <div className="flex flex-col md:flex-row gap-8">
-        {/* Sidebar de Categorias */}
-        <aside className="w-full md:w-64">
-          <div className="bg-white p-6 rounded-xl shadow-md sticky top-24">
-            <h2 className="flex items-center gap-2 font-bold mb-4">
-              <Filter className="w-5 h-5 text-green-600" /> 
-              {lang === 'pt' ? 'Categorias' : 'Categories'}
-            </h2>
-            <ul className="space-y-2">
-              {categorias.map((cat) => (
-                <li key={cat.key}>
-                  <button
-                    onClick={() => router.push(
-                      cat.key === 'Todos' 
-                        ? `/${lang}/produtos` 
-                        : `/${lang}/produtos?categoria=${cat.key.toLowerCase()}`
-                    )}
-                    className={`w-full text-left px-4 py-2 rounded-lg transition ${
-                      categoriaAtiva.toLowerCase() === cat.key.toLowerCase() 
-                        ? 'bg-green-600 text-white font-bold' 
-                        : 'text-gray-600 hover:bg-gray-100'
-                    }`}
-                  >
-                    {lang === 'pt' ? cat.pt : cat.en}
-                  </button>
-                </li>
-              ))}
-            </ul>
+    <div className="bg-white rounded-xl shadow-lg overflow-hidden hover:shadow-2xl transition-all duration-300 border flex flex-col h-full">
+      {/* Imagem do Produto */}
+      <div className="relative h-48 bg-gray-50 flex items-center justify-center p-4">
+        {product?.image_url ? (
+          <img 
+            src={product.image_url} 
+            alt={product.name || t.product} 
+            className="max-h-full max-w-full object-contain"
+            onError={(e) => {
+              e.target.src = 'https://via.placeholder.com/300x200?text=Sem+Imagem';
+            }}
+          />
+        ) : (
+          <div className="text-gray-400 text-center">
+            <div className="text-4xl mb-2">📦</div>
+            <div className="text-sm">{t.product}</div>
           </div>
-        </aside>
-
-        {/* Conteúdo Principal */}
-        <main className="flex-1">
-          {/* Barra de Busca */}
-          <div className="mb-6 relative">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 w-5 h-5" />
-            <input
-              type="text"
-              placeholder={lang === 'pt' ? 'Buscar produtos...' : 'Search products...'}
-              value={busca}
-              onChange={(e) => setBusca(e.target.value)}
-              className="w-full pl-10 pr-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500"
-            />
-          </div>
-
-          {/* Lista de Produtos */}
-          {loading ? (
-            <div className="flex justify-center items-center h-64">
-              <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-green-600"></div>
-            </div>
-          ) : produtos.length === 0 ? (
-            <div className="text-center py-12">
-              <p className="text-gray-500 text-lg">
-                {lang === 'pt' ? 'Nenhum produto encontrado' : 'No products found'}
-              </p>
-            </div>
+        )}
+      </div>
+      
+      {/* Informações do Produto */}
+      <div className="p-4 flex flex-col flex-grow">
+        {/* Nome do Produto */}
+        <h3 className="font-bold text-gray-800 mb-3 line-clamp-2 min-h-[3rem]">
+          {product?.name || t.product}
+        </h3>
+        
+        {/* Preço e Estoque */}
+        <div className="flex items-center justify-between mb-4">
+          <span className="text-2xl font-bold text-green-700">
+            £{price.toFixed(2)}
+          </span>
+          <span className={`text-xs px-3 py-1 rounded-full font-semibold whitespace-nowrap ${
+            stock > 0 
+              ? 'bg-green-100 text-green-700' 
+              : 'bg-red-100 text-red-700'
+          }`}>
+            {stock > 0 ? `${stock} ${t.inStock}` : t.outOfStock}
+          </span>
+        </div>
+        
+        {/* Botão - sempre no final */}
+        <button
+          onClick={handleAddToCart}
+          disabled={stock === 0 || !addToCart || added}
+          className={`w-full py-3 rounded-lg font-semibold transition-all duration-200 flex items-center justify-center gap-2 mt-auto ${
+            added 
+              ? 'bg-green-500 text-white'
+              : stock > 0 && addToCart
+              ? 'bg-green-600 hover:bg-green-700 text-white'
+              : 'bg-gray-300 text-gray-500 cursor-not-allowed'
+          }`}
+        >
+          {added ? (
+            <>
+              <Check className="w-5 h-5" />
+              {t.added}
+            </>
           ) : (
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-              {produtos.map((produto) => (
-                <ProductCard 
-                  key={produto.id} 
-                  product={produto}
-                  lang={lang} 
-                />
-              ))}
-            </div>
+            <>
+              <ShoppingCart className="w-5 h-5" />
+              {stock > 0 ? t.addToCart : t.outOfStock}
+            </>
           )}
-        </main>
+        </button>
       </div>
     </div>
-  );
-}
-
-export default function ProdutosPage() {
-  return (
-    <Suspense fallback={
-      <div className="flex justify-center items-center h-screen">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-green-600"></div>
-      </div>
-    }>
-      <ProdutosContent />
-    </Suspense>
   );
 }
