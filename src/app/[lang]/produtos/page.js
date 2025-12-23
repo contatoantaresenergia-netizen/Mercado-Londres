@@ -1,12 +1,12 @@
 'use client'
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, Suspense } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { Search } from 'lucide-react';
 import ProductCard from '@/app/components/ProductCard';
 import { supabase } from '@/lib/supabase';
 import { getDictionary } from '@/lib/get-dictionary';
 
-export default function ProdutosPage({ params }) {
+function ProdutosContent({ params }) {
   const router = useRouter();
   const searchParams = useSearchParams();
   const [products, setProducts] = useState([]);
@@ -190,5 +190,17 @@ export default function ProdutosPage({ params }) {
         </div>
       </div>
     </div>
+  );
+}
+
+export default function ProdutosPage({ params }) {
+  return (
+    <Suspense fallback={
+      <div className="min-h-screen flex items-center justify-center bg-gray-50">
+        <div className="animate-spin rounded-full h-16 w-16 border-b-4 border-green-600"></div>
+      </div>
+    }>
+      <ProdutosContent params={params} />
+    </Suspense>
   );
 }
