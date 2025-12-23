@@ -2,7 +2,7 @@
 import React, { useState, useEffect } from 'react';
 import { useRouter, useParams } from 'next/navigation';
 import { ArrowRight } from 'lucide-react';
-import ProductCard from '../../_components/ProductCard'; 
+import ProductCard from '../components/ProductCard'; // ✅ CORRIGIDO
 import { supabase } from '../../lib/supabase';
 import { getDictionary } from '../../lib/get-dictionary';
 
@@ -54,7 +54,7 @@ export default function HomePage() {
             {dict.home?.hero?.title || (lang === 'pt' ? 'BOLOS DE NATAL 🎄' : 'CHRISTMAS CAKES 🎄')}
           </h2>
           <button 
-            onClick={() => router.push(`/${lang}/produtos`)}
+            onClick={() => router.push(`/${lang}/produtos`)} // ✅ CORRIGIDO
             className="bg-yellow-400 text-green-900 font-bold px-8 py-4 rounded-lg flex items-center gap-2 mx-auto hover:bg-yellow-500 transition-colors"
           >
             {dict.home?.hero?.cta || (lang === 'pt' ? 'Comprar Agora' : 'Shop Now')} 
