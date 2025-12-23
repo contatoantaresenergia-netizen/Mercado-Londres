@@ -14,6 +14,31 @@ export default function HomePage() {
   const [dict, setDict] = useState(null);
   const [currentSlide, setCurrentSlide] = useState(0);
   const lang = params.lang || 'pt';
+
+  // Definir banners ANTES do useEffect
+  const banners = [
+    {
+      id: 1,
+      title: lang === 'pt' ? 'BOLOS DE NATAL 🎄' : 'CHRISTMAS CAKES 🎄',
+      subtitle: lang === 'pt' ? 'Tradição Portuguesa' : 'Portuguese Tradition',
+      image: 'https://images.unsplash.com/photo-1512568400610-62da28bc8a13?w=1200&h=500&fit=crop',
+      bgColor: 'from-green-700 to-green-600',
+    },
+    {
+      id: 2,
+      title: lang === 'pt' ? 'VINHOS PORTUGUESES 🍷' : 'PORTUGUESE WINES 🍷',
+      subtitle: lang === 'pt' ? 'Seleção Premium' : 'Premium Selection',
+      image: 'https://images.unsplash.com/photo-1506377247377-2a5b3b417ebb?w=1200&h=500&fit=crop',
+      bgColor: 'from-red-800 to-red-700',
+    },
+    {
+      id: 3,
+      title: lang === 'pt' ? 'QUEIJOS ARTESANAIS 🧀' : 'ARTISAN CHEESES 🧀',
+      subtitle: lang === 'pt' ? 'Sabor Autêntico' : 'Authentic Flavor',
+      image: 'https://images.unsplash.com/photo-1452195100486-9cc805987862?w=1200&h=500&fit=crop',
+      bgColor: 'from-yellow-600 to-yellow-500',
+    }
+  ];
   
   useEffect(() => {
     async function loadData() {
@@ -39,13 +64,13 @@ export default function HomePage() {
     loadData();
   }, [lang]);
 
-  // Auto-slide para o banner
+  // Auto-slide para o banner (agora banners está definido)
   useEffect(() => {
     const timer = setInterval(() => {
       setCurrentSlide((prev) => (prev + 1) % banners.length);
     }, 5000);
     return () => clearInterval(timer);
-  }, []);
+  }, [banners.length]);
   
   if (!dict) {
     return (
@@ -54,16 +79,6 @@ export default function HomePage() {
       </div>
     );
   }
-
-  const banners = [
-    {
-      id: 1,
-      title: lang === 'pt' ? 'BOLOS DE NATAL 🎄' : 'CHRISTMAS CAKES 🎄',
-      subtitle: lang === 'pt' ? 'Tradição Portuguesa' : 'Portuguese Tradition',
-      image: 'https://images.unsplash.com/photo-1512568400610-62da28bc8a13?w=1200&h=500&fit=crop',
-      bgColor: 'from-green-700 to-green-600',
-    },
-  ];
 
   const categories = [
     {
@@ -104,7 +119,7 @@ export default function HomePage() {
               className="absolute inset-0 bg-cover bg-center mix-blend-overlay" 
               style={{ backgroundImage: `url(${banner.image})` }}
             ></div>
-            <div className="relative container mx-auto px-4 h-full flex items-center justify-center text-center text-white">
+            <div className="relative container mx-auto px-4 h-full flex items-center justify-center text-center text-white z-10">
               <div>
                 <h2 className="text-5xl md:text-7xl font-black mb-4 drop-shadow-lg">
                   {banner.title}
@@ -123,6 +138,21 @@ export default function HomePage() {
             </div>
           </div>
         ))}
+
+        {/* Indicadores de Slide */}
+        <div className="absolute bottom-8 left-1/2 transform -translate-x-1/2 flex gap-2 z-20">
+          {banners.map((_, index) => (
+            <button
+              key={index}
+              onClick={() => setCurrentSlide(index)}
+              className={`w-3 h-3 rounded-full transition-all ${
+                index === currentSlide 
+                  ? 'bg-yellow-400 w-8' 
+                  : 'bg-white/50 hover:bg-white/80'
+              }`}
+            />
+          ))}
+        </div>
       </section>
 
       {/* Seção de Categorias */}
