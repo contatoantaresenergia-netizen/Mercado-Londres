@@ -1,51 +1,21 @@
 'use client'
 import React, { useState, useEffect } from 'react';
-import { useRouter } from 'next/navigation';
+import { useRouter, useParams } from 'next/navigation';
 import { ArrowRight } from 'lucide-react';
-import ProductCard from '@/app/components/ProductCard';
+import ProductCard from '../components/ProductCard';
 import { supabase } from '@/lib/supabase';
 import { getDictionary } from '@/lib/get-dictionary';
 
-export default function HomePage({ params }) {
+export default function HomePage() {
   const router = useRouter();
+  const params = useParams();
   const [featuredProducts, setFeaturedProducts] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [currentSlide, setCurrentSlide] = useState(0);
   const [dict, setDict] = useState(null);
-  const [lang, setLang] = useState('pt');
+  const [currentSlide, setCurrentSlide] = useState(0);
+  const lang = params.lang || 'pt';
 
-  useEffect(() => {
-    async function loadData() {
-      try {
-        const resolvedParams = await params;
-        const currentLang = resolvedParams.lang || 'pt';
-        setLang(currentLang);
-
-        const dictionary = await getDictionary(currentLang);
-        setDict(dictionary);
-
-        const { data, error } = await supabase.from('produtos').select('*').limit(8);
-        if (error) throw error;
-        if (data) setFeaturedProducts(data);
-      } catch (error) {
-        console.error('Erro:', error.message);
-      } finally {
-        setLoading(false);
-      }
-    }
-    loadData();
-  }, [params]);
-
-  // Auto-slide
-  useEffect(() => {
-    const timer = setInterval(() => {
-      setCurrentSlide((prev) => (prev + 1) % 3);
-    }, 5000);
-    return () => clearInterval(timer);
-  }, []);
-
-  if (!dict) return <div className="min-h-screen animate-pulse bg-gray-100" />;
-
+  // Definir banners ANTES do useEffect
   const banners = [
     {
       id: 1,
@@ -69,6 +39,46 @@ export default function HomePage({ params }) {
       bgColor: 'from-yellow-600 to-yellow-500',
     }
   ];
+  
+  useEffect(() => {
+    async function loadData() {
+      try {
+        const dictionary = await getDictionary(lang);
+        setDict(dictionary);
+        
+        const { data, error } = await supabase
+          .from('produtos')
+          .select('*')
+          .limit(8);
+          
+        if (error) throw error;
+        
+        setFeaturedProducts(data || []);
+      } catch (error) {
+        console.error('Erro:', error);
+      } finally {
+        setLoading(false);
+      }
+    }
+    
+    loadData();
+  }, [lang]);
+
+  // Auto-slide para o banner (agora banners está definido)
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setCurrentSlide((prev) => (prev + 1) % banners.length);
+    }, 5000);
+    return () => clearInterval(timer);
+  }, [banners.length]);
+  
+  if (!dict) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="text-lg">Carregando...</div>
+      </div>
+    );
+  }
 
   const categories = [
     {
@@ -92,7 +102,7 @@ export default function HomePage({ params }) {
       link: `/${lang}/produtos?categoria=bebidas`
     }
   ];
-
+  
   return (
     <div className="min-h-screen">
       {/* Hero Section com Banner Rotativo */}
@@ -109,7 +119,7 @@ export default function HomePage({ params }) {
               className="absolute inset-0 bg-cover bg-center mix-blend-overlay" 
               style={{ backgroundImage: `url(${banner.image})` }}
             ></div>
-            <div className="relative container mx-auto px-4 h-full flex items-center justify-center text-center text-white">
+            <div className="relative container mx-auto px-4 h-full flex items-center justify-center text-center text-white z-10">
               <div>
                 <h2 className="text-5xl md:text-7xl font-black mb-4 drop-shadow-lg">
                   {banner.title}
@@ -129,21 +139,23 @@ export default function HomePage({ params }) {
           </div>
         ))}
 
-        {/* Indicadores */}
+        {/* Indicadores de Slide */}
         <div className="absolute bottom-8 left-1/2 transform -translate-x-1/2 flex gap-2 z-20">
           {banners.map((_, index) => (
             <button
               key={index}
               onClick={() => setCurrentSlide(index)}
               className={`w-3 h-3 rounded-full transition-all ${
-                index === currentSlide ? 'bg-yellow-400 w-8' : 'bg-white/50 hover:bg-white/80'
+                index === currentSlide 
+                  ? 'bg-yellow-400 w-8' 
+                  : 'bg-white/50 hover:bg-white/80'
               }`}
             />
           ))}
         </div>
       </section>
 
-      {/* Categorias */}
+      {/* Seção de Categorias */}
       <section className="py-16 bg-gray-50">
         <div className="container mx-auto px-4">
           <div className="text-center mb-12">
@@ -179,12 +191,13 @@ export default function HomePage({ params }) {
           </div>
         </div>
       </section>
-
+      
       {/* Produtos em Destaque */}
       <section className="py-16 bg-white text-center">
         <h2 className="text-4xl font-bold mb-8 text-gray-800">
           {lang === 'pt' ? 'Produtos em Destaque' : 'Featured Products'}
         </h2>
+        
         {loading ? (
           <div className="flex justify-center py-10">
             <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-green-600"></div>
@@ -192,7 +205,7 @@ export default function HomePage({ params }) {
         ) : (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 container mx-auto px-4">
             {featuredProducts.map(product => (
-              <ProductCard key={product.id} product={product} />
+              <ProductCard key={product.id} product={product} lang={lang} />
             ))}
           </div>
         )}
