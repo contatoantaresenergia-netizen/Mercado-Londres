@@ -39,7 +39,7 @@ export default function ProductCard({ product, lang = 'pt' }) {
   return (
     <div className="bg-white rounded-xl shadow-lg overflow-hidden hover:shadow-2xl transition-all duration-300 border flex flex-col h-full">
       {/* Imagem do Produto */}
-      <div className="relative h-48 bg-gray-50 flex items-center justify-center p-4">
+      <div className="relative h-48 bg-white flex items-center justify-center p-4">
         {product?.image_url ? (
           <img 
             src={product.image_url} 
