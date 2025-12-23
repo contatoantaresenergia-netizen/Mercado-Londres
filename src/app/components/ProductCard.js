@@ -30,13 +30,14 @@ export default function ProductCard({ product, lang }) {
   };
   
   return (
-    <div className="bg-white rounded-xl shadow-lg overflow-hidden hover:shadow-2xl transition-all duration-300 border">
+    <div className="bg-white rounded-xl shadow-lg overflow-hidden hover:shadow-2xl transition-all duration-300 border flex flex-col h-full">
+      {/* Imagem do Produto */}
       <div className="relative h-48 bg-gray-50 flex items-center justify-center p-4">
         {product?.image_url ? (
           <img 
             src={product.image_url} 
             alt={product.name || t.product} 
-            className="h-full w-full object-contain"
+            className="max-h-full max-w-full object-contain"
             onError={(e) => {
               e.target.src = 'https://via.placeholder.com/300x200?text=Sem+Imagem';
             }}
@@ -49,16 +50,19 @@ export default function ProductCard({ product, lang }) {
         )}
       </div>
       
-      <div className="p-4">
-        <h3 className="font-bold text-gray-800 mb-2 line-clamp-2 h-10">
+      {/* Informações do Produto */}
+      <div className="p-4 flex flex-col flex-grow">
+        {/* Nome do Produto */}
+        <h3 className="font-bold text-gray-800 mb-3 line-clamp-2 min-h-[3rem]">
           {product?.name || t.product}
         </h3>
         
+        {/* Preço e Estoque */}
         <div className="flex items-center justify-between mb-4">
-          <span className="text-xl font-bold text-green-700">
+          <span className="text-2xl font-bold text-green-700">
             £{price.toFixed(2)}
           </span>
-          <span className={`text-[10px] px-2 py-1 rounded font-semibold ${
+          <span className={`text-xs px-3 py-1 rounded-full font-semibold whitespace-nowrap ${
             stock > 0 
               ? 'bg-green-100 text-green-700' 
               : 'bg-red-100 text-red-700'
@@ -67,10 +71,11 @@ export default function ProductCard({ product, lang }) {
           </span>
         </div>
         
+        {/* Botão - sempre no final */}
         <button
           onClick={handleAddToCart}
           disabled={stock === 0 || !addToCart || added}
-          className={`w-full py-3 rounded-lg font-semibold transition-all duration-200 flex items-center justify-center gap-2 ${
+          className={`w-full py-3 rounded-lg font-semibold transition-all duration-200 flex items-center justify-center gap-2 mt-auto ${
             added 
               ? 'bg-green-500 text-white'
               : stock > 0 && addToCart
