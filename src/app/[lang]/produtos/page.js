@@ -16,7 +16,14 @@ function ProdutosContent() {
   const [loading, setLoading] = useState(true);
   const [busca, setBusca] = useState('');
   
-  const categorias = ['Todos', 'Bebidas', 'Doces', 'Mercearia', 'Congelados', 'Higiene'];
+  const categorias = [
+    { key: 'Todos', pt: 'Todos', en: 'All' },
+    { key: 'Bebidas', pt: 'Bebidas', en: 'Beverages' },
+    { key: 'Doces', pt: 'Doces', en: 'Sweets' },
+    { key: 'Mercearia', pt: 'Mercearia', en: 'Grocery' },
+    { key: 'Congelados', pt: 'Congelados', en: 'Frozen' },
+    { key: 'Higiene', pt: 'Higiene', en: 'Hygiene' }
+  ];
 
   useEffect(() => {
     async function carregar() {
@@ -38,7 +45,7 @@ function ProdutosContent() {
         
         setProdutos(data || []);
       } catch (err) {
-        console.error(err);
+        console.error('Erro ao carregar produtos:', err);
       } finally {
         setLoading(false);
       }
@@ -54,16 +61,25 @@ function ProdutosContent() {
         <aside className="w-full md:w-64">
           <div className="bg-white p-6 rounded-xl shadow-md sticky top-24">
             <h2 className="flex items-center gap-2 font-bold mb-4">
-              <Filter className="w-5 h-5 text-green-600" /> Categorias
+              <Filter className="w-5 h-5 text-green-600" /> 
+              {lang === 'pt' ? 'Categorias' : 'Categories'}
             </h2>
             <ul className="space-y-2">
               {categorias.map((cat) => (
-                <li key={cat}>
+                <li key={cat.key}>
                   <button
-                    onClick={() => router.push(cat === 'Todos' ? `/${lang}/produtos` : `/${lang}/produtos?categoria=${cat.toLowerCase()}`)}
-                    className={`w-full text-left px-4 py-2 rounded-lg ${categoriaAtiva.toLowerCase() === cat.toLowerCase() ? 'bg-green-600 text-white font-bold' : 'text-gray-600 hover:bg-gray-100'}`}
+                    onClick={() => router.push(
+                      cat.key === 'Todos' 
+                        ? `/${lang}/produtos` 
+                        : `/${lang}/produtos?categoria=${cat.key.toLowerCase()}`
+                    )}
+                    className={`w-full text-left px-4 py-2 rounded-lg transition ${
+                      categoriaAtiva.toLowerCase() === cat.key.toLowerCase() 
+                        ? 'bg-green-600 text-white font-bold' 
+                        : 'text-gray-600 hover:bg-gray-100'
+                    }`}
                   >
-                    {cat}
+                    {lang === 'pt' ? cat.pt : cat.en}
                   </button>
                 </li>
               ))}
@@ -78,7 +94,7 @@ function ProdutosContent() {
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 w-5 h-5" />
             <input
               type="text"
-              placeholder="Buscar produtos..."
+              placeholder={lang === 'pt' ? 'Buscar produtos...' : 'Search products...'}
               value={busca}
               onChange={(e) => setBusca(e.target.value)}
               className="w-full pl-10 pr-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500"
@@ -92,12 +108,18 @@ function ProdutosContent() {
             </div>
           ) : produtos.length === 0 ? (
             <div className="text-center py-12">
-              <p className="text-gray-500 text-lg">Nenhum produto encontrado</p>
+              <p className="text-gray-500 text-lg">
+                {lang === 'pt' ? 'Nenhum produto encontrado' : 'No products found'}
+              </p>
             </div>
           ) : (
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
               {produtos.map((produto) => (
-                <ProductCard key={produto.id} produto={produto} lang={lang} />
+                <ProductCard 
+                  key={produto.id} 
+                  product={produto}
+                  lang={lang} 
+                />
               ))}
             </div>
           )}
