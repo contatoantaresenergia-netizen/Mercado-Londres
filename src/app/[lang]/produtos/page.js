@@ -1,120 +1,83 @@
 'use client'
-import React, { useState, useEffect, Suspense } from 'react';
-import { useSearchParams, useRouter, useParams } from 'next/navigation';
-import { supabase } from '@/lib/supabase';
-import ProductCard from '../../components/ProductCard';
-import { Search, Filter } from 'lucide-react';
+import React, { useState, useEffect } from 'react';
+import { useRouter, useParams } from 'next/navigation';
+import { ArrowRight } from 'lucide-react';
+import ProductCard from '../components/ProductCard';
+import { supabase } from '../../lib/supabase';
+import { getDictionary } from '../../lib/get-dictionary';
 
-function ProdutosContent() {
-  const searchParams = useSearchParams();
+export default function HomePage() {
   const router = useRouter();
   const params = useParams();
+  const [featuredProducts, setFeaturedProducts] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [dict, setDict] = useState(null);
   const lang = params.lang || 'pt';
   
-  const categoriaAtiva = searchParams.get('categoria') || 'Todos';
-  const [produtos, setProdutos] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [busca, setBusca] = useState('');
-  
-  const categorias = ['Todos', 'Bebidas', 'Doces', 'Mercearia', 'Congelados', 'Higiene'];
-
   useEffect(() => {
-    async function carregar() {
+    async function loadData() {
       try {
-        setLoading(true);
-        let query = supabase.from('produtos').select('*');
+        const dictionary = await getDictionary(lang);
+        setDict(dictionary);
         
-        if (categoriaAtiva !== 'Todos') {
-          query = query.ilike('category', categoriaAtiva);
-        }
-        
-        if (busca) {
-          query = query.ilike('name', `%${busca}%`);
-        }
-        
-        const { data, error } = await query;
-        
+        const { data, error } = await supabase
+          .from('produtos')
+          .select('*')
+          .limit(8);
+          
         if (error) throw error;
         
-        setProdutos(data || []);
-      } catch (err) {
-        console.error(err);
+        setFeaturedProducts(data || []);
+      } catch (error) {
+        console.error('Erro:', error);
       } finally {
         setLoading(false);
       }
     }
     
-    carregar();
-  }, [categoriaAtiva, busca]);
-
-  return (
-    <div className="container mx-auto px-4 py-8 min-h-screen">
-      <div className="flex flex-col md:flex-row gap-8">
-        {/* Sidebar de Categorias */}
-        <aside className="w-full md:w-64">
-          <div className="bg-white p-6 rounded-xl shadow-md sticky top-24">
-            <h2 className="flex items-center gap-2 font-bold mb-4">
-              <Filter className="w-5 h-5 text-green-600" /> Categorias
-            </h2>
-            <ul className="space-y-2">
-              {categorias.map((cat) => (
-                <li key={cat}>
-                  <button
-                    onClick={() => router.push(cat === 'Todos' ? `/${lang}/produtos` : `/${lang}/produtos?categoria=${cat.toLowerCase()}`)}
-                    className={`w-full text-left px-4 py-2 rounded-lg ${categoriaAtiva.toLowerCase() === cat.toLowerCase() ? 'bg-green-600 text-white font-bold' : 'text-gray-600 hover:bg-gray-100'}`}
-                  >
-                    {cat}
-                  </button>
-                </li>
-              ))}
-            </ul>
-          </div>
-        </aside>
-
-        {/* Conteúdo Principal */}
-        <main className="flex-1">
-          {/* Barra de Busca */}
-          <div className="mb-6 relative">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 w-5 h-5" />
-            <input
-              type="text"
-              placeholder="Buscar produtos..."
-              value={busca}
-              onChange={(e) => setBusca(e.target.value)}
-              className="w-full pl-10 pr-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500"
-            />
-          </div>
-
-          {/* Lista de Produtos */}
-          {loading ? (
-            <div className="flex justify-center items-center h-64">
-              <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-green-600"></div>
-            </div>
-          ) : produtos.length === 0 ? (
-            <div className="text-center py-12">
-              <p className="text-gray-500 text-lg">Nenhum produto encontrado</p>
-            </div>
-          ) : (
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-              {produtos.map((produto) => (
-                <ProductCard key={produto.id} produto={produto} lang={lang} />
-              ))}
-            </div>
-          )}
-        </main>
+    loadData();
+  }, [lang]);
+  
+  if (!dict) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="text-lg">Carregando...</div>
       </div>
+    );
+  }
+  
+  return (
+    <div className="min-h-screen">
+      <section className="relative h-[500px] flex items-center justify-center bg-green-700 text-white">
+        <div className="text-center">
+          <h2 className="text-5xl font-black mb-4">
+            {dict.home?.hero?.title || (lang === 'pt' ? 'BOLOS DE NATAL 🎄' : 'CHRISTMAS CAKES 🎄')}
+          </h2>
+          <button 
+            onClick={() => router.push(`/${lang}/produtos`)}
+            className="bg-yellow-400 text-green-900 font-bold px-8 py-4 rounded-lg flex items-center gap-2 mx-auto hover:bg-yellow-500 transition-colors"
+          >
+            {dict.home?.hero?.cta || (lang === 'pt' ? 'Comprar Agora' : 'Shop Now')} 
+            <ArrowRight />
+          </button>
+        </div>
+      </section>
+      
+      <section className="py-16 text-center">
+        <h2 className="text-4xl font-bold mb-8">
+          {dict.home?.featuredTitle || (lang === 'pt' ? 'Produtos em Destaque' : 'Featured Products')}
+        </h2>
+        
+        {loading ? (
+          <div className="text-lg">Carregando produtos...</div>
+        ) : (
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-6 container mx-auto px-4">
+            {featuredProducts.map(product => (
+              <ProductCard key={product.id} product={product} lang={lang} />
+            ))}
+          </div>
+        )}
+      </section>
     </div>
-  );
-}
-
-export default function ProdutosPage() {
-  return (
-    <Suspense fallback={
-      <div className="flex justify-center items-center h-screen">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-green-600"></div>
-      </div>
-    }>
-      <ProdutosContent />
-    </Suspense>
   );
 }
