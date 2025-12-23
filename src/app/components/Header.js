@@ -2,7 +2,7 @@
 import React from 'react';
 import Link from 'next/link';
 import { ShoppingCart } from 'lucide-react';
-import { useCart } from '../context/CartContext'; // ✅ CORRIGIDO
+import { useCart } from '../context/CartContext';
 import { usePathname } from 'next/navigation';
 
 export default function Header({ lang, dict }) {
@@ -11,29 +11,41 @@ export default function Header({ lang, dict }) {
   const pathname = usePathname();
   
   // Remove o idioma atual do pathname para reutilizar na troca de idioma
-  const pathnameWithoutLang = pathname.replace(`/${currentLang}`, '') || '/'; // ✅ CORRIGIDO
+  const pathnameWithoutLang = pathname.replace(`/${currentLang}`, '') || '/';
   
   return (
     <header className="sticky top-0 z-50 bg-white shadow-sm border-b h-20">
       <div className="container mx-auto px-4 h-full flex items-center justify-between">
         <Link 
-          href={`/${currentLang}`} // ✅ CORRIGIDO
+          href={`/${currentLang}`}
           className="font-black text-xl text-green-700 uppercase"
         >
           PRIME BRASIL <span className="text-yellow-500">MARKET</span>
         </Link>
         
         <nav className="hidden md:flex items-center gap-6">
-          <Link href={`/${currentLang}`} className="hover:text-green-700 transition-colors"> {/* ✅ CORRIGIDO */}
+          <Link 
+            href={`/${currentLang}`} 
+            className="hover:text-green-700 transition-colors"
+          >
             {dict?.header?.home || 'INÍCIO'}
           </Link>
-          <Link href={`/${currentLang}/produtos`} className="hover:text-green-700 transition-colors"> {/* ✅ CORRIGIDO */}
+          <Link 
+            href={`/${currentLang}/produtos`} 
+            className="hover:text-green-700 transition-colors"
+          >
             {dict?.header?.products || 'PRODUTOS'}
           </Link>
-          <Link href={`/${currentLang}/sobre`} className="hover:text-green-700 transition-colors"> {/* ✅ CORRIGIDO */}
+          <Link 
+            href={`/${currentLang}/sobre`} 
+            className="hover:text-green-700 transition-colors"
+          >
             {dict?.header?.about || 'SOBRE'}
           </Link>
-          <Link href={`/${currentLang}/contato`} className="hover:text-green-700 transition-colors"> {/* ✅ CORRIGIDO */}
+          <Link 
+            href={`/${currentLang}/contato`} 
+            className="hover:text-green-700 transition-colors"
+          >
             {dict?.header?.contact || 'CONTATO'}
           </Link>
         </nav>
@@ -42,8 +54,12 @@ export default function Header({ lang, dict }) {
           {/* BANDEIRAS */}
           <div className="flex items-center gap-2 bg-gray-100 p-1 rounded-full border">
             <Link 
-              href={`/pt${pathnameWithoutLang}`} // ✅ CORRIGIDO
-              className={`p-1 rounded-full transition-all ${currentLang === 'pt' ? 'bg-white shadow-sm' : 'opacity-40 hover:opacity-70'}`} // ✅ CORRIGIDO
+              href={`/pt${pathnameWithoutLang}`}
+              className={`p-1 rounded-full transition-all ${
+                currentLang === 'pt' 
+                  ? 'bg-white shadow-sm' 
+                  : 'opacity-40 hover:opacity-70'
+              }`}
               title="Português"
             >
               <img 
@@ -53,8 +69,12 @@ export default function Header({ lang, dict }) {
               />
             </Link>
             <Link 
-              href={`/en${pathnameWithoutLang}`} // ✅ CORRIGIDO
-              className={`p-1 rounded-full transition-all ${currentLang === 'en' ? 'bg-white shadow-sm' : 'opacity-40 hover:opacity-70'}`} // ✅ CORRIGIDO
+              href={`/en${pathnameWithoutLang}`}
+              className={`p-1 rounded-full transition-all ${
+                currentLang === 'en' 
+                  ? 'bg-white shadow-sm' 
+                  : 'opacity-40 hover:opacity-70'
+              }`}
               title="English"
             >
               <img 
@@ -67,7 +87,7 @@ export default function Header({ lang, dict }) {
           
           {/* CARRINHO */}
           <Link 
-            href={`/${currentLang}/carrinho`} // ✅ CORRIGIDO
+            href={`/${currentLang}/carrinho`}
             className="relative p-2"
           >
             <ShoppingCart className="w-6 h-6 text-gray-600" />
