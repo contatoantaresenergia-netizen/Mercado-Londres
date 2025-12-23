@@ -1,23 +1,24 @@
 'use client'
+
 import React, { useState, useEffect, Suspense } from 'react';
-import { useRouter, useSearchParams } from 'next/navigation';
-import { Search } from 'lucide-react';
-import ProductCard from '@/app/components/ProductCard';
+import { useSearchParams, useRouter, useParams } from 'next/navigation';
 import { supabase } from '@/lib/supabase';
-import { getDictionary } from '@/lib/get-dictionary';
+import ProductCard from '@/app/components/ProductCard';
+import { Search, Filter } from 'lucide-react';
 
-function ProdutosContent({ params }) {
-  const router = useRouter();
+function ProdutosContent() {
   const searchParams = useSearchParams();
-  const [products, setProducts] = useState([]);
-  const [filteredProducts, setFilteredProducts] = useState([]);
+  const router = useRouter();
+  const params = useParams();
+  const lang = params.lang || 'pt';
+  
+  const categoriaAtiva = searchParams.get('categoria') || 'todos';
+  
+  const [produtos, setProdutos] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [searchTerm, setSearchTerm] = useState('');
-  const [selectedCategory, setSelectedCategory] = useState('todos');
-  const [dict, setDict] = useState(null);
-  const [lang, setLang] = useState('pt');
+  const [busca, setBusca] = useState('');
 
-  const categories = [
+  const categorias = [
     { id: 'todos', name: { pt: 'Todos', en: 'All' } },
     { id: 'bebidas', name: { pt: 'Bebidas', en: 'Beverages' } },
     { id: 'doces', name: { pt: 'Doces', en: 'Sweets' } },
@@ -27,107 +28,69 @@ function ProdutosContent({ params }) {
   ];
 
   useEffect(() => {
-    async function loadData() {
+    async function carregar() {
       try {
-        const resolvedParams = await params;
-        const currentLang = resolvedParams?.lang || 'pt';
-        setLang(currentLang);
+        setLoading(true);
+        let query = supabase.from('produtos').select('*');
 
-        const dictionary = await getDictionary(currentLang);
-        setDict(dictionary);
+        // Filtro de Categoria
+        if (categoriaAtiva !== 'todos') {
+          query = query.ilike('category', categoriaAtiva);
+        }
 
-        // Buscar produtos do Supabase
-        const { data, error } = await supabase
-          .from('produtos')
-          .select('*')
-          .order('name', { ascending: true });
+        // Filtro de Busca por Texto
+        if (busca.trim()) {
+          query = query.ilike('name', `%${busca}%`);
+        }
 
+        const { data, error } = await query;
         if (error) throw error;
-        if (data) {
-          setProducts(data);
-          setFilteredProducts(data);
-        }
-
-        // Verificar se há categoria na URL
-        const categoryParam = searchParams.get('categoria');
-        if (categoryParam) {
-          setSelectedCategory(categoryParam);
-        }
-      } catch (error) {
-        console.error('Erro ao carregar produtos:', error.message);
+        setProdutos(data?.filter(p => p && p.id) || []);
+      } catch (err) {
+        console.error("Erro ao carregar:", err);
       } finally {
         setLoading(false);
       }
     }
-    loadData();
-  }, [params, searchParams]);
-
-  // Filtrar produtos
-  useEffect(() => {
-    let filtered = products;
-
-    // Filtrar por categoria
-    if (selectedCategory !== 'todos') {
-      filtered = filtered.filter(p => 
-        p.categoria?.toLowerCase() === selectedCategory.toLowerCase()
-      );
-    }
-
-    // Filtrar por busca
-    if (searchTerm.trim()) {
-      filtered = filtered.filter(p =>
-        p.name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        p.description?.toLowerCase().includes(searchTerm.toLowerCase())
-      );
-    }
-
-    setFilteredProducts(filtered);
-  }, [selectedCategory, searchTerm, products]);
-
-  if (!dict) {
-    return (
-      <div className="min-h-screen flex items-center justify-center bg-gray-50">
-        <div className="animate-spin rounded-full h-16 w-16 border-b-4 border-green-600"></div>
-      </div>
-    );
-  }
+    carregar();
+  }, [categoriaAtiva, busca]);
 
   return (
     <div className="min-h-screen bg-gray-50">
       <div className="container mx-auto px-4 py-8">
         <div className="flex flex-col lg:flex-row gap-8">
           
-          {/* Sidebar - Categorias */}
+          {/* SIDEBAR - Categorias */}
           <aside className="w-full lg:w-64 flex-shrink-0">
-            <div className="bg-white rounded-lg shadow-md p-6 lg:sticky lg:top-4">
-              <div className="flex items-center gap-2 mb-6">
-                <div className="w-8 h-8 bg-green-100 rounded-lg flex items-center justify-center">
-                  <span className="text-green-600 text-xl">🛒</span>
-                </div>
-                <h2 className="text-xl font-bold text-gray-800">
-                  {lang === 'pt' ? 'Categorias' : 'Categories'}
-                </h2>
-              </div>
-
+            <div className="bg-white p-6 rounded-lg shadow-md lg:sticky lg:top-4">
+              <h2 className="flex items-center gap-2 font-bold text-xl mb-6 text-gray-800">
+                <Filter className="w-5 h-5 text-green-600" /> 
+                {lang === 'pt' ? 'Categorias' : 'Categories'}
+              </h2>
               <div className="space-y-2">
-                {categories.map(category => (
+                {categorias.map((cat) => (
                   <button
-                    key={category.id}
-                    onClick={() => setSelectedCategory(category.id)}
+                    key={cat.id}
+                    onClick={() => {
+                      const link = cat.id === 'todos' 
+                        ? `/${lang}/produtos` 
+                        : `/${lang}/produtos?categoria=${cat.id}`;
+                      router.push(link);
+                    }}
                     className={`w-full text-left px-4 py-3 rounded-lg transition-all font-medium ${
-                      selectedCategory === category.id
+                      categoriaAtiva.toLowerCase() === cat.id.toLowerCase()
                         ? 'bg-green-600 text-white shadow-md'
                         : 'bg-gray-50 text-gray-700 hover:bg-gray-100'
                     }`}
                   >
-                    {category.name[lang]}
+                    {cat.name[lang]}
                   </button>
                 ))}
               </div>
             </div>
           </aside>
 
-          {/* Main Content */}
+          {/* MAIN CONTENT */}
           <main className="flex-1 min-w-0">
             
             {/* Barra de Busca */}
@@ -137,24 +100,24 @@ function ProdutosContent({ params }) {
                 <input
                   type="text"
                   placeholder={lang === 'pt' ? 'Buscar produtos...' : 'Search products...'}
-                  value={searchTerm}
-                  onChange={(e) => setSearchTerm(e.target.value)}
+                  value={busca}
+                  onChange={(e) => setBusca(e.target.value)}
                   className="w-full pl-12 pr-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent outline-none"
                 />
               </div>
             </div>
 
-            {/* Header com contador */}
+            {/* Header */}
             <div className="mb-6">
-              <h1 className="text-3xl font-bold text-gray-800 mb-2">
-                {lang === 'pt' ? 'Produtos' : 'Products'}
+              <h1 className="text-3xl font-bold text-gray-800 mb-2 capitalize">
+                {categoriaAtiva === 'todos' 
+                  ? (lang === 'pt' ? 'Todos os Produtos' : 'All Products')
+                  : categorias.find(c => c.id === categoriaAtiva)?.name[lang] || categoriaAtiva}
               </h1>
               <p className="text-gray-600">
-                {loading ? (
-                  lang === 'pt' ? 'Carregando...' : 'Loading...'
-                ) : (
-                  `${filteredProducts.length} ${lang === 'pt' ? 'produtos encontrados' : 'products found'}`
-                )}
+                {loading 
+                  ? (lang === 'pt' ? 'Carregando...' : 'Loading...') 
+                  : `${produtos.length} ${lang === 'pt' ? 'produtos encontrados' : 'products found'}`}
               </p>
             </div>
 
@@ -163,7 +126,7 @@ function ProdutosContent({ params }) {
               <div className="flex justify-center items-center py-20">
                 <div className="animate-spin rounded-full h-16 w-16 border-b-4 border-green-600"></div>
               </div>
-            ) : filteredProducts.length === 0 ? (
+            ) : produtos.length === 0 ? (
               <div className="bg-white rounded-lg shadow-md p-12 text-center">
                 <div className="text-6xl mb-4">🔍</div>
                 <h3 className="text-2xl font-bold text-gray-800 mb-2">
@@ -177,10 +140,10 @@ function ProdutosContent({ params }) {
               </div>
             ) : (
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-                {filteredProducts.map(product => (
+                {produtos.map((produto) => (
                   <ProductCard 
-                    key={product.id} 
-                    product={product} 
+                    key={produto.id} 
+                    product={produto} 
                     lang={lang} 
                   />
                 ))}
@@ -193,14 +156,14 @@ function ProdutosContent({ params }) {
   );
 }
 
-export default function ProdutosPage({ params }) {
+export default function ProdutosPage() {
   return (
     <Suspense fallback={
       <div className="min-h-screen flex items-center justify-center bg-gray-50">
         <div className="animate-spin rounded-full h-16 w-16 border-b-4 border-green-600"></div>
       </div>
     }>
-      <ProdutosContent params={params} />
+      <ProdutosContent />
     </Suspense>
   );
 }
