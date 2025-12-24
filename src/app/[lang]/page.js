@@ -4,6 +4,7 @@ import { useRouter } from 'next/navigation';
 import { ArrowRight } from 'lucide-react';
 import ProductCard from '@/app/components/ProductCard';
 import NewsletterBanner from '@/app/components/NewsletterBanner';
+import BrazilianBrandsBanner from '@/app/components/BrazilianBrandsBanner'; // Certifique-se de que o caminho do import está correto
 import { supabase } from '@/lib/supabase';
 import { getDictionary } from '@/lib/get-dictionary';
 
@@ -198,6 +199,9 @@ export default function HomePage({ params }) {
           </div>
         )}
       </section>
+
+      {/* Brazilian Brands Banner - Adicionado aqui conforme solicitado */}
+      <BrazilianBrandsBanner lang={lang} />
 
       {/* Newsletter Banner */}
       <NewsletterBanner lang={lang} />
