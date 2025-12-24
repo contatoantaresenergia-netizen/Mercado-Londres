@@ -18,7 +18,7 @@ export default function Header({ lang, dict }) {
     <header className="sticky top-0 z-50 bg-white shadow-sm border-b h-20">
       <div className="container mx-auto px-4 h-full flex items-center justify-between gap-1">
         
-        {/* LOGO E NOME - Tamanho confortável para mobile */}
+        {/* LOGO E NOME - Tamanho ideal para leitura no iPhone */}
         <Link 
           href={`/${currentLang}`}
           className="flex items-center gap-2 hover:opacity-90 transition min-w-0"
@@ -44,22 +44,30 @@ export default function Header({ lang, dict }) {
           <Link href={`/${currentLang}/contato`} className="hover:text-green-700 transition-colors font-semibold">{dict?.header?.contact || 'CONTATO'}</Link>
         </nav>
         
-        {/* DIREITA: APENAS AS BANDEIRAS E CARRINHO */}
+        {/* DIREITA: BANDEIRAS IGUAIS E CARRINHO */}
         <div className="flex items-center gap-3 flex-shrink-0">
           
-          {/* BANDEIRAS SIMPLES - Sem bordas ou fundo cinza */}
+          {/* BANDEIRAS SIMÉTRICAS - Sem fundo cinza e com o mesmo tamanho */}
           <div className="flex items-center gap-2">
             <Link 
               href={`/pt${pathnameWithoutLang}`}
-              className={`transition-opacity ${currentLang === 'pt' ? 'opacity-100 scale-110' : 'opacity-40 hover:opacity-100'}`}
+              className={`transition-all ${currentLang === 'pt' ? 'opacity-100 scale-110' : 'opacity-40 hover:opacity-100'}`}
             >
-              <img src="https://flagcdn.com/w40/br.png" className="w-6 h-auto rounded-sm shadow-sm" alt="PT" />
+              <img 
+                src="https://flagcdn.com/w40/br.png" 
+                className="w-6 h-4 rounded-sm shadow-sm object-cover" 
+                alt="PT" 
+              />
             </Link>
             <Link 
               href={`/en${pathnameWithoutLang}`}
-              className={`transition-opacity ${currentLang === 'en' ? 'opacity-100 scale-110' : 'opacity-40 hover:opacity-100'}`}
+              className={`transition-all ${currentLang === 'en' ? 'opacity-100 scale-110' : 'opacity-40 hover:opacity-100'}`}
             >
-              <img src="https://flagcdn.com/w40/gb.png" className="w-6 h-auto rounded-sm shadow-sm" alt="EN" />
+              <img 
+                src="https://flagcdn.com/w40/gb.png" 
+                className="w-6 h-4 rounded-sm shadow-sm object-cover" 
+                alt="EN" 
+              />
             </Link>
           </div>
           
