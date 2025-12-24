@@ -3,6 +3,7 @@ import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { ArrowRight } from 'lucide-react';
 import ProductCard from '@/app/components/ProductCard';
+import NewsletterBanner from '@/app/components/NewsletterBanner';
 import { supabase } from '@/lib/supabase';
 import { getDictionary } from '@/lib/get-dictionary';
 
@@ -197,6 +198,9 @@ export default function HomePage({ params }) {
           </div>
         )}
       </section>
+
+      {/* Newsletter Banner */}
+      <NewsletterBanner lang={lang} />
     </div>
   );
 }
