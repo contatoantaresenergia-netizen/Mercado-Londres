@@ -1,169 +1,93 @@
-'use client'
+import React from 'react';
+import { ShoppingCart } from 'lucide-react';
 
-import React, { useState, useEffect, Suspense } from 'react';
-import { useSearchParams, useRouter, useParams } from 'next/navigation';
-import { supabase } from '@/lib/supabase';
-import ProductCard from '@/app/components/ProductCard';
-import { Search, Filter } from 'lucide-react';
+interface ProductCardProps {
+  product: {
+    id: string;
+    name: string;
+    price: number;
+    image_url?: string;
+    stock?: number;
+    category?: string;
+  };
+  lang: string;
+}
 
-function ProdutosContent() {
-  const searchParams = useSearchParams();
-  const router = useRouter();
-  const params = useParams();
-  const lang = params.lang || 'pt';
-  
-  const categoriaAtiva = searchParams.get('categoria') || 'todos';
-  
-  const [produtos, setProdutos] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [busca, setBusca] = useState('');
-
-  const categorias = [
-    { id: 'todos', name: { pt: 'Todos', en: 'All' } },
-    { id: 'bebidas', name: { pt: 'Bebidas', en: 'Beverages' } },
-    { id: 'doces', name: { pt: 'Doces', en: 'Sweets' } },
-    { id: 'mercearia', name: { pt: 'Mercearia', en: 'Grocery' } },
-    { id: 'congelados', name: { pt: 'Congelados', en: 'Frozen' } },
-    { id: 'higiene', name: { pt: 'Higiene', en: 'Hygiene' } }
-  ];
-
-  useEffect(() => {
-    async function carregar() {
-      try {
-        setLoading(true);
-        let query = supabase.from('produtos').select('*');
-
-        // Filtro de Categoria
-        if (categoriaAtiva !== 'todos') {
-          query = query.ilike('category', categoriaAtiva);
-        }
-
-        // Filtro de Busca por Texto
-        if (busca.trim()) {
-          query = query.ilike('name', `%${busca}%`);
-        }
-
-        const { data, error } = await query;
-        if (error) throw error;
-        setProdutos(data?.filter(p => p && p.id) || []);
-      } catch (err) {
-        console.error("Erro ao carregar:", err);
-      } finally {
-        setLoading(false);
-      }
-    }
-    carregar();
-  }, [categoriaAtiva, busca]);
+export default function ProductCard({ product, lang }: ProductCardProps) {
+  const handleAddToCart = () => {
+    // Lógica de adicionar ao carrinho
+    console.log('Adicionar ao carrinho:', product.id);
+  };
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      <div className="container mx-auto px-4 py-8">
-        <div className="flex flex-col lg:flex-row gap-8">
-          
-          {/* SIDEBAR - Categorias */}
-          <aside className="w-full lg:w-64 flex-shrink-0">
-            <div className="bg-white p-6 rounded-lg shadow-md lg:sticky lg:top-4 border">
-              <h2 className="flex items-center gap-2 font-bold text-xl mb-6 text-gray-800">
-                <Filter className="w-5 h-5 text-green-600" /> 
-                {lang === 'pt' ? 'Categorias' : 'Categories'}
-              </h2>
-              <div className="space-y-2">
-                {categorias.map((cat) => (
-                  <button
-                    key={cat.id}
-                    onClick={() => {
-                      const link = cat.id === 'todos' 
-                        ? `/${lang}/produtos` 
-                        : `/${lang}/produtos?categoria=${cat.id}`;
-                      router.push(link);
-                    }}
-                    className={`w-full text-left px-4 py-3 rounded-lg transition-all font-medium ${
-                      categoriaAtiva.toLowerCase() === cat.id.toLowerCase()
-                        ? 'bg-green-600 text-white shadow-md'
-                        : 'bg-gray-50 text-gray-700 hover:bg-gray-100'
-                    }`}
-                  >
-                    {cat.name[lang]}
-                  </button>
-                ))}
-              </div>
-            </div>
-          </aside>
+    <div className="bg-white rounded-lg shadow-md hover:shadow-xl transition-shadow duration-300 overflow-hidden border border-gray-200 flex flex-col h-full">
+      {/* Imagem do Produto - AUMENTADA */}
+      <div className="relative w-full bg-gray-50 flex items-center justify-center overflow-hidden" style={{ height: '240px' }}>
+        {product.image_url ? (
+          <img
+            src={product.image_url}
+            alt={product.name}
+            className="w-full h-full object-contain p-4 hover:scale-105 transition-transform duration-300"
+          />
+        ) : (
+          <div className="w-full h-full flex items-center justify-center text-gray-300 text-4xl">
+            📦
+          </div>
+        )}
+        
+        {/* Badge de Estoque */}
+        {product.stock !== undefined && (
+          <div className={`absolute top-3 right-3 px-3 py-1 rounded-full text-xs font-semibold ${
+            product.stock > 50 
+              ? 'bg-green-100 text-green-800' 
+              : product.stock > 0 
+                ? 'bg-yellow-100 text-yellow-800' 
+                : 'bg-red-100 text-red-800'
+          }`}>
+            {product.stock > 0 
+              ? `${product.stock} ${lang === 'pt' ? 'em estoque' : 'in stock'}`
+              : lang === 'pt' ? 'Esgotado' : 'Out of stock'}
+          </div>
+        )}
+      </div>
 
-          {/* MAIN CONTENT */}
-          <main className="flex-1 min-w-0">
-            
-            {/* Barra de Busca */}
-            <div className="bg-white rounded-lg shadow-md p-4 mb-6 border">
-              <div className="relative">
-                <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
-                <input
-                  type="text"
-                  placeholder={lang === 'pt' ? 'Buscar produtos...' : 'Search products...'}
-                  value={busca}
-                  onChange={(e) => setBusca(e.target.value)}
-                  className="w-full pl-12 pr-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent outline-none"
-                />
-              </div>
-            </div>
+      {/* Conteúdo do Card */}
+      <div className="p-4 flex flex-col flex-grow">
+        {/* Nome do Produto */}
+        <h3 className="font-semibold text-gray-800 mb-2 line-clamp-2 min-h-[3rem]">
+          {product.name}
+        </h3>
 
-            {/* Header */}
-            <div className="mb-6">
-              <h1 className="text-3xl font-bold text-gray-800 mb-2 capitalize">
-                {categoriaAtiva === 'todos' 
-                  ? (lang === 'pt' ? 'Todos os Produtos' : 'All Products')
-                  : categorias.find(c => c.id === categoriaAtiva)?.name[lang] || categoriaAtiva}
-              </h1>
-              <p className="text-gray-600">
-                {loading 
-                  ? (lang === 'pt' ? 'Carregando...' : 'Loading...') 
-                  : `${produtos.length} ${lang === 'pt' ? 'produtos encontrados' : 'products found'}`}
-              </p>
-            </div>
+        {/* Categoria */}
+        {product.category && (
+          <span className="text-xs text-gray-500 mb-3 capitalize">
+            {product.category}
+          </span>
+        )}
 
-            {/* Grid de Produtos */}
-            {loading ? (
-              <div className="flex justify-center items-center py-20">
-                <div className="animate-spin rounded-full h-16 w-16 border-b-4 border-green-600"></div>
-              </div>
-            ) : produtos.length === 0 ? (
-              <div className="bg-white rounded-lg shadow-md p-12 text-center border">
-                <div className="text-6xl mb-4">🔍</div>
-                <h3 className="text-2xl font-bold text-gray-800 mb-2">
-                  {lang === 'pt' ? 'Nenhum produto encontrado' : 'No products found'}
-                </h3>
-                <p className="text-gray-600">
-                  {lang === 'pt' 
-                    ? 'Tente ajustar os filtros ou a busca' 
-                    : 'Try adjusting the filters or search'}
-                </p>
-              </div>
-            ) : (
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-                {produtos.map((produto) => (
-                  <ProductCard 
-                    key={produto.id} 
-                    product={produto} 
-                    lang={lang} 
-                  />
-                ))}
-              </div>
-            )}
-          </main>
+        {/* Preço e Botão */}
+        <div className="mt-auto">
+          <div className="flex items-center justify-between mb-3">
+            <span className="text-2xl font-bold text-green-600">
+              £{product.price.toFixed(2)}
+            </span>
+          </div>
+
+          {/* Botão Adicionar ao Carrinho */}
+          <button
+            onClick={handleAddToCart}
+            disabled={product.stock === 0}
+            className={`w-full flex items-center justify-center gap-2 py-3 rounded-lg font-semibold transition-all ${
+              product.stock === 0
+                ? 'bg-gray-300 text-gray-500 cursor-not-allowed'
+                : 'bg-green-600 text-white hover:bg-green-700 active:scale-95'
+            }`}
+          >
+            <ShoppingCart className="w-5 h-5" />
+            {lang === 'pt' ? 'Adicionar ao Carrinho' : 'Add to Cart'}
+          </button>
         </div>
       </div>
     </div>
-  );
-}
-
-export default function ProdutosPage() {
-  return (
-    <Suspense fallback={
-      <div className="min-h-screen flex items-center justify-center bg-gray-50">
-        <div className="animate-spin rounded-full h-16 w-16 border-b-4 border-green-600"></div>
-      </div>
-    }>
-      <ProdutosContent />
-    </Suspense>
   );
 }
