@@ -1,19 +1,7 @@
 import React from 'react';
 import { ShoppingCart } from 'lucide-react';
 
-interface ProductCardProps {
-  product: {
-    id: string;
-    name: string;
-    price: number;
-    image_url?: string;
-    stock?: number;
-    category?: string;
-  };
-  lang: string;
-}
-
-export default function ProductCard({ product, lang }: ProductCardProps) {
+export default function ProductCard({ product, lang }) {
   const handleAddToCart = () => {
     // Lógica de adicionar ao carrinho
     console.log('Adicionar ao carrinho:', product.id);
