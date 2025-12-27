@@ -10,7 +10,7 @@ export default function ProductCard({ product, lang }) {
   return (
     <div className="bg-white rounded-lg shadow-md hover:shadow-xl transition-shadow duration-300 overflow-hidden border border-gray-200 flex flex-col h-full">
       {/* Imagem do Produto - RESPONSIVA */}
-      <div className="relative w-full bg-gray-50 flex items-center justify-center overflow-hidden h-96 sm:h-[28rem] lg:h-[32rem]">
+      <div className="relative w-full bg-gray-50 flex items-center justify-center overflow-hidden h-[28rem] sm:h-[30rem] lg:h-[34rem]">
         {product.image_url ? (
           <img
             src={product.image_url}
