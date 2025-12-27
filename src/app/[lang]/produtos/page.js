@@ -21,8 +21,8 @@ export default function ProductCard({ product, lang }: ProductCardProps) {
 
   return (
     <div className="bg-white rounded-lg shadow-md hover:shadow-xl transition-shadow duration-300 overflow-hidden border border-gray-200 flex flex-col h-full">
-      {/* Imagem do Produto - AUMENTADA */}
-      <div className="relative w-full bg-gray-50 flex items-center justify-center overflow-hidden" style={{ height: '240px' }}>
+      {/* Imagem do Produto - RESPONSIVA */}
+      <div className="relative w-full bg-gray-50 flex items-center justify-center overflow-hidden h-48 sm:h-56 lg:h-64">
         {product.image_url ? (
           <img
             src={product.image_url}
