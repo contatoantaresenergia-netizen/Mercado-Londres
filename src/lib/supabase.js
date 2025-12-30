@@ -1,7 +1,8 @@
 import { createClient } from '@supabase/supabase-js'
 
-// O Next.js busca os valores que você configurou no painel da Vercel
-const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!
-const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+// No JavaScript, apenas chamamos a variável. 
+// Se ela não existir, o erro aparecerá no console de forma clara.
+const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL
+const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
 
 export const supabase = createClient(supabaseUrl, supabaseKey)
