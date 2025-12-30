@@ -16,7 +16,7 @@ export async function POST(req) {
           price_data: {
             currency: 'gbp',
             product_data: {
-              name: `Pedido #${orderNumber}`,
+              name: `Pedido #${orderNumber || 'Novo'}`,
               description: `Entrega para ${customer?.address || 'Londres'}`,
             },
             unit_amount: Math.round(total * 100), // Converte £9.59 para 959 centavos
@@ -28,13 +28,14 @@ export async function POST(req) {
       success_url: `${process.env.NEXT_PUBLIC_SITE_URL}/success?session_id={CHECKOUT_SESSION_ID}`,
       cancel_url: `${process.env.NEXT_PUBLIC_SITE_URL}/checkout`,
       metadata: {
-        orderNumber: orderNumber,
-        customer_email: customer?.email
+        orderNumber: orderNumber || 'N/A',
+        customer_email: customer?.email || 'N/A'
       },
     });
 
+    // Retornamos a URL para onde o usuário deve ser enviado
     return NextResponse.json({ 
-      url: session.url, // Vamos enviar a URL da página de pagamento
+      url: session.url, 
       success: true 
     });
 
