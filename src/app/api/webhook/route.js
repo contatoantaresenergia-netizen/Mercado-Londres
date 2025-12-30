@@ -2,14 +2,15 @@ import { createClient } from '@supabase/supabase-js';
 import { NextResponse } from 'next/server';
 import Stripe from 'stripe';
 
-export const dynamic = 'force-dynamic'; // Força a rota a ser dinâmica e ignora validação estática no build
+export const dynamic = 'force-dynamic';
 
 export async function POST(req) {
-  // Inicialização INTERNA - Só acontece quando a rota é chamada de verdade
   const stripe = new Stripe(process.env.STRIPE_SECRET_KEY || '');
+  
+  // Usando as variáveis que você acabou de configurar com sucesso na Vercel
   const supabase = createClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL || 'https://placeholder.supabase.co',
-    process.env.SUPABASE_SERVICE_ROLE_KEY || 'placeholder-key'
+    process.env.NEXT_PUBLIC_SUPABASE_URL,
+    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY // Use a Anon Key que você salvou
   );
 
   const body = await req.text();
@@ -27,19 +28,22 @@ export async function POST(req) {
     return NextResponse.json({ error: err.message }, { status: 400 });
   }
 
+  // Quando o pagamento é aprovado na página oficial do Stripe
   if (event.type === 'checkout.session.completed') {
     const session = event.data.object;
 
-    // Inserção na tabela 'orders' do seu print
+    // Salva o pedido no seu banco de dados Supabase
     const { error } = await supabase
       .from('orders')
       .insert([{
-        customer_id: session.metadata?.user_id || null, 
+        customer_email: session.metadata?.email || session.customer_details?.email, 
         total: session.amount_total / 100,
-        status: 'pago'
+        order_number: session.metadata?.orderNumber,
+        status: 'pago',
+        created_at: new Date().toISOString()
       }]);
 
-    if (error) console.error("Erro no Supabase:", error.message);
+    if (error) console.error("Erro ao salvar no Supabase:", error.message);
   }
 
   return NextResponse.json({ received: true }, { status: 200 });
