@@ -7,6 +7,10 @@
     {
       "src": "^/energia-solar-em-(?!nova-odessa|camaragibe)/?$",
       "status": 410
+    },
+    {
+      "src": "^/blog/(post-antigo1|post-antigo2|post-antigo3)/?$",
+      "status": 410
     }
   ]
 }
