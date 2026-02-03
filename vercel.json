@@ -1,7 +1,5 @@
 {
-  "framework": "nextjs"
-}
-{
+  "framework": "nextjs",
   "redirects": [],
   "rewrites": [],
   "headers": [],
