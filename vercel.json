@@ -1,3 +1,14 @@
 {
   "framework": "nextjs"
 }
+{
+  "redirects": [],
+  "rewrites": [],
+  "headers": [],
+  "routes": [
+    {
+      "src": "^/energia-solar-em-(?!nova-odessa|camaragibe)/?$",
+      "status": 410
+    }
+  ]
+}
