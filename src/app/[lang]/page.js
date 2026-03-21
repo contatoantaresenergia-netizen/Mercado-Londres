@@ -51,7 +51,7 @@ export default function HomePage({ params }) {
   const banners = [
     {
       id: 1,
-      title: lang === 'pt' ? 'BOLOS DE NATAL 🎄' : 'CHRISTMAS CAKES 🎄',
+      title: lang === 'pt' ? 'CARNES' : 'MEAT',
       subtitle: lang === 'pt' ? 'Tradição Portuguesa' : 'Portuguese Tradition',
       image: 'https://images.unsplash.com/photo-1512568400610-62da28bc8a13?w=1200&h=500&fit=crop',
       bgColor: 'from-green-700 to-green-600',
