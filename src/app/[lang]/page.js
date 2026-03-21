@@ -54,7 +54,7 @@ export default function HomePage({ params }) {
       title: lang === 'pt' ? 'CARNES' : 'MEAT',
       subtitle: lang === 'pt' ? 'Tradição Portuguesa' : 'Portuguese Tradition',
       image: 'https://vpqevrxwiglfpyrwxmne.supabase.co/storage/v1/object/public/images/02%20CARNE%20NITIDA.webp',
-      bgColor: 'from-black/40 to-black/20',
+      bgColor: '',
     },
     {
       id: 2,
