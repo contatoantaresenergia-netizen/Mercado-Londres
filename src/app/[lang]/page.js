@@ -4,7 +4,7 @@ import { useRouter } from 'next/navigation';
 import { ArrowRight } from 'lucide-react';
 import ProductCard from '@/app/components/ProductCard';
 import NewsletterBanner from '@/app/components/NewsletterBanner';
-import BrazilianBrandsBanner from '@/app/components/BrazilianBrandsBanner'; // Certifique-se de que o caminho do import está correto
+import BrazilianBrandsBanner from '@/app/components/BrazilianBrandsBanner';
 import { supabase } from '@/lib/supabase';
 import { getDictionary } from '@/lib/get-dictionary';
 
@@ -26,6 +26,7 @@ export default function HomePage({ params }) {
         const dictionary = await getDictionary(currentLang);
         setDict(dictionary);
 
+        if (!supabase) return;
         const { data, error } = await supabase.from('produtos').select('*').limit(8);
         if (error) throw error;
         if (data) setFeaturedProducts(data);
@@ -106,11 +107,13 @@ export default function HomePage({ params }) {
               index === currentSlide ? 'opacity-100' : 'opacity-0'
             }`}
           >
-            <div className={`absolute inset-0 bg-gradient-to-r ${banner.bgColor} opacity-90`}></div>
             <div 
-              className="absolute inset-0 bg-cover bg-center mix-blend-overlay" 
+              className="absolute inset-0 bg-cover bg-center"
               style={{ backgroundImage: `url(${banner.image})` }}
             ></div>
+            {banner.bgColor && (
+              <div className={`absolute inset-0 bg-gradient-to-r ${banner.bgColor} opacity-30`}></div>
+            )}
             <div className="relative container mx-auto px-4 h-full flex items-center justify-center text-center text-white">
               <div>
                 <h2 className="text-5xl md:text-7xl font-black mb-4 drop-shadow-lg">
@@ -200,7 +203,7 @@ export default function HomePage({ params }) {
         )}
       </section>
 
-      {/* Brazilian Brands Banner - Adicionado aqui conforme solicitado */}
+      {/* Brazilian Brands Banner */}
       <BrazilianBrandsBanner lang={lang} />
 
       {/* Newsletter Banner */}
