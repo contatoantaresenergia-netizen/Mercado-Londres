@@ -1,12 +1,14 @@
 'use client'
 
 import React from 'react';
-import { useRouter } from 'next/navigation';
+import { useRouter, useParams } from 'next/navigation';
 import { useCart } from '@/app/context/CartContext';
 import { Trash2, Plus, Minus, ShoppingBag, ArrowLeft } from 'lucide-react';
 
 export default function CarrinhoPage() {
   const router = useRouter();
+  const params = useParams();
+  const lang = params?.lang || 'pt';
   const { cart, removeFromCart, updateQuantity, getCartTotal, clearCart } = useCart();
 
   if (cart.length === 0) {
@@ -16,17 +18,19 @@ export default function CarrinhoPage() {
           <div className="max-w-2xl mx-auto text-center py-20">
             <ShoppingBag className="w-24 h-24 mx-auto text-gray-300 mb-6" />
             <h2 className="text-3xl font-bold text-gray-800 mb-4">
-              Seu carrinho está vazio
+              {lang === 'pt' ? 'Seu carrinho está vazio' : 'Your cart is empty'}
             </h2>
             <p className="text-gray-600 mb-8">
-              Adicione produtos ao carrinho para continuar comprando
+              {lang === 'pt' 
+                ? 'Adicione produtos ao carrinho para continuar comprando' 
+                : 'Add products to your cart to continue shopping'}
             </p>
             <button
-              onClick={() => router.push('/produtos')}
+              onClick={() => router.push(`/${lang}/produtos`)}
               className="bg-green-600 hover:bg-green-700 text-white font-bold px-8 py-3 rounded-lg transition inline-flex items-center gap-2"
             >
               <ArrowLeft className="w-5 h-5" />
-              Ver Produtos
+              {lang === 'pt' ? 'Ver Produtos' : 'View Products'}
             </button>
           </div>
         </div>
@@ -41,10 +45,10 @@ export default function CarrinhoPage() {
           {/* Header */}
           <div className="mb-8">
             <h1 className="text-4xl font-bold text-gray-800 mb-2">
-              🛒 Meu Carrinho
+              🛒 {lang === 'pt' ? 'Meu Carrinho' : 'My Cart'}
             </h1>
             <p className="text-gray-600">
-              {cart.length} {cart.length === 1 ? 'item' : 'itens'} no carrinho
+              {cart.length} {cart.length === 1 ? 'item' : 'itens'} {lang === 'pt' ? 'no carrinho' : 'in cart'}
             </p>
           </div>
 
@@ -56,16 +60,17 @@ export default function CarrinhoPage() {
                   key={item.id}
                   className="bg-white rounded-lg shadow p-6 flex gap-4"
                 >
-                  {/* Emoji do Produto */}
-                  <div className="flex-shrink-0 w-24 h-24 bg-gray-100 rounded-lg flex items-center justify-center text-4xl">
-                    {item.id === '1' && '🥐'}
-                    {item.id === '2' && '🥤'}
-                    {item.id === '3' && '🍇'}
-                    {item.id === '4' && '🍫'}
-                    {item.id === '5' && '🥘'}
-                    {item.id === '6' && '🍵'}
-                    {item.id === '7' && '🥞'}
-                    {item.id === '8' && '🍮'}
+                  {/* Imagem do Produto */}
+                  <div className="flex-shrink-0 w-24 h-24 bg-gray-100 rounded-lg overflow-hidden flex items-center justify-center">
+                    {item.image_url ? (
+                      <img
+                        src={item.image_url}
+                        alt={item.name}
+                        className="w-full h-full object-contain p-2"
+                      />
+                    ) : (
+                      <span className="text-4xl">📦</span>
+                    )}
                   </div>
 
                   {/* Info do Produto */}
@@ -103,7 +108,7 @@ export default function CarrinhoPage() {
                           £{(item.price * item.quantity).toFixed(2)}
                         </p>
                         <p className="text-sm text-gray-500">
-                          £{item.price.toFixed(2)} cada
+                          £{item.price.toFixed(2)} {lang === 'pt' ? 'cada' : 'each'}
                         </p>
                       </div>
                     </div>
@@ -124,7 +129,7 @@ export default function CarrinhoPage() {
                 onClick={clearCart}
                 className="w-full bg-red-50 hover:bg-red-100 text-red-600 font-medium py-3 rounded-lg transition"
               >
-                Limpar Carrinho
+                {lang === 'pt' ? 'Limpar Carrinho' : 'Clear Cart'}
               </button>
             </div>
 
@@ -132,18 +137,20 @@ export default function CarrinhoPage() {
             <div className="lg:col-span-1">
               <div className="bg-white rounded-lg shadow p-6 sticky top-24">
                 <h2 className="text-2xl font-bold text-gray-800 mb-6">
-                  Resumo do Pedido
+                  {lang === 'pt' ? 'Resumo do Pedido' : 'Order Summary'}
                 </h2>
 
                 <div className="space-y-3 mb-6">
                   <div className="flex justify-between text-gray-600">
-                    <span>Subtotal</span>
+                    <span>{lang === 'pt' ? 'Subtotal' : 'Subtotal'}</span>
                     <span>£{getCartTotal().toFixed(2)}</span>
                   </div>
                   <div className="flex justify-between text-gray-600">
-                    <span>Frete</span>
+                    <span>{lang === 'pt' ? 'Frete' : 'Shipping'}</span>
                     <span className="text-green-600 font-medium">
-                      {getCartTotal() >= 50 ? 'GRÁTIS' : '£4.99'}
+                      {getCartTotal() >= 50 
+                        ? (lang === 'pt' ? 'GRÁTIS' : 'FREE') 
+                        : '£4.99'}
                     </span>
                   </div>
                   <div className="border-t pt-3 flex justify-between text-xl font-bold text-gray-800">
@@ -156,22 +163,24 @@ export default function CarrinhoPage() {
 
                 {getCartTotal() < 50 && (
                   <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-3 mb-4 text-sm text-yellow-800">
-                    Faltam £{(50 - getCartTotal()).toFixed(2)} para frete grátis!
+                    {lang === 'pt' 
+                      ? `Faltam £${(50 - getCartTotal()).toFixed(2)} para frete grátis!`
+                      : `Spend £${(50 - getCartTotal()).toFixed(2)} more for free shipping!`}
                   </div>
                 )}
 
                 <button
-                  onClick={() => router.push('/checkout')}
+                  onClick={() => router.push(`/${lang}/checkout`)}
                   className="w-full bg-green-600 hover:bg-green-700 text-white font-bold py-4 rounded-lg transition mb-3"
                 >
-                  Finalizar Compra
+                  {lang === 'pt' ? 'Finalizar Compra' : 'Checkout'}
                 </button>
 
                 <button
-                  onClick={() => router.push('/produtos')}
+                  onClick={() => router.push(`/${lang}/produtos`)}
                   className="w-full bg-gray-200 hover:bg-gray-300 text-gray-700 font-medium py-3 rounded-lg transition"
                 >
-                  Continuar Comprando
+                  {lang === 'pt' ? 'Continuar Comprando' : 'Continue Shopping'}
                 </button>
               </div>
             </div>
