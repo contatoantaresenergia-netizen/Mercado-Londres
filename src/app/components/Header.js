@@ -1,24 +1,42 @@
 'use client'
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import Link from 'next/link';
-import { ShoppingCart } from 'lucide-react';
+import { ShoppingCart, User, LogOut } from 'lucide-react'; // Adicionei User e LogOut
 import { useCart } from '../context/CartContext';
 import { usePathname } from 'next/navigation';
+import { createClient } from '@/lib/supabase/client'; // Importando seu ajudante de cliente
 
 export default function Header({ lang, dict }) {
   const { cart } = useCart() || { cart: [] };
+  const [user, setUser] = useState(null);
   const currentLang = lang || 'pt';
   const pathname = usePathname();
+  const supabase = createClient();
   
   const pathnameWithoutLang = pathname.replace(`/${currentLang}`, '') || '/';
   
+  // LOGICA DE USUÁRIO
+  useEffect(() => {
+    const getUser = async () => {
+      const { data: { user } } = await supabase.auth.getUser();
+      setUser(user);
+    };
+    getUser();
+
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+      setUser(session?.user ?? null);
+    });
+
+    return () => subscription.unsubscribe();
+  }, []);
+
   const logoSupabase = "https://vpqevrxwiglfpyrwxmne.supabase.co/storage/v1/object/public/images/logo.png/logomarca.png";
   
   return (
     <header className="sticky top-0 z-50 bg-white shadow-sm border-b h-20">
       <div className="container mx-auto px-4 h-full flex items-center justify-between gap-1">
         
-        {/* LOGO E NOME - Tamanho ideal para leitura no iPhone */}
+        {/* LOGO E NOME */}
         <Link 
           href={`/${currentLang}`}
           className="flex items-center gap-2 hover:opacity-90 transition min-w-0"
@@ -44,42 +62,57 @@ export default function Header({ lang, dict }) {
           <Link href={`/${currentLang}/contato`} className="hover:text-green-700 transition-colors font-semibold">{dict?.header?.contact || 'CONTATO'}</Link>
         </nav>
         
-        {/* DIREITA: BANDEIRAS IGUAIS E CARRINHO */}
-        <div className="flex items-center gap-3 flex-shrink-0">
+        {/* DIREITA: BANDEIRAS, LOGIN E CARRINHO */}
+        <div className="flex items-center gap-3 sm:gap-5 flex-shrink-0">
           
-          {/* BANDEIRAS SIMÉTRICAS - Sem fundo cinza e com o mesmo tamanho */}
-          <div className="flex items-center gap-2">
+          {/* BANDEIRAS */}
+          <div className="hidden sm:flex items-center gap-2">
             <Link 
               href={`/pt${pathnameWithoutLang}`}
               className={`transition-all ${currentLang === 'pt' ? 'opacity-100 scale-110' : 'opacity-40 hover:opacity-100'}`}
             >
-              <img 
-                src="https://flagcdn.com/w40/br.png" 
-                className="w-6 h-4 rounded-sm shadow-sm object-cover" 
-                alt="PT" 
-              />
+              <img src="https://flagcdn.com/w40/br.png" className="w-6 h-4 rounded-sm shadow-sm" alt="PT" />
             </Link>
             <Link 
               href={`/en${pathnameWithoutLang}`}
               className={`transition-all ${currentLang === 'en' ? 'opacity-100 scale-110' : 'opacity-40 hover:opacity-100'}`}
             >
-              <img 
-                src="https://flagcdn.com/w40/gb.png" 
-                className="w-6 h-4 rounded-sm shadow-sm object-cover" 
-                alt="EN" 
-              />
+              <img src="https://flagcdn.com/w40/gb.png" className="w-6 h-4 rounded-sm shadow-sm" alt="EN" />
             </Link>
           </div>
-          
-          {/* CARRINHO */}
-          <Link href={`/${currentLang}/carrinho`} className="relative p-1">
-            <ShoppingCart className="w-6 h-6 text-gray-700" />
-            {cart?.length > 0 && (
-              <span className="absolute -top-1 -right-2 bg-red-500 text-white text-[10px] w-5 h-5 flex items-center justify-center rounded-full font-bold">
-                {cart.length}
-              </span>
+
+          {/* ÁREA DO USUÁRIO (O bonequinho) */}
+          <div className="flex items-center border-l pl-3 gap-3">
+            {user ? (
+              <Link 
+                href={`/${currentLang}/minha-conta`} 
+                className="flex items-center gap-1 text-gray-700 hover:text-green-700 transition"
+                title="Minha Conta"
+              >
+                <User className="w-6 h-6" />
+                <span className="hidden lg:block text-xs font-medium">Minha Conta</span>
+              </Link>
+            ) : (
+              <Link 
+                href={`/${currentLang}/login`} 
+                className="flex items-center gap-1 text-gray-700 hover:text-green-700 transition"
+                title="Entrar"
+              >
+                <User className="w-6 h-6" />
+                <span className="hidden lg:block text-xs font-medium">Entrar</span>
+              </Link>
             )}
-          </Link>
+
+            {/* CARRINHO */}
+            <Link href={`/${currentLang}/carrinho`} className="relative p-1">
+              <ShoppingCart className="w-6 h-6 text-gray-700" />
+              {cart?.length > 0 && (
+                <span className="absolute -top-1 -right-2 bg-red-500 text-white text-[10px] w-5 h-5 flex items-center justify-center rounded-full font-bold">
+                  {cart.length}
+                </span>
+              )}
+            </Link>
+          </div>
         </div>
 
       </div>
