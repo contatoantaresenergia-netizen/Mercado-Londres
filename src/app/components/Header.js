@@ -1,17 +1,19 @@
 'use client';
-import { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
-import Image from 'next/image';
-import { useParams, useRouter, usePathname } from 'next/navigation';
+import { ShoppingCart } from 'lucide-react';
+import { useCart } from '../context/CartContext';
+import { usePathname } from 'next/navigation';
 import { supabase } from '@/lib/supabase';
 
-export default function Header({ dict, lang }) {
+export default function Header({ lang, dict }) {
+  const { cart } = useCart() || { cart: [] };
   const [user, setUser] = useState(undefined);
-  const [menuOpen, setMenuOpen] = useState(false);
-  const params = useParams();
-  const router = useRouter();
+  const currentLang = lang || 'pt';
   const pathname = usePathname();
-  const currentLang = lang || params?.lang || 'pt';
+  const pathnameWithoutLang = pathname.replace(`/${currentLang}`, '') || '/';
+
+  const logoSupabase = "https://vpqevrxwiglfpyrwxmne.supabase.co/storage/v1/object/public/images/logo.png/logomarca.png";
 
   useEffect(() => {
     if (!supabase) return;
@@ -31,120 +33,83 @@ export default function Header({ dict, lang }) {
     return () => subscription.unsubscribe();
   }, []);
 
-  const headerDict = dict?.header || {
-    home: "Início",
-    products: "Produtos",
-    about: "Sobre",
-    contact: "Contato",
-    cart: "Carrinho",
-    login: "Entrar"
-  };
-
-  const switchLang = (newLang) => {
-    const segments = pathname.split('/');
-    segments[1] = newLang;
-    router.push(segments.join('/'));
-  };
-
   return (
-    <header className="bg-white shadow-md sticky top-0 z-50">
-      <div className="max-w-7xl mx-auto px-4 py-3 flex items-center justify-between">
+    <header className="sticky top-0 z-50 bg-white shadow-sm border-b h-20">
+      <div className="container mx-auto px-4 h-full flex items-center justify-between gap-1">
 
         {/* LOGO */}
-        <Link href={`/${currentLang}`} className="flex items-center gap-2">
-          <Image
-            src="https://vpqevrxwiglfpyrwxmne.supabase.co/storage/v1/object/public/images/fav.icon/89036172-8A4B-4886-89B7-1B20DCD9FC45-removebg-preview.png"
-            alt="Prime Brasil Market"
-            width={48}
-            height={48}
-            className="object-contain"
-          />
+        <Link href={`/${currentLang}`} className="flex items-center gap-2 hover:opacity-90 transition min-w-0">
+          <div className="h-11 w-11 sm:h-14 sm:w-14 flex-shrink-0">
+            <img src={logoSupabase} alt="Logo" className="h-full w-full object-contain" />
+          </div>
           <div className="flex flex-col leading-tight">
-            <span className="text-green-700 font-black text-lg tracking-tight">PRIME BRASIL</span>
-            <span className="text-gray-400 text-xs font-medium uppercase tracking-widest">Market</span>
+            <span className="text-green-700 font-bold text-[13px] sm:text-lg uppercase whitespace-nowrap">
+              Prime Brasil
+            </span>
+            <span className="text-yellow-500 font-semibold text-[9px] sm:text-[10px] tracking-widest uppercase">
+              Market
+            </span>
           </div>
         </Link>
 
         {/* MENU DESKTOP */}
-        <nav className="hidden md:flex items-center gap-6 text-sm font-medium text-gray-700">
-          <Link href={`/${currentLang}`} className="hover:text-green-700 transition">{headerDict.home}</Link>
-          <Link href={`/${currentLang}/produtos`} className="hover:text-green-700 transition">{headerDict.products}</Link>
-          <Link href={`/${currentLang}/sobre`} className="hover:text-green-700 transition">{headerDict.about}</Link>
-          <Link href={`/${currentLang}/contato`} className="hover:text-green-700 transition">{headerDict.contact}</Link>
+        <nav className="hidden md:flex items-center gap-6">
+          <Link href={`/${currentLang}`} className="hover:text-green-700 transition-colors font-semibold">{dict?.header?.home || 'INÍCIO'}</Link>
+          <Link href={`/${currentLang}/produtos`} className="hover:text-green-700 transition-colors font-semibold">{dict?.header?.products || 'PRODUTOS'}</Link>
+          <Link href={`/${currentLang}/sobre`} className="hover:text-green-700 transition-colors font-semibold">{dict?.header?.about || 'SOBRE'}</Link>
+          <Link href={`/${currentLang}/contato`} className="hover:text-green-700 transition-colors font-semibold">{dict?.header?.contact || 'CONTATO'}</Link>
         </nav>
 
         {/* DIREITA */}
-        <div className="flex items-center gap-4">
+        <div className="flex items-center gap-3 flex-shrink-0">
 
-          {/* SELETOR DE IDIOMA */}
-          <button
-            onClick={() => switchLang('pt')}
-            className={`text-xl transition-opacity ${currentLang === 'pt' ? 'opacity-100' : 'opacity-40 hover:opacity-70'}`}
-            title="Português"
-          >
-            🇧🇷
-          </button>
-          <button
-            onClick={() => switchLang('en')}
-            className={`text-xl transition-opacity ${currentLang === 'en' ? 'opacity-100' : 'opacity-40 hover:opacity-70'}`}
-            title="English"
-          >
-            🇬🇧
-          </button>
+          {/* BANDEIRAS */}
+          <div className="flex items-center gap-2">
+            <Link
+              href={`/pt${pathnameWithoutLang}`}
+              className={`transition-all ${currentLang === 'pt' ? 'opacity-100 scale-110' : 'opacity-40 hover:opacity-100'}`}
+            >
+              <img src="https://flagcdn.com/w40/br.png" className="w-6 h-4 rounded-sm shadow-sm object-cover" alt="PT" />
+            </Link>
+            <Link
+              href={`/en${pathnameWithoutLang}`}
+              className={`transition-all ${currentLang === 'en' ? 'opacity-100 scale-110' : 'opacity-40 hover:opacity-100'}`}
+            >
+              <img src="https://flagcdn.com/w40/gb.png" className="w-6 h-4 rounded-sm shadow-sm object-cover" alt="EN" />
+            </Link>
+          </div>
 
           {/* CARRINHO */}
-          <Link
-            href={`/${currentLang}/carrinho`}
-            className="text-2xl hover:scale-110 transition-transform"
-            title="Carrinho"
-          >
-            🛒
+          <Link href={`/${currentLang}/carrinho`} className="relative p-1">
+            <ShoppingCart className="w-6 h-6 text-gray-700" />
+            {cart?.length > 0 && (
+              <span className="absolute -top-1 -right-2 bg-red-500 text-white text-[10px] w-5 h-5 flex items-center justify-center rounded-full font-bold">
+                {cart.length}
+              </span>
+            )}
           </Link>
 
-          {/* LOGIN / CONTA */}
+          {/* BOTÃO LOGIN / CONTA */}
           {user === undefined ? (
-            <div className="w-24 h-9 rounded bg-gray-100 animate-pulse" />
+            <div className="w-20 h-8 rounded-lg bg-gray-100 animate-pulse" />
           ) : user ? (
             <Link
               href={`/${currentLang}/minha-conta`}
-              className="bg-green-700 hover:bg-green-800 text-white font-semibold px-5 py-2 rounded-lg transition text-sm"
-              title="Minha Conta"
+              className="bg-green-700 hover:bg-green-800 text-white font-semibold px-4 py-2 rounded-lg transition text-sm"
             >
               👤 Conta
             </Link>
           ) : (
             <Link
               href={`/${currentLang}/login`}
-              className="bg-green-700 hover:bg-green-800 text-white font-semibold px-5 py-2 rounded-lg transition text-sm"
+              className="bg-green-700 hover:bg-green-800 text-white font-semibold px-4 py-2 rounded-lg transition text-sm"
             >
-              Entrar
+              {dict?.header?.login || 'Entrar'}
             </Link>
           )}
 
-          {/* MENU MOBILE */}
-          <button
-            className="md:hidden w-9 h-9 flex items-center justify-center rounded-full bg-gray-100"
-            onClick={() => setMenuOpen(!menuOpen)}
-          >
-            <svg xmlns="http://www.w3.org/2000/svg" className="w-5 h-5 text-gray-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
-              {menuOpen
-                ? <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
-                : <path strokeLinecap="round" strokeLinejoin="round" d="M4 6h16M4 12h16M4 18h16" />
-              }
-            </svg>
-          </button>
         </div>
       </div>
-
-      {/* MENU MOBILE DROPDOWN */}
-      {menuOpen && (
-        <div className="md:hidden bg-white border-t px-4 py-4 flex flex-col gap-4 text-sm font-medium text-gray-700">
-          <Link href={`/${currentLang}`} onClick={() => setMenuOpen(false)} className="hover:text-green-700">{headerDict.home}</Link>
-          <Link href={`/${currentLang}/produtos`} onClick={() => setMenuOpen(false)} className="hover:text-green-700">{headerDict.products}</Link>
-          <Link href={`/${currentLang}/sobre`} onClick={() => setMenuOpen(false)} className="hover:text-green-700">{headerDict.about}</Link>
-          <Link href={`/${currentLang}/contato`} onClick={() => setMenuOpen(false)} className="hover:text-green-700">{headerDict.contact}</Link>
-        </div>
-      )}
     </header>
   );
 }
