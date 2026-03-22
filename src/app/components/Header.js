@@ -1,7 +1,7 @@
 'use client';
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
-import { supabase } from '@/lib/supabase/client'; // ✅ corrigido
+import { supabase } from '@/lib/supabase'; // ✅ arquivo correto
 import { useParams } from 'next/navigation';
 
 export default function Header({ dict, lang }) {
@@ -10,6 +10,8 @@ export default function Header({ dict, lang }) {
   const currentLang = lang || params?.lang || 'pt';
 
   useEffect(() => {
+    if (!supabase) return; // proteção caso supabase seja null
+
     const getUser = async () => {
       const { data } = await supabase.auth.getUser();
       setUser(data.user);
