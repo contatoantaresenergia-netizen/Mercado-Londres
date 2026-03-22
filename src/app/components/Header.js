@@ -1,16 +1,23 @@
 'use client';
-import { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
-import { supabase } from '@/lib/supabase'; // ✅ arquivo correto
-import { useParams } from 'next/navigation';
+import { ShoppingCart } from 'lucide-react';
+import { useCart } from '../context/CartContext';
+import { usePathname } from 'next/navigation';
+import { supabase } from '@/lib/supabase';
 
-export default function Header({ dict, lang }) {
+export default function Header({ lang, dict }) {
+  const { cart } = useCart() || { cart: [] };
+  const currentLang = lang || 'pt';
+  const pathname = usePathname();
   const [user, setUser] = useState(undefined);
-  const params = useParams();
-  const currentLang = lang || params?.lang || 'pt';
+
+  const pathnameWithoutLang = pathname.replace(`/${currentLang}`, '') || '/';
+
+  const logoSupabase = "https://vpqevrxwiglfpyrwxmne.supabase.co/storage/v1/object/public/images/logo.png/logomarca.png";
 
   useEffect(() => {
-    if (!supabase) return; // proteção caso supabase seja null
+    if (!supabase) return;
 
     const getUser = async () => {
       const { data } = await supabase.auth.getUser();
@@ -27,49 +34,92 @@ export default function Header({ dict, lang }) {
     return () => subscription.unsubscribe();
   }, []);
 
-  const headerDict = dict?.header || {
-    home: "Início",
-    products: "Produtos",
-    about: "Sobre",
-    contact: "Contato",
-    cart: "Carrinho",
-    login: "Entrar"
-  };
-
   return (
-    <header className="bg-white shadow p-4 flex justify-between items-center">
+    <header className="sticky top-0 z-50 bg-white shadow-sm border-b h-20">
+      <div className="container mx-auto px-4 h-full flex items-center justify-between gap-1">
 
-      {/* LOGO */}
-      <Link href={`/${currentLang}`} className="font-bold text-lg">
-        PRIME BRASIL
-      </Link>
+        {/* LOGO */}
+        <Link
+          href={`/${currentLang}`}
+          className="flex items-center gap-2 hover:opacity-90 transition min-w-0"
+        >
+          <div className="h-11 w-11 sm:h-14 sm:w-14 flex-shrink-0">
+            <img src={logoSupabase} alt="Logo" className="h-full w-full object-contain" />
+          </div>
+          <div className="flex flex-col leading-tight">
+            <span className="text-green-700 font-bold text-[13px] sm:text-lg uppercase whitespace-nowrap">
+              Prime Brasil
+            </span>
+            <span className="text-yellow-500 font-semibold text-[9px] sm:text-[10px] tracking-widest uppercase">
+              Market
+            </span>
+          </div>
+        </Link>
 
-      {/* MENU */}
-      <nav className="flex gap-4">
-        <Link href={`/${currentLang}`}>{headerDict.home}</Link>
-        <Link href={`/${currentLang}/produtos`}>{headerDict.products}</Link>
-        <Link href={`/${currentLang}/contato`}>{headerDict.contact}</Link>
-      </nav>
+        {/* MENU DESKTOP */}
+        <nav className="hidden md:flex items-center gap-6">
+          <Link href={`/${currentLang}`} className="hover:text-green-700 transition-colors font-semibold">{dict?.header?.home || 'INÍCIO'}</Link>
+          <Link href={`/${currentLang}/produtos`} className="hover:text-green-700 transition-colors font-semibold">{dict?.header?.products || 'PRODUTOS'}</Link>
+          <Link href={`/${currentLang}/sobre`} className="hover:text-green-700 transition-colors font-semibold">{dict?.header?.about || 'SOBRE'}</Link>
+          <Link href={`/${currentLang}/contato`} className="hover:text-green-700 transition-colors font-semibold">{dict?.header?.contact || 'CONTATO'}</Link>
+        </nav>
 
-      {/* DIREITA */}
-      <div className="flex gap-4 items-center">
+        {/* DIREITA: LOGIN + BANDEIRAS + CARRINHO */}
+        <div className="flex items-center gap-3 flex-shrink-0">
 
-        {/* LOGIN */}
-        {user === undefined ? (
-          <span className="text-gray-400 text-sm">...</span>
-        ) : user ? (
-          <Link href={`/${currentLang}/minha-conta`}>👤</Link>
-        ) : (
-          <Link
-            href={`/${currentLang}/login`}
-            className="bg-green-700 text-white px-3 py-1 rounded"
-          >
-            {headerDict.login}
+          {/* BOTÃO LOGIN / CONTA */}
+          {user === undefined ? (
+            <span className="w-16" />
+          ) : user ? (
+            <Link
+              href={`/${currentLang}/minha-conta`}
+              className="text-green-700 font-semibold text-sm hover:underline"
+            >
+              👤 {dict?.header?.account || 'Conta'}
+            </Link>
+          ) : (
+            <Link
+              href={`/${currentLang}/login`}
+              className="bg-green-700 hover:bg-green-800 text-white text-sm font-semibold px-3 py-1.5 rounded transition"
+            >
+              {dict?.header?.login || 'Entrar'}
+            </Link>
+          )}
+
+          {/* BANDEIRAS */}
+          <div className="flex items-center gap-2">
+            <Link
+              href={`/pt${pathnameWithoutLang}`}
+              className={`transition-all ${currentLang === 'pt' ? 'opacity-100 scale-110' : 'opacity-40 hover:opacity-100'}`}
+            >
+              <img
+                src="https://flagcdn.com/w40/br.png"
+                className="w-6 h-4 rounded-sm shadow-sm object-cover"
+                alt="PT"
+              />
+            </Link>
+            <Link
+              href={`/en${pathnameWithoutLang}`}
+              className={`transition-all ${currentLang === 'en' ? 'opacity-100 scale-110' : 'opacity-40 hover:opacity-100'}`}
+            >
+              <img
+                src="https://flagcdn.com/w40/gb.png"
+                className="w-6 h-4 rounded-sm shadow-sm object-cover"
+                alt="EN"
+              />
+            </Link>
+          </div>
+
+          {/* CARRINHO */}
+          <Link href={`/${currentLang}/carrinho`} className="relative p-1">
+            <ShoppingCart className="w-6 h-6 text-gray-700" />
+            {cart?.length > 0 && (
+              <span className="absolute -top-1 -right-2 bg-red-500 text-white text-[10px] w-5 h-5 flex items-center justify-center rounded-full font-bold">
+                {cart.length}
+              </span>
+            )}
           </Link>
-        )}
-
-        {/* CARRINHO */}
-        <Link href={`/${currentLang}/carrinho`}>🛒</Link>
+        </div>
       </div>
     </header>
   );
