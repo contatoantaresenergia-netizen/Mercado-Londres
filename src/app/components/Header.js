@@ -74,19 +74,19 @@ export default function Header({ dict, lang }) {
         </nav>
 
         {/* DIREITA */}
-        <div className="flex items-center gap-3">
+        <div className="flex items-center gap-4">
 
           {/* SELETOR DE IDIOMA */}
           <button
             onClick={() => switchLang('pt')}
-            className={`text-lg transition-opacity ${currentLang === 'pt' ? 'opacity-100' : 'opacity-40 hover:opacity-70'}`}
+            className={`text-xl transition-opacity ${currentLang === 'pt' ? 'opacity-100' : 'opacity-40 hover:opacity-70'}`}
             title="Português"
           >
             🇧🇷
           </button>
           <button
             onClick={() => switchLang('en')}
-            className={`text-lg transition-opacity ${currentLang === 'en' ? 'opacity-100' : 'opacity-40 hover:opacity-70'}`}
+            className={`text-xl transition-opacity ${currentLang === 'en' ? 'opacity-100' : 'opacity-40 hover:opacity-70'}`}
             title="English"
           >
             🇬🇧
@@ -95,34 +95,29 @@ export default function Header({ dict, lang }) {
           {/* CARRINHO */}
           <Link
             href={`/${currentLang}/carrinho`}
-            className="w-9 h-9 rounded-full bg-gray-100 flex items-center justify-center hover:bg-green-50 hover:ring-2 hover:ring-green-700 transition"
+            className="text-2xl hover:scale-110 transition-transform"
             title="Carrinho"
           >
-            <svg xmlns="http://www.w3.org/2000/svg" className="w-5 h-5 text-gray-600" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-              <circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/>
-              <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/>
-            </svg>
+            🛒
           </Link>
 
           {/* LOGIN / CONTA */}
           {user === undefined ? (
-            <div className="w-20 h-8 rounded bg-gray-100 animate-pulse" />
+            <div className="w-24 h-9 rounded bg-gray-100 animate-pulse" />
           ) : user ? (
             <Link
               href={`/${currentLang}/minha-conta`}
-              className="w-9 h-9 rounded-full bg-green-700 flex items-center justify-center hover:bg-green-800 transition"
+              className="bg-green-700 hover:bg-green-800 text-white font-semibold px-5 py-2 rounded-lg transition text-sm"
               title="Minha Conta"
             >
-              <svg xmlns="http://www.w3.org/2000/svg" className="w-5 h-5 text-white" viewBox="0 0 24 24" fill="currentColor">
-                <path d="M12 12c2.7 0 4.8-2.1 4.8-4.8S14.7 2.4 12 2.4 7.2 4.5 7.2 7.2 9.3 12 12 12zm0 2.4c-3.2 0-9.6 1.6-9.6 4.8v2.4h19.2v-2.4c0-3.2-6.4-4.8-9.6-4.8z"/>
-              </svg>
+              👤 Conta
             </Link>
           ) : (
             <Link
               href={`/${currentLang}/login`}
-              className="bg-green-700 hover:bg-green-800 text-white text-sm font-medium px-4 py-2 rounded transition"
+              className="bg-green-700 hover:bg-green-800 text-white font-semibold px-5 py-2 rounded-lg transition text-sm"
             >
-              {headerDict.login}
+              Entrar
             </Link>
           )}
 
