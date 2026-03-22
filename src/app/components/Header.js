@@ -1,14 +1,12 @@
 'use client';
-
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
-import { createClient } from '../lib/supabase/client';
+import { createClient } from '@/lib/supabase/client'; // ✅ corrigido
 import { useParams } from 'next/navigation';
 
 export default function Header({ dict, lang }) {
   const [user, setUser] = useState(undefined);
   const supabase = createClient();
-
   const params = useParams();
   const currentLang = lang || params?.lang || 'pt';
 
@@ -17,7 +15,6 @@ export default function Header({ dict, lang }) {
       const { data } = await supabase.auth.getUser();
       setUser(data.user);
     };
-
     getUser();
 
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
@@ -40,7 +37,7 @@ export default function Header({ dict, lang }) {
 
   return (
     <header className="bg-white shadow p-4 flex justify-between items-center">
-      
+
       {/* LOGO */}
       <Link href={`/${currentLang}`} className="font-bold text-lg">
         PRIME BRASIL
@@ -58,7 +55,7 @@ export default function Header({ dict, lang }) {
 
         {/* LOGIN */}
         {user === undefined ? (
-          <span>...</span>
+          <span className="text-gray-400 text-sm">...</span>
         ) : user ? (
           <Link href={`/${currentLang}/minha-conta`}>👤</Link>
         ) : (
