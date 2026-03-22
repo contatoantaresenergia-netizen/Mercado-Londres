@@ -1,14 +1,18 @@
 import { createClient } from '@supabase/supabase-js';
 import { NextResponse } from 'next/server';
-import { headers } from 'next/headers'; // Importe os headers
+import { headers } from 'next/headers';
 import Stripe from 'stripe';
+import { Resend } from 'resend';
 
 export const dynamic = 'force-dynamic';
+
+// Inicializa o Resend (Certifique-se de ter a variável RESEND_API_KEY no Vercel)
+const resend = new Resend(process.env.RESEND_API_KEY);
 
 export async function POST(req) {
   const stripe = new Stripe(process.env.STRIPE_SECRET_KEY || '');
   
-  // Use a SERVICE_ROLE_KEY para garantir permissão de escrita no banco
+  // Service Role é necessária para ignorar políticas de RLS ao salvar o pedido
   const supabase = createClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL,
     process.env.SUPABASE_SERVICE_ROLE_KEY 
@@ -23,35 +27,55 @@ export async function POST(req) {
 
   try {
     if (!sig || !webhookSecret) {
-      console.error("Faltando assinatura ou segredo do webhook");
-      return NextResponse.json({ error: 'Security keys missing' }, { status: 400 });
+      return NextResponse.json({ error: 'Chaves de segurança ausentes' }, { status: 400 });
     }
     event = stripe.webhooks.constructEvent(body, sig, webhookSecret);
   } catch (err) {
-    console.error(`Erro na validação do Stripe: ${err.message}`);
+    console.error(`Erro Stripe: ${err.message}`);
     return NextResponse.json({ error: err.message }, { status: 400 });
   }
 
   if (event.type === 'checkout.session.completed') {
     const session = event.data.object;
+    const customerEmail = session.customer_details?.email || session.metadata?.email;
 
-    // Log para você debugar no terminal da Vercel/Local
-    console.log("Processando sessão:", session.id);
+    console.log(`Pagamento confirmado para: ${customerEmail}`);
 
-    const { data, error } = await supabase
+    // 1. Salvar no Banco de Dados
+    const { data, error: dbError } = await supabase
       .from('orders')
       .insert([{
-        customer_email: session.customer_details?.email || session.metadata?.email, 
+        customer_email: customerEmail,
         total: session.amount_total / 100,
-        order_number: session.metadata?.orderNumber || `ORD-${Date.now()}`, // Fallback para não dar erro
+        order_number: session.metadata?.orderNumber || `ORD-${Date.now()}`,
         status: 'pago',
         created_at: new Date().toISOString()
       }]);
 
-    if (error) {
-      console.error("Erro ao salvar no Supabase:", error.message);
-      // O Stripe tentará reenviar o webhook se retornarmos erro aqui
-      return NextResponse.json({ error: error.message }, { status: 500 });
+    if (dbError) {
+      console.error("Erro Supabase:", dbError.message);
+      return NextResponse.json({ error: dbError.message }, { status: 500 });
+    }
+
+    // 2. Enviar E-mail de Confirmação (Só envia se salvou no banco)
+    if (customerEmail) {
+      try {
+        await resend.emails.send({
+          from: 'Mercado Londres <onboarding@resend.dev>', // Depois altere para seu domínio próprio
+          to: customerEmail,
+          subject: 'Confirmamos seu pedido! 🛒',
+          html: `
+            <h1>Obrigado pela sua compra no Mercado Londres!</h1>
+            <p>Recebemos seu pagamento com sucesso.</p>
+            <p><strong>Valor Total:</strong> R$ ${session.amount_total / 100}</p>
+            <p>Em breve você receberá novas atualizações do envio.</p>
+          `
+        });
+        console.log("E-mail enviado com sucesso!");
+      } catch (mailError) {
+        console.error("Falha ao enviar e-mail:", mailError);
+        // Não travamos o processo se o e-mail falhar, pois o banco já foi atualizado
+      }
     }
   }
 
