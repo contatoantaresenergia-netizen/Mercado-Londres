@@ -2,16 +2,13 @@
 
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
-import { usePathname } from 'next/navigation';
+import Image from 'next/image';
 import { createClient } from '@/lib/supabase/client';
 
 export default function Header({ dict, lang }) {
-  const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [user, setUser] = useState(null);
-  const pathname = usePathname();
   const supabase = createClient();
 
-  // Verifica se o usuário está logado ao carregar a página
   useEffect(() => {
     const getUser = async () => {
       const { data: { user } } = await supabase.auth.getUser();
@@ -19,7 +16,6 @@ export default function Header({ dict, lang }) {
     };
     getUser();
 
-    // Escuta mudanças na autenticação (login/logout)
     const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
       setUser(session?.user ?? null);
     });
@@ -27,91 +23,65 @@ export default function Header({ dict, lang }) {
     return () => subscription.unsubscribe();
   }, [supabase]);
 
-  const navLinks = [
-    { name: dict.header.home, href: `/${lang}` },
-    { name: dict.header.products, href: `/${lang}/products` },
-    { name: dict.header.about, href: `/${lang}/about` },
-    { name: dict.header.contact, href: `/${lang}/contact` },
-  ];
-
   return (
     <header className="bg-white shadow-sm sticky top-0 z-50">
-      <nav className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex justify-between h-16 items-center">
-          
-          {/* LOGO */}
-          <div className="flex-shrink-0">
-            <Link href={`/${lang}`} className="text-2xl font-bold text-blue-600">
-              MERCADO LONDRES
-            </Link>
-          </div>
-
-          {/* MENU DESKTOP */}
-          <div className="hidden md:flex space-x-8">
-            {navLinks.map((link) => (
-              <Link
-                key={link.href}
-                href={link.href}
-                className="text-gray-700 hover:text-blue-600 font-medium transition-colors"
-              >
-                {link.name}
-              </Link>
-            ))}
-          </div>
-
-          {/* ICONES DIREITA (CARRINHO E LOGIN) */}
-          <div className="flex items-center space-x-5">
-            {/* Link do Carrinho */}
-            <Link href={`/${lang}/cart`} className="text-gray-700 hover:text-blue-600 relative">
-              <span className="font-medium">{dict.header.cart}</span>
-            </Link>
-
-            {/* BOTÃO DE LOGIN / MINHA CONTA */}
-            <div className="border-l pl-5 flex items-center">
-              {user ? (
-                <Link 
-                  href={`/${lang}/account`} 
-                  className="text-sm font-semibold text-gray-700 hover:text-blue-600 bg-gray-100 px-3 py-2 rounded-lg"
-                >
-                  {dict.header.myAccount || "Minha Conta"}
-                </Link>
-              ) : (
-                <Link 
-                  href={`/${lang}/login`} 
-                  className="text-sm font-semibold text-white bg-blue-600 hover:bg-blue-700 px-4 py-2 rounded-lg transition-all"
-                >
-                  {dict.header.login || "Entrar"}
-                </Link>
-              )}
+      <nav className="max-w-7xl mx-auto px-4 h-16 flex justify-between items-center">
+        
+        {/* LOGO (Mantendo seu estilo Prime Brasil) */}
+        <div className="flex items-center space-x-2">
+          <Link href={`/${lang}`} className="flex items-center">
+            <div className="font-bold leading-tight">
+              <span className="text-[#2D5A27] block text-xl">PRIME BRASIL</span>
+              <span className="text-[#D4AF37] block text-xs tracking-[0.2em]">MARKET</span>
             </div>
-
-            {/* Menu Mobile Button */}
-            <button 
-              className="md:hidden p-2 text-gray-600"
-              onClick={() => setIsMenuOpen(!isMenuOpen)}
-            >
-              <svg className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d={isMenuOpen ? "M6 18L18 6M6 6l12 12" : "M4 6h16M4 12h16M4 18h16"} />
-              </svg>
-            </button>
-          </div>
+          </Link>
         </div>
 
-        {/* MENU MOBILE EXPANDIDO */}
-        {isMenuOpen && (
-          <div className="md:hidden pb-4 space-y-2">
-            {navLinks.map((link) => (
-              <Link
-                key={link.href}
-                href={link.href}
-                className="block px-3 py-2 text-base font-medium text-gray-700 hover:bg-gray-50"
-                onClick={() => setIsMenuOpen(false)}
-              >
-                {link.name}
-              </Link>
-            ))}
+        {/* MENU CENTRAL */}
+        <div className="hidden md:flex space-x-6 text-sm font-semibold text-gray-800">
+          <Link href={`/${lang}`} className="hover:text-green-700">{dict.header.home}</Link>
+          <Link href={`/${lang}/products`} className="hover:text-green-700">{dict.header.products}</Link>
+          <Link href={`/${lang}/about`} className="hover:text-green-700">{dict.header.about}</Link>
+          <Link href={`/${lang}/contact`} className="hover:text-green-700">{dict.header.contact}</Link>
+        </div>
+
+        {/* ÍCONES DIREITA (Bandeiras, Login e Carrinho) */}
+        <div className="flex items-center space-x-4">
+          
+          {/* BANDEIRAS (Idiomas) */}
+          <div className="flex items-center space-x-2 border-r pr-4 border-gray-200">
+            <Link href="/pt" className="hover:opacity-80 transition-opacity">
+              <Image src="/images/flags/br.svg" width={24} height={16} alt="PT" className="rounded-sm" />
+            </Link>
+            <Link href="/en" className="hover:opacity-80 transition-opacity">
+              <Image src="/images/flags/uk.svg" width={24} height={16} alt="EN" className="rounded-sm" />
+            </Link>
           </div>
-        )}
+
+          {/* BOTÃO LOGIN / USER (Novo!) */}
+          <div className="flex items-center">
+            {user ? (
+              <Link href={`/${lang}/account`} className="text-gray-700 hover:text-green-700">
+                <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5.121 17.804A13.937 13.937 0 0112 16c2.5 0 4.847.655 6.879 1.804M15 10a3 3 0 11-6 0 3 3 0 016 0zm6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+              </Link>
+            ) : (
+              <Link href={`/${lang}/login`} className="text-xs font-bold text-gray-700 hover:text-green-700 uppercase tracking-tighter">
+                {dict.header.login || "Entrar"}
+              </Link>
+            )}
+          </div>
+
+          {/* CARRINHO (Mantendo seu estilo) */}
+          <Link href={`/${lang}/cart`} className="relative group">
+            <svg xmlns="http://www.w3.org/2000/svg" className="h-7 w-7 text-gray-700 group-hover:text-green-700" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z" />
+            </svg>
+            <span className="absolute -top-1 -right-2 bg-red-500 text-white text-[10px] font-bold px-1.5 py-0.5 rounded-full">2</span>
+          </Link>
+
+        </div>
       </nav>
     </header>
   );
