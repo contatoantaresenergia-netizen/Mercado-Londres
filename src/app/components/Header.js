@@ -1,12 +1,11 @@
 'use client';
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
-import { createClient } from '@/lib/supabase/client'; // ✅ corrigido
+import { supabase } from '@/lib/supabase/client'; // ✅ corrigido
 import { useParams } from 'next/navigation';
 
 export default function Header({ dict, lang }) {
   const [user, setUser] = useState(undefined);
-  const supabase = createClient();
   const params = useParams();
   const currentLang = lang || params?.lang || 'pt';
 
