@@ -1,14 +1,17 @@
 'use client'
 import { useState } from 'react'
-import { createClient } from '@/lib/supabase/client'
+import { supabase } from '@/lib/supabase' // ✅ import correto
 
 export default function LoginPage() {
   const [email, setEmail] = useState('')
   const [msg, setMsg] = useState('')
-  const supabase = createClient()
 
   async function handleLogin(e) {
     e.preventDefault()
+    if (!supabase) {
+      setMsg('Erro: configuração do Supabase inválida')
+      return
+    }
     const { error } = await supabase.auth.signInWithOtp({
       email,
       options: { emailRedirectTo: `${window.location.origin}/auth/callback` }
@@ -19,7 +22,7 @@ export default function LoginPage() {
   return (
     <div className="flex flex-col items-center justify-center h-screen">
       <form onSubmit={handleLogin} className="p-8 border rounded-lg shadow-lg bg-white">
-        <h2 className="text-xl font-bold mb-4">Entrar no Mercado Londres</h2>
+        <h2 className="text-xl font-bold mb-4">Entrar no Prime Brasil</h2>
         <input 
           type="email" 
           placeholder="Seu e-mail" 
