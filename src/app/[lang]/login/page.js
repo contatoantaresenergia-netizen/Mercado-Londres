@@ -1,10 +1,13 @@
 'use client'
 import { useState } from 'react'
-import { supabase } from '@/lib/supabase' // ✅ import correto
+import { useParams } from 'next/navigation'
+import { supabase } from '@/lib/supabase'
 
 export default function LoginPage() {
   const [email, setEmail] = useState('')
   const [msg, setMsg] = useState('')
+  const params = useParams()
+  const lang = params?.lang || 'pt'
 
   async function handleLogin(e) {
     e.preventDefault()
@@ -14,7 +17,9 @@ export default function LoginPage() {
     }
     const { error } = await supabase.auth.signInWithOtp({
       email,
-      options: { emailRedirectTo: `${window.location.origin}/auth/callback` }
+      options: { 
+        emailRedirectTo: `${window.location.origin}/auth/callback?next=/${lang}/minha-conta`
+      }
     })
     setMsg(error ? 'Erro: ' + error.message : 'Verifique seu e-mail!')
   }
@@ -29,7 +34,7 @@ export default function LoginPage() {
           className="border p-2 w-full mb-4"
           onChange={(e) => setEmail(e.target.value)}
         />
-        <button className="bg-blue-600 text-white w-full py-2 rounded">Entrar</button>
+        <button className="bg-green-700 text-white w-full py-2 rounded">Entrar</button>
         {msg && <p className="mt-4 text-sm text-center font-medium">{msg}</p>}
       </form>
     </div>
