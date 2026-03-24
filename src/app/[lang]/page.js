@@ -99,7 +99,7 @@ export default function HomePage({ params }) {
   return (
     <div className="min-h-screen">
       {/* Hero Section com Banner Rotativo */}
-      <section className="relative h-[700px] overflow-hidden">
+      <section className="relative h-[700px] md:h-[500px] sm:h-[300px] overflow-hidden">
         {banners.map((banner, index) => (
           <div 
             key={banner.id} 
