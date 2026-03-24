@@ -55,7 +55,7 @@ export default function HomePage({ params }) {
       title: lang === 'pt' ? 'CARNES' : 'MEAT',
       subtitle: lang === 'pt' ? 'Tradição Portuguesa' : 'Portuguese Tradition',
       image: 'https://vpqevrxwiglfpyrwxmne.supabase.co/storage/v1/object/public/images/BANER%20CARNES.webp',
-      bgColor: '',
+      bgColor: 'from-red-800 to-red-700',
     },
     {
       id: 2,
