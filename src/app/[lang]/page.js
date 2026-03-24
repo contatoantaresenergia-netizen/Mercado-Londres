@@ -54,21 +54,21 @@ export default function HomePage({ params }) {
       id: 1,
       title: lang === 'pt' ? 'CARNES' : 'MEAT',
       subtitle: lang === 'pt' ? 'Tradição Portuguesa' : 'Portuguese Tradition',
-      image: 'https://vpqevrxwiglfpyrwxmne.supabase.co/storage/v1/object/public/images/02%20CARNE%20NITIDA.webp',
+      image: 'https://vpqevrxwiglfpyrwxmne.supabase.co/storage/v1/object/public/images/BANER%20CARNES.webp',
       bgColor: '',
     },
     {
       id: 2,
-      title: lang === 'pt' ? 'VINHOS PORTUGUESES 🍷' : 'PORTUGUESE WINES 🍷',
+      title: lang === 'pt' ? 'DOCES ' : 'SWEETS ',
       subtitle: lang === 'pt' ? 'Seleção Premium' : 'Premium Selection',
-      image: 'https://images.unsplash.com/photo-1506377247377-2a5b3b417ebb?w=1200&h=500&fit=crop',
+      image: 'https://vpqevrxwiglfpyrwxmne.supabase.co/storage/v1/object/public/images/BANER%20DDOCES.webp',
       bgColor: 'from-red-800 to-red-700',
     },
     {
       id: 3,
-      title: lang === 'pt' ? 'QUEIJOS ARTESANAIS 🧀' : 'ARTISAN CHEESES 🧀',
+      title: lang === 'pt' ? 'BEBIDAS ' : 'DRINKS ',
       subtitle: lang === 'pt' ? 'Sabor Autêntico' : 'Authentic Flavor',
-      image: 'https://images.unsplash.com/photo-1452195100486-9cc805987862?w=1200&h=500&fit=crop',
+      image: 'https://vpqevrxwiglfpyrwxmne.supabase.co/storage/v1/object/public/images/BANER%20BEBIDAS.webp',
       bgColor: 'from-yellow-600 to-yellow-500',
     }
   ];
