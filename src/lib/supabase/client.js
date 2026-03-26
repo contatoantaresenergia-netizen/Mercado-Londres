@@ -1,18 +1,18 @@
 import { createClient as createSupabaseClient } from '@supabase/supabase-js'
 
-const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || ''
-const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || ''
+const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL
+const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
 
-// Exporta o cliente apenas se as chaves existirem
-export const supabase = (supabaseUrl && supabaseKey)
-  ? createSupabaseClient(supabaseUrl, supabaseKey)
+// Só exporta se ambos existirem e não forem strings vazias
+export const supabase = (supabaseUrl && supabaseKey) 
+  ? createSupabaseClient(supabaseUrl, supabaseKey) 
   : null
 
 export function createClient() {
+  // Se não houver URL durante o build, ele retorna null em vez de dar erro fatal
   if (!supabaseUrl || !supabaseKey) {
-    // Em vez de quebrar o build, retornamos null ou um log amigável
-    console.error("Supabase URL ou Key faltando!")
-    return null 
+    console.warn("Aviso: Supabase URL ou Key não encontradas no ambiente.");
+    return null;
   }
   return createSupabaseClient(supabaseUrl, supabaseKey)
 }
