@@ -1,14 +1,14 @@
 'use client';
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
-import { ShoppingCart } from 'lucide-react';
+import { ShoppingCart, User } from 'lucide-react'; 
 import { useCart } from '../context/CartContext';
 import { usePathname } from 'next/navigation';
 import { supabase } from '@/lib/supabase';
 
 export default function Header({ lang, dict }) {
   const { cart } = useCart() || { cart: [] };
-  const [user, setUser] = useState(undefined);
+  const [user, setUser] = useState(null); // Começa como null para evitar o sumiço
   const currentLang = lang || 'pt';
   const pathname = usePathname();
   const pathnameWithoutLang = pathname.replace(`/${currentLang}`, '') || '/';
@@ -16,12 +16,19 @@ export default function Header({ lang, dict }) {
   const logoSupabase = "https://vpqevrxwiglfpyrwxmne.supabase.co/storage/v1/object/public/images/logo.png/logomarca.png";
 
   useEffect(() => {
+    // Se o supabase não estiver disponível (erro de config ou build), paramos aqui
+    // Mas o 'user' já é null, então o botão de login aparecerá
     if (!supabase) return;
 
     const getUser = async () => {
-      const { data } = await supabase.auth.getUser();
-      setUser(data.user);
+      try {
+        const { data } = await supabase.auth.getUser();
+        if (data?.user) setUser(data.user);
+      } catch (err) {
+        console.error("Erro ao verificar user:", err);
+      }
     };
+    
     getUser();
 
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
@@ -54,10 +61,18 @@ export default function Header({ lang, dict }) {
 
         {/* MENU DESKTOP */}
         <nav className="hidden md:flex items-center gap-6">
-          <Link href={`/${currentLang}`} className="hover:text-green-700 transition-colors font-semibold">{dict?.header?.home || 'INÍCIO'}</Link>
-          <Link href={`/${currentLang}/produtos`} className="hover:text-green-700 transition-colors font-semibold">{dict?.header?.products || 'PRODUTOS'}</Link>
-          <Link href={`/${currentLang}/sobre`} className="hover:text-green-700 transition-colors font-semibold">{dict?.header?.about || 'SOBRE'}</Link>
-          <Link href={`/${currentLang}/contato`} className="hover:text-green-700 transition-colors font-semibold">{dict?.header?.contact || 'CONTATO'}</Link>
+          <Link href={`/${currentLang}`} className="hover:text-green-700 transition-colors font-semibold">
+            {dict?.header?.home || 'INÍCIO'}
+          </Link>
+          <Link href={`/${currentLang}/produtos`} className="hover:text-green-700 transition-colors font-semibold">
+            {dict?.header?.products || 'PRODUTOS'}
+          </Link>
+          <Link href={`/${currentLang}/sobre`} className="hover:text-green-700 transition-colors font-semibold">
+            {dict?.header?.about || 'SOBRE'}
+          </Link>
+          <Link href={`/${currentLang}/contato`} className="hover:text-green-700 transition-colors font-semibold">
+            {dict?.header?.contact || 'CONTATO'}
+          </Link>
         </nav>
 
         {/* DIREITA */}
@@ -89,24 +104,14 @@ export default function Header({ lang, dict }) {
             )}
           </Link>
 
-          {/* BOTÃO LOGIN / CONTA */}
-          {user === undefined ? (
-            <div className="w-20 h-8 rounded-lg bg-gray-100 animate-pulse" />
-          ) : user ? (
-            <Link
-              href={`/${currentLang}/minha-conta`}
-              className="bg-green-700 hover:bg-green-800 text-white font-semibold px-4 py-2 rounded-lg transition text-sm"
-            >
-              👤 Conta
-            </Link>
-          ) : (
-            <Link
-              href={`/${currentLang}/login`}
-              className="bg-green-700 hover:bg-green-800 text-white font-semibold px-4 py-2 rounded-lg transition text-sm"
-            >
-              {dict?.header?.login || 'Entrar'}
-            </Link>
-          )}
+          {/* ÍCONE DE LOGIN (A CARINHA) */}
+          <Link 
+            href={user ? `/${currentLang}/minha-conta` : `/${currentLang}/login`} 
+            className="p-1 hover:text-green-700 transition-colors flex items-center gap-1"
+          >
+            <User className="w-6 h-6 text-gray-700" />
+            {user && <span className="text-xs font-bold text-green-700 hidden sm:block">Olá!</span>}
+          </Link>
 
         </div>
       </div>
