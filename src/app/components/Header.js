@@ -8,7 +8,7 @@ import { supabase } from '@/lib/supabase';
 
 export default function Header({ lang, dict }) {
   const { cart } = useCart() || { cart: [] };
-  const [user, setUser] = useState(null); // Começa como null para evitar o sumiço
+  const [user, setUser] = useState(null);
   const currentLang = lang || 'pt';
   const pathname = usePathname();
   const pathnameWithoutLang = pathname.replace(`/${currentLang}`, '') || '/';
@@ -16,8 +16,6 @@ export default function Header({ lang, dict }) {
   const logoSupabase = "https://vpqevrxwiglfpyrwxmne.supabase.co/storage/v1/object/public/images/logo.png/logomarca.png";
 
   useEffect(() => {
-    // Se o supabase não estiver disponível (erro de config ou build), paramos aqui
-    // Mas o 'user' já é null, então o botão de login aparecerá
     if (!supabase) return;
 
     const getUser = async () => {
@@ -110,7 +108,10 @@ export default function Header({ lang, dict }) {
             className="p-1 hover:text-green-700 transition-colors flex items-center gap-1"
           >
             <User className="w-6 h-6 text-gray-700" />
-            {user && <span className="text-xs font-bold text-green-700 hidden sm:block">Olá!</span>}
+            {user 
+              ? <span className="text-xs font-bold text-green-700 hidden sm:block">Olá!</span>
+              : <span className="text-xs font-bold text-gray-700 hidden sm:block">Entrar</span>
+            }
           </Link>
 
         </div>
