@@ -65,7 +65,7 @@ export default function Footer({ lang, dict }) {
               </li>
               <li className="flex items-center gap-2">
                 <Mail className="w-4 h-4 text-green-500" />
-                contato@mercadolondres.co.uk
+                primebrasilm@gmail.com
               </li>
               <li className="text-xs opacity-70 mt-2">
                 244 Horton Road, London, SL3 9HN
