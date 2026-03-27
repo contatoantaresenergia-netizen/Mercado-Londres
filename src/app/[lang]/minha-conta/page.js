@@ -2,7 +2,7 @@
 import { useEffect, useState } from 'react'
 import { useRouter, useParams } from 'next/navigation'
 import { createClient } from '@/lib/supabase/client'
-import { User, Package, LogOut, Clock, CheckCircle, XCircle, Save, ChevronRight } from 'lucide-react'
+import { User, Package, LogOut, Clock, CheckCircle, XCircle, Save, ChevronRight, ArrowLeft } from 'lucide-react'
 
 const STATUS_CONFIG = {
   pending:  { label: 'Aguardando pagamento', color: 'text-yellow-600 bg-yellow-50', icon: Clock },
@@ -19,6 +19,9 @@ export default function MinhaContaPage() {
   const [profile, setProfile] = useState({ full_name: '', phone: '', address: '', postcode: '' })
   const [saving, setSaving] = useState(false)
   const [saveMsg, setSaveMsg] = useState('')
+  const [selectedOrder, setSelectedOrder] = useState(null)
+  const [orderItems, setOrderItems] = useState([])
+  const [loadingItems, setLoadingItems] = useState(false)
   const router = useRouter()
   const params = useParams()
   const lang = params?.lang || 'pt'
@@ -30,12 +33,10 @@ export default function MinhaContaPage() {
       if (!session) { router.push(`/${lang}/login`); return }
       setUser(session.user)
 
-      // Carregar pedidos
       const { data: ordersData } = await supabase.from('orders').select('*')
         .eq('customer_email', session.user.email).order('created_at', { ascending: false })
       if (ordersData) setOrders(ordersData)
 
-      // Carregar perfil
       const { data: profileData } = await supabase.from('profiles')
         .select('*').eq('id', session.user.id).single()
       if (profileData) {
@@ -51,6 +52,14 @@ export default function MinhaContaPage() {
     }
     loadData()
   }, [])
+
+  async function openOrder(order) {
+    setSelectedOrder(order)
+    setLoadingItems(true)
+    const { data } = await supabase.from('order_items').select('*').eq('order_id', order.id)
+    if (data) setOrderItems(data)
+    setLoadingItems(false)
+  }
 
   async function handleSaveProfile() {
     setSaving(true)
@@ -76,6 +85,85 @@ export default function MinhaContaPage() {
       <div className="animate-spin w-8 h-8 border-4 border-green-600 border-t-transparent rounded-full" />
     </div>
   )
+
+  // DETALHE DO PEDIDO (modal inline)
+  if (selectedOrder) {
+    const cfg = STATUS_CONFIG[selectedOrder.status] || STATUS_CONFIG.pending
+    const Icon = cfg.icon
+    return (
+      <div className="min-h-screen bg-gray-50">
+        <div className="max-w-4xl mx-auto px-4 py-10">
+          <button
+            onClick={() => { setSelectedOrder(null); setOrderItems([]) }}
+            className="flex items-center gap-2 text-sm font-bold text-gray-500 hover:text-green-700 transition-colors mb-6"
+          >
+            <ArrowLeft size={16} /> Voltar aos pedidos
+          </button>
+
+          <div className="bg-white rounded-3xl border border-gray-100 p-8 mb-6 shadow-sm">
+            <div className="flex items-center justify-between flex-wrap gap-4">
+              <div>
+                <h1 className="text-xl font-black italic uppercase tracking-tight">
+                  Pedido #{selectedOrder.order_number}
+                </h1>
+                <p className="text-gray-400 text-sm mt-1">
+                  {new Date(selectedOrder.created_at).toLocaleDateString('pt-BR', { day: '2-digit', month: 'long', year: 'numeric' })}
+                </p>
+              </div>
+              <span className={`flex items-center gap-1.5 text-sm font-bold px-4 py-2 rounded-full ${cfg.color}`}>
+                <Icon size={14} />{cfg.label}
+              </span>
+            </div>
+          </div>
+
+          <div className="bg-white rounded-3xl border border-gray-100 p-8 shadow-sm mb-6">
+            <div className="flex items-center gap-3 mb-6 pb-4 border-b">
+              <Package className="text-green-600" size={22} />
+              <h2 className="text-xl font-black italic uppercase tracking-tight">Produtos</h2>
+            </div>
+
+            {loadingItems ? (
+              <div className="flex justify-center py-8">
+                <div className="animate-spin w-8 h-8 border-4 border-green-600 border-t-transparent rounded-full" />
+              </div>
+            ) : orderItems.length === 0 ? (
+              <p className="text-gray-400 text-sm text-center py-8">Nenhum produto encontrado.</p>
+            ) : (
+              <div className="space-y-3">
+                {orderItems.map((item, index) => (
+                  <div key={index} className="flex items-center justify-between p-4 rounded-2xl border border-gray-100">
+                    <div className="flex items-center gap-4">
+                      {item.image_url ? (
+                        <img src={item.image_url} alt={item.product_name} className="w-14 h-14 object-cover rounded-xl" />
+                      ) : (
+                        <div className="w-14 h-14 bg-gray-100 rounded-xl flex items-center justify-center">
+                          <Package size={20} className="text-gray-400" />
+                        </div>
+                      )}
+                      <div>
+                        <p className="font-bold text-sm">{item.product_name}</p>
+                        <p className="text-xs text-gray-400 mt-0.5">Quantidade: {item.quantity}</p>
+                      </div>
+                    </div>
+                    <span className="font-black text-green-700">
+                      £{parseFloat(item.price * item.quantity).toFixed(2)}
+                    </span>
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+
+          <div className="bg-white rounded-3xl border border-gray-100 p-6 shadow-sm">
+            <div className="flex items-center justify-between">
+              <span className="font-bold text-gray-600 uppercase text-sm">Total do Pedido</span>
+              <span className="font-black text-green-700 text-2xl">£{parseFloat(selectedOrder.total_amount).toFixed(2)}</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    )
+  }
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -146,7 +234,7 @@ export default function MinhaContaPage() {
                   return (
                     <div
                       key={order.id}
-                      onClick={() => router.push(`/${lang}/minha-conta/pedido/${order.id}`)}
+                      onClick={() => openOrder(order)}
                       className="flex items-center justify-between p-5 rounded-2xl border border-gray-100 hover:border-green-200 hover:bg-green-50/30 transition-all cursor-pointer"
                     >
                       <div className="flex items-center gap-4">
@@ -186,50 +274,35 @@ export default function MinhaContaPage() {
             <div className="space-y-4">
               <div>
                 <label className="block text-xs font-bold uppercase text-gray-500 mb-1.5">Nome Completo</label>
-                <input
-                  type="text"
-                  value={profile.full_name}
+                <input type="text" value={profile.full_name}
                   onChange={e => setProfile({ ...profile, full_name: e.target.value })}
                   placeholder="Seu nome completo"
-                  className="w-full p-4 rounded-2xl border border-gray-200 outline-none focus:ring-2 focus:ring-green-500 text-sm"
-                />
+                  className="w-full p-4 rounded-2xl border border-gray-200 outline-none focus:ring-2 focus:ring-green-500 text-sm" />
               </div>
               <div>
                 <label className="block text-xs font-bold uppercase text-gray-500 mb-1.5">Telefone</label>
-                <input
-                  type="text"
-                  value={profile.phone}
+                <input type="text" value={profile.phone}
                   onChange={e => setProfile({ ...profile, phone: e.target.value })}
                   placeholder="+44 7700 000000"
-                  className="w-full p-4 rounded-2xl border border-gray-200 outline-none focus:ring-2 focus:ring-green-500 text-sm"
-                />
+                  className="w-full p-4 rounded-2xl border border-gray-200 outline-none focus:ring-2 focus:ring-green-500 text-sm" />
               </div>
               <div>
                 <label className="block text-xs font-bold uppercase text-gray-500 mb-1.5">Morada / Address</label>
-                <input
-                  type="text"
-                  value={profile.address}
+                <input type="text" value={profile.address}
                   onChange={e => setProfile({ ...profile, address: e.target.value })}
                   placeholder="123 Street Name, City"
-                  className="w-full p-4 rounded-2xl border border-gray-200 outline-none focus:ring-2 focus:ring-green-500 text-sm"
-                />
+                  className="w-full p-4 rounded-2xl border border-gray-200 outline-none focus:ring-2 focus:ring-green-500 text-sm" />
               </div>
               <div>
                 <label className="block text-xs font-bold uppercase text-gray-500 mb-1.5">Código Postal</label>
-                <input
-                  type="text"
-                  value={profile.postcode}
+                <input type="text" value={profile.postcode}
                   onChange={e => setProfile({ ...profile, postcode: e.target.value })}
                   placeholder="SW1A 1AA"
-                  className="w-full p-4 rounded-2xl border border-gray-200 outline-none focus:ring-2 focus:ring-green-500 text-sm"
-                />
+                  className="w-full p-4 rounded-2xl border border-gray-200 outline-none focus:ring-2 focus:ring-green-500 text-sm" />
               </div>
 
-              <button
-                onClick={handleSaveProfile}
-                disabled={saving}
-                className="w-full bg-green-600 text-white py-4 rounded-2xl font-black uppercase italic hover:bg-green-700 transition-all shadow-lg disabled:bg-gray-300 flex items-center justify-center gap-2"
-              >
+              <button onClick={handleSaveProfile} disabled={saving}
+                className="w-full bg-green-600 text-white py-4 rounded-2xl font-black uppercase italic hover:bg-green-700 transition-all shadow-lg disabled:bg-gray-300 flex items-center justify-center gap-2">
                 <Save size={18} />
                 {saving ? 'GUARDANDO...' : 'GUARDAR DADOS'}
               </button>
