@@ -86,40 +86,43 @@ export default function MinhaContaPage() {
     </div>
   )
 
-  // DETALHE DO PEDIDO (modal inline)
+  // DETALHE DO PEDIDO
   if (selectedOrder) {
     const cfg = STATUS_CONFIG[selectedOrder.status] || STATUS_CONFIG.pending
     const Icon = cfg.icon
     return (
       <div className="min-h-screen bg-gray-50">
-        <div className="max-w-4xl mx-auto px-4 py-10">
+        <div className="max-w-4xl mx-auto px-3 sm:px-4 py-6 sm:py-10">
+
           <button
             onClick={() => { setSelectedOrder(null); setOrderItems([]) }}
-            className="flex items-center gap-2 text-sm font-bold text-gray-500 hover:text-green-700 transition-colors mb-6"
+            className="flex items-center gap-2 text-sm font-bold text-gray-500 hover:text-green-700 transition-colors mb-4"
           >
             <ArrowLeft size={16} /> Voltar aos pedidos
           </button>
 
-          <div className="bg-white rounded-3xl border border-gray-100 p-8 mb-6 shadow-sm">
-            <div className="flex items-center justify-between flex-wrap gap-4">
+          {/* HEADER PEDIDO */}
+          <div className="bg-white rounded-2xl sm:rounded-3xl border border-gray-100 p-5 sm:p-8 mb-4 shadow-sm">
+            <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
               <div>
-                <h1 className="text-xl font-black italic uppercase tracking-tight">
+                <h1 className="text-lg sm:text-xl font-black italic uppercase tracking-tight">
                   Pedido #{selectedOrder.order_number}
                 </h1>
-                <p className="text-gray-400 text-sm mt-1">
+                <p className="text-gray-400 text-xs sm:text-sm mt-1">
                   {new Date(selectedOrder.created_at).toLocaleDateString('pt-BR', { day: '2-digit', month: 'long', year: 'numeric' })}
                 </p>
               </div>
-              <span className={`flex items-center gap-1.5 text-sm font-bold px-4 py-2 rounded-full ${cfg.color}`}>
-                <Icon size={14} />{cfg.label}
+              <span className={`flex items-center gap-1.5 text-xs sm:text-sm font-bold px-3 py-1.5 rounded-full w-fit ${cfg.color}`}>
+                <Icon size={13} />{cfg.label}
               </span>
             </div>
           </div>
 
-          <div className="bg-white rounded-3xl border border-gray-100 p-8 shadow-sm mb-6">
-            <div className="flex items-center gap-3 mb-6 pb-4 border-b">
-              <Package className="text-green-600" size={22} />
-              <h2 className="text-xl font-black italic uppercase tracking-tight">Produtos</h2>
+          {/* PRODUTOS */}
+          <div className="bg-white rounded-2xl sm:rounded-3xl border border-gray-100 p-5 sm:p-8 shadow-sm mb-4">
+            <div className="flex items-center gap-3 mb-5 pb-4 border-b">
+              <Package className="text-green-600" size={20} />
+              <h2 className="text-base sm:text-xl font-black italic uppercase tracking-tight">Produtos</h2>
             </div>
 
             {loadingItems ? (
@@ -131,21 +134,21 @@ export default function MinhaContaPage() {
             ) : (
               <div className="space-y-3">
                 {orderItems.map((item, index) => (
-                  <div key={index} className="flex items-center justify-between p-4 rounded-2xl border border-gray-100">
-                    <div className="flex items-center gap-4">
+                  <div key={index} className="flex items-center justify-between p-3 sm:p-4 rounded-xl sm:rounded-2xl border border-gray-100">
+                    <div className="flex items-center gap-3">
                       {item.image_url ? (
-                        <img src={item.image_url} alt={item.product_name} className="w-14 h-14 object-cover rounded-xl" />
+                        <img src={item.image_url} alt={item.product_name} className="w-12 h-12 sm:w-14 sm:h-14 object-cover rounded-xl flex-shrink-0" />
                       ) : (
-                        <div className="w-14 h-14 bg-gray-100 rounded-xl flex items-center justify-center">
-                          <Package size={20} className="text-gray-400" />
+                        <div className="w-12 h-12 sm:w-14 sm:h-14 bg-gray-100 rounded-xl flex items-center justify-center flex-shrink-0">
+                          <Package size={18} className="text-gray-400" />
                         </div>
                       )}
-                      <div>
-                        <p className="font-bold text-sm">{item.product_name}</p>
-                        <p className="text-xs text-gray-400 mt-0.5">Quantidade: {item.quantity}</p>
+                      <div className="min-w-0">
+                        <p className="font-bold text-sm truncate">{item.product_name}</p>
+                        <p className="text-xs text-gray-400 mt-0.5">Qtd: {item.quantity}</p>
                       </div>
                     </div>
-                    <span className="font-black text-green-700">
+                    <span className="font-black text-green-700 text-sm sm:text-base ml-2 flex-shrink-0">
                       £{parseFloat(item.price * item.quantity).toFixed(2)}
                     </span>
                   </div>
@@ -154,12 +157,14 @@ export default function MinhaContaPage() {
             )}
           </div>
 
-          <div className="bg-white rounded-3xl border border-gray-100 p-6 shadow-sm">
+          {/* TOTAL */}
+          <div className="bg-white rounded-2xl sm:rounded-3xl border border-gray-100 p-5 sm:p-6 shadow-sm">
             <div className="flex items-center justify-between">
               <span className="font-bold text-gray-600 uppercase text-sm">Total do Pedido</span>
-              <span className="font-black text-green-700 text-2xl">£{parseFloat(selectedOrder.total_amount).toFixed(2)}</span>
+              <span className="font-black text-green-700 text-xl sm:text-2xl">£{parseFloat(selectedOrder.total_amount).toFixed(2)}</span>
             </div>
           </div>
+
         </div>
       </div>
     )
@@ -167,67 +172,67 @@ export default function MinhaContaPage() {
 
   return (
     <div className="min-h-screen bg-gray-50">
-      <div className="max-w-4xl mx-auto px-4 py-10">
+      <div className="max-w-4xl mx-auto px-3 sm:px-4 py-6 sm:py-10">
 
         {/* HEADER */}
-        <div className="bg-white rounded-3xl border border-gray-100 p-8 mb-6 shadow-sm">
+        <div className="bg-white rounded-2xl sm:rounded-3xl border border-gray-100 p-5 sm:p-8 mb-4 sm:mb-6 shadow-sm">
           <div className="flex items-center justify-between">
-            <div className="flex items-center gap-4">
-              <div className="w-14 h-14 bg-green-100 rounded-full flex items-center justify-center">
-                <User className="w-7 h-7 text-green-700" />
+            <div className="flex items-center gap-3">
+              <div className="w-11 h-11 sm:w-14 sm:h-14 bg-green-100 rounded-full flex items-center justify-center flex-shrink-0">
+                <User className="w-6 h-6 sm:w-7 sm:h-7 text-green-700" />
               </div>
-              <div>
-                <h1 className="text-xl font-black italic uppercase tracking-tight">
+              <div className="min-w-0">
+                <h1 className="text-base sm:text-xl font-black italic uppercase tracking-tight truncate">
                   {profile.full_name || user?.user_metadata?.full_name || 'Minha Conta'}
                 </h1>
-                <p className="text-gray-500 text-sm">{user?.email}</p>
+                <p className="text-gray-500 text-xs sm:text-sm truncate">{user?.email}</p>
               </div>
             </div>
             <button onClick={handleLogout}
-              className="flex items-center gap-2 text-sm font-bold text-gray-500 hover:text-red-600 transition-colors bg-gray-50 hover:bg-red-50 px-4 py-2 rounded-2xl">
-              <LogOut size={16} /> Sair
+              className="flex items-center gap-1.5 text-xs sm:text-sm font-bold text-gray-500 hover:text-red-600 transition-colors bg-gray-50 hover:bg-red-50 px-3 sm:px-4 py-2 rounded-xl sm:rounded-2xl flex-shrink-0 ml-2">
+              <LogOut size={14} /> <span className="hidden sm:inline">Sair</span><span className="sm:hidden">Sair</span>
             </button>
           </div>
         </div>
 
         {/* TABS */}
-        <div className="flex rounded-2xl bg-gray-100 p-1 mb-6">
+        <div className="flex rounded-xl sm:rounded-2xl bg-gray-100 p-1 mb-4 sm:mb-6">
           <button
             onClick={() => setTab('pedidos')}
-            className={`flex-1 py-2.5 rounded-xl text-sm font-bold uppercase transition-all flex items-center justify-center gap-2 ${tab === 'pedidos' ? 'bg-white shadow text-green-700' : 'text-gray-500'}`}
+            className={`flex-1 py-2 sm:py-2.5 rounded-lg sm:rounded-xl text-xs sm:text-sm font-bold uppercase transition-all flex items-center justify-center gap-1.5 ${tab === 'pedidos' ? 'bg-white shadow text-green-700' : 'text-gray-500'}`}
           >
-            <Package size={16} /> Meus Pedidos
+            <Package size={14} /> Pedidos
           </button>
           <button
             onClick={() => setTab('perfil')}
-            className={`flex-1 py-2.5 rounded-xl text-sm font-bold uppercase transition-all flex items-center justify-center gap-2 ${tab === 'perfil' ? 'bg-white shadow text-green-700' : 'text-gray-500'}`}
+            className={`flex-1 py-2 sm:py-2.5 rounded-lg sm:rounded-xl text-xs sm:text-sm font-bold uppercase transition-all flex items-center justify-center gap-1.5 ${tab === 'perfil' ? 'bg-white shadow text-green-700' : 'text-gray-500'}`}
           >
-            <User size={16} /> Meu Perfil
+            <User size={14} /> Meu Perfil
           </button>
         </div>
 
         {/* PEDIDOS */}
         {tab === 'pedidos' && (
-          <div className="bg-white rounded-3xl border border-gray-100 p-8 shadow-sm">
-            <div className="flex items-center gap-3 mb-6 pb-4 border-b">
-              <Package className="text-green-600" size={22} />
-              <h2 className="text-xl font-black italic uppercase tracking-tight">Meus Pedidos</h2>
-              <span className="ml-auto bg-green-100 text-green-700 text-xs font-black px-3 py-1 rounded-full">
-                {orders.length} pedido{orders.length !== 1 ? 's' : ''}
+          <div className="bg-white rounded-2xl sm:rounded-3xl border border-gray-100 p-5 sm:p-8 shadow-sm">
+            <div className="flex items-center gap-3 mb-5 pb-4 border-b">
+              <Package className="text-green-600" size={20} />
+              <h2 className="text-base sm:text-xl font-black italic uppercase tracking-tight">Meus Pedidos</h2>
+              <span className="ml-auto bg-green-100 text-green-700 text-xs font-black px-2.5 py-1 rounded-full">
+                {orders.length}
               </span>
             </div>
 
             {orders.length === 0 ? (
-              <div className="text-center py-12 text-gray-400">
-                <Package size={48} className="mx-auto mb-4 opacity-30" />
-                <p className="font-bold uppercase text-sm">Nenhum pedido ainda</p>
+              <div className="text-center py-10 text-gray-400">
+                <Package size={40} className="mx-auto mb-3 opacity-30" />
+                <p className="font-bold uppercase text-xs">Nenhum pedido ainda</p>
                 <button onClick={() => router.push(`/${lang}/produtos`)}
-                  className="mt-6 bg-green-600 text-white px-8 py-3 rounded-2xl font-black uppercase italic hover:bg-green-700 transition-all text-sm">
+                  className="mt-5 bg-green-600 text-white px-6 py-3 rounded-2xl font-black uppercase italic hover:bg-green-700 transition-all text-xs sm:text-sm">
                   Ir às Compras
                 </button>
               </div>
             ) : (
-              <div className="space-y-3">
+              <div className="space-y-2 sm:space-y-3">
                 {orders.map(order => {
                   const cfg = STATUS_CONFIG[order.status] || STATUS_CONFIG.pending
                   const Icon = cfg.icon
@@ -235,25 +240,27 @@ export default function MinhaContaPage() {
                     <div
                       key={order.id}
                       onClick={() => openOrder(order)}
-                      className="flex items-center justify-between p-5 rounded-2xl border border-gray-100 hover:border-green-200 hover:bg-green-50/30 transition-all cursor-pointer"
+                      className="flex flex-col sm:flex-row sm:items-center sm:justify-between p-4 sm:p-5 rounded-xl sm:rounded-2xl border border-gray-100 hover:border-green-200 hover:bg-green-50/30 transition-all cursor-pointer gap-2"
                     >
-                      <div className="flex items-center gap-4">
-                        <div className="w-10 h-10 bg-gray-100 rounded-xl flex items-center justify-center">
-                          <Package size={18} className="text-gray-500" />
+                      <div className="flex items-center gap-3">
+                        <div className="w-9 h-9 sm:w-10 sm:h-10 bg-gray-100 rounded-xl flex items-center justify-center flex-shrink-0">
+                          <Package size={16} className="text-gray-500" />
                         </div>
                         <div>
                           <p className="font-black text-sm uppercase">Pedido #{order.order_number}</p>
                           <p className="text-xs text-gray-400 mt-0.5">
-                            {new Date(order.created_at).toLocaleDateString('pt-BR', { day: '2-digit', month: 'long', year: 'numeric' })}
+                            {new Date(order.created_at).toLocaleDateString('pt-BR', { day: '2-digit', month: 'short', year: 'numeric' })}
                           </p>
                         </div>
                       </div>
-                      <div className="flex items-center gap-4">
-                        <span className={`flex items-center gap-1.5 text-xs font-bold px-3 py-1.5 rounded-full ${cfg.color}`}>
-                          <Icon size={12} />{cfg.label}
+                      <div className="flex items-center justify-between sm:justify-end gap-2 sm:gap-4">
+                        <span className={`flex items-center gap-1 text-xs font-bold px-2.5 py-1 rounded-full ${cfg.color}`}>
+                          <Icon size={11} />{cfg.label}
                         </span>
-                        <span className="font-black text-green-700 text-base">£{parseFloat(order.total_amount).toFixed(2)}</span>
-                        <ChevronRight size={16} className="text-gray-400" />
+                        <div className="flex items-center gap-1.5">
+                          <span className="font-black text-green-700 text-sm sm:text-base">£{parseFloat(order.total_amount).toFixed(2)}</span>
+                          <ChevronRight size={15} className="text-gray-400" />
+                        </div>
                       </div>
                     </div>
                   )
@@ -265,10 +272,10 @@ export default function MinhaContaPage() {
 
         {/* PERFIL */}
         {tab === 'perfil' && (
-          <div className="bg-white rounded-3xl border border-gray-100 p-8 shadow-sm">
-            <div className="flex items-center gap-3 mb-6 pb-4 border-b">
-              <User className="text-green-600" size={22} />
-              <h2 className="text-xl font-black italic uppercase tracking-tight">Meu Perfil</h2>
+          <div className="bg-white rounded-2xl sm:rounded-3xl border border-gray-100 p-5 sm:p-8 shadow-sm">
+            <div className="flex items-center gap-3 mb-5 pb-4 border-b">
+              <User className="text-green-600" size={20} />
+              <h2 className="text-base sm:text-xl font-black italic uppercase tracking-tight">Meu Perfil</h2>
             </div>
 
             <div className="space-y-4">
@@ -277,38 +284,38 @@ export default function MinhaContaPage() {
                 <input type="text" value={profile.full_name}
                   onChange={e => setProfile({ ...profile, full_name: e.target.value })}
                   placeholder="Seu nome completo"
-                  className="w-full p-4 rounded-2xl border border-gray-200 outline-none focus:ring-2 focus:ring-green-500 text-sm" />
+                  className="w-full p-3.5 sm:p-4 rounded-xl sm:rounded-2xl border border-gray-200 outline-none focus:ring-2 focus:ring-green-500 text-sm" />
               </div>
               <div>
                 <label className="block text-xs font-bold uppercase text-gray-500 mb-1.5">Telefone</label>
                 <input type="text" value={profile.phone}
                   onChange={e => setProfile({ ...profile, phone: e.target.value })}
                   placeholder="+44 7700 000000"
-                  className="w-full p-4 rounded-2xl border border-gray-200 outline-none focus:ring-2 focus:ring-green-500 text-sm" />
+                  className="w-full p-3.5 sm:p-4 rounded-xl sm:rounded-2xl border border-gray-200 outline-none focus:ring-2 focus:ring-green-500 text-sm" />
               </div>
               <div>
                 <label className="block text-xs font-bold uppercase text-gray-500 mb-1.5">Morada / Address</label>
                 <input type="text" value={profile.address}
                   onChange={e => setProfile({ ...profile, address: e.target.value })}
                   placeholder="123 Street Name, City"
-                  className="w-full p-4 rounded-2xl border border-gray-200 outline-none focus:ring-2 focus:ring-green-500 text-sm" />
+                  className="w-full p-3.5 sm:p-4 rounded-xl sm:rounded-2xl border border-gray-200 outline-none focus:ring-2 focus:ring-green-500 text-sm" />
               </div>
               <div>
                 <label className="block text-xs font-bold uppercase text-gray-500 mb-1.5">Código Postal</label>
                 <input type="text" value={profile.postcode}
                   onChange={e => setProfile({ ...profile, postcode: e.target.value })}
                   placeholder="SW1A 1AA"
-                  className="w-full p-4 rounded-2xl border border-gray-200 outline-none focus:ring-2 focus:ring-green-500 text-sm" />
+                  className="w-full p-3.5 sm:p-4 rounded-xl sm:rounded-2xl border border-gray-200 outline-none focus:ring-2 focus:ring-green-500 text-sm" />
               </div>
 
               <button onClick={handleSaveProfile} disabled={saving}
-                className="w-full bg-green-600 text-white py-4 rounded-2xl font-black uppercase italic hover:bg-green-700 transition-all shadow-lg disabled:bg-gray-300 flex items-center justify-center gap-2">
-                <Save size={18} />
+                className="w-full bg-green-600 text-white py-3.5 sm:py-4 rounded-xl sm:rounded-2xl font-black uppercase italic hover:bg-green-700 transition-all shadow-lg disabled:bg-gray-300 flex items-center justify-center gap-2 text-sm">
+                <Save size={16} />
                 {saving ? 'GUARDANDO...' : 'GUARDAR DADOS'}
               </button>
 
               {saveMsg && (
-                <div className={`p-4 rounded-2xl text-sm font-medium text-center ${saveMsg.includes('Erro') ? 'bg-red-50 text-red-600' : 'bg-green-50 text-green-700'}`}>
+                <div className={`p-3.5 rounded-xl text-sm font-medium text-center ${saveMsg.includes('Erro') ? 'bg-red-50 text-red-600' : 'bg-green-50 text-green-700'}`}>
                   {saveMsg}
                 </div>
               )}
