@@ -221,7 +221,7 @@ export default function ContatoPage() {
                     <h3 className="font-bold text-lg text-gray-800 mb-1">
                       {t.email.title}
                     </h3>
-                    <p className="text-gray-600">contato@mercadolondres.co.uk</p>
+                    <p className="text-gray-600"> primebrasilm@gmail.com</p>
                     <p className="text-sm text-gray-500 mt-1">
                       {t.email.response}
                     </p>
