@@ -12,7 +12,7 @@ const MAINLAND_PREFIXES = ['E1','E2','E3','E4','E5','E6','E7','E8','E9','N1','NW
 
 export default function CheckoutClient() {
   const router = useRouter();
-  const { getCartTotal, clearCart, cartItems } = useCart();
+  CartTotal, clearCart, cart: cartItems } = useCart();
   const [orderNumber, setOrderNumber] = useState('');
   const [deliveryDay, setDeliveryDay] = useState('weekday');
   const [loading, setLoading] = useState(false);
