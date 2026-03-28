@@ -12,7 +12,8 @@ const MAINLAND_PREFIXES = ['E1','E2','E3','E4','E5','E6','E7','E8','E9','N1','NW
 
 export default function CheckoutClient() {
   const router = useRouter();
-  const { getCartTotal, clearCart, cart: cartItems } = useCart();
+  const { getCartTotal, clearCart, cart } = useCart();
+  const [cartReady, setCartReady] = useState(false);
   const [orderNumber, setOrderNumber] = useState('');
   const [deliveryDay, setDeliveryDay] = useState('weekday');
   const [loading, setLoading] = useState(false);
@@ -22,6 +23,12 @@ export default function CheckoutClient() {
   const [postcodeError, setPostcodeError] = useState('');
 
   useEffect(() => { setOrderNumber(Math.random().toString(36).substr(2, 9).toUpperCase()); }, []);
+
+  // Esperar o cart carregar do localStorage
+  useEffect(() => {
+    const timer = setTimeout(() => setCartReady(true), 300);
+    return () => clearTimeout(timer);
+  }, []);
 
   const subtotal = getCartTotal();
 
@@ -39,6 +46,16 @@ export default function CheckoutClient() {
   const handleStartPayment = async (e) => {
     e.preventDefault();
     if (!deliveryInfo.valid) return;
+    
+    // Ler o cart diretamente do localStorage para garantir que está atualizado
+    let cartItems = cart;
+    if (typeof window !== 'undefined') {
+      try {
+        const saved = localStorage.getItem('cart');
+        if (saved) cartItems = JSON.parse(saved);
+      } catch {}
+    }
+
     setLoading(true);
     try {
       const res = await fetch('/api/checkout', {
@@ -58,6 +75,12 @@ export default function CheckoutClient() {
       setLoading(false);
     }
   };
+
+  if (!cartReady) return (
+    <div className="min-h-screen flex items-center justify-center bg-gray-50">
+      <div className="animate-spin w-8 h-8 border-4 border-green-600 border-t-transparent rounded-full" />
+    </div>
+  );
 
   if (isSuccess) return (
     <div className="min-h-screen flex items-center justify-center bg-white p-10 text-center">
