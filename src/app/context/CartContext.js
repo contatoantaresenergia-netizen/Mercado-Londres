@@ -7,15 +7,13 @@ export function CartProvider({ children }) {
   const [cart, setCart] = useState([]);
   const isInitialMount = useRef(true);
 
-  // CARREGAR: Executa apenas 1 vez ao montar
   useEffect(() => {
     const saved = localStorage.getItem('cart');
     if (saved) {
-      try { setCart(JSON.parse(saved)); } catch (e) { console.error(e); }
+      try { setCart(JSON.parse(saved)); } catch (e) { console.error("Erro ao carregar:", e); }
     }
   }, []);
 
-  // SALVAR: Não deixa salvar o estado vazio da inicialização
   useEffect(() => {
     if (isInitialMount.current) {
       isInitialMount.current = false;
