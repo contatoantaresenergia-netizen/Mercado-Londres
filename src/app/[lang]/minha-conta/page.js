@@ -1,4 +1,4 @@
-'use client'
+Corrigir o cod sem mudar nada e nem comer o site 'use client'
 import { useEffect, useState } from 'react'
 import { useRouter, useParams } from 'next/navigation'
 import { createClient } from '@/lib/supabase/client'
@@ -53,39 +53,11 @@ export default function MinhaContaPage() {
     loadData()
   }, [])
 
-  // ✅ CORREÇÃO AQUI (SEM QUEBRAR NADA)
   async function openOrder(order) {
     setSelectedOrder(order)
     setLoadingItems(true)
-
-    const { data } = await supabase
-      .from('order_items')
-      .select('*')
-      .eq('order_id', order.id)
-
-    if (data && data.length > 0) {
-      setOrderItems(data)
-    } else {
-      let items = order.items
-
-      if (typeof items === "string") {
-        try {
-          items = JSON.parse(items)
-        } catch {
-          items = []
-        }
-      }
-
-      const formattedItems = (items || []).map(item => ({
-        product_name: item.product_name || item.name || 'Produto',
-        image_url: item.image_url || item.image || null,
-        quantity: item.quantity || 1,
-        price: item.price || 0
-      }))
-
-      setOrderItems(formattedItems)
-    }
-
+    const { data } = await supabase.from('order_items').select('*').eq('order_id', order.id)
+    if (data) setOrderItems(data)
     setLoadingItems(false)
   }
 
@@ -200,7 +172,158 @@ export default function MinhaContaPage() {
 
   return (
     <div className="min-h-screen bg-gray-50">
-      {/* RESTO DO SEU CÓDIGO INTACTO */}
+      <div className="max-w-4xl mx-auto px-3 sm:px-4 py-6 sm:py-10">
+
+        {/* HEADER */}
+        <div className="bg-white rounded-2xl sm:rounded-3xl border border-gray-100 p-5 sm:p-8 mb-4 sm:mb-6 shadow-sm">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-3">
+              <div className="w-11 h-11 sm:w-14 sm:h-14 bg-green-100 rounded-full flex items-center justify-center flex-shrink-0">
+                <User className="w-6 h-6 sm:w-7 sm:h-7 text-green-700" />
+              </div>
+              <div className="min-w-0">
+                <h1 className="text-base sm:text-xl font-black italic uppercase tracking-tight truncate">
+                  {profile.full_name || user?.user_metadata?.full_name || 'Minha Conta'}
+                </h1>
+                <p className="text-gray-500 text-xs sm:text-sm truncate">{user?.email}</p>
+              </div>
+            </div>
+            <button onClick={handleLogout}
+              className="flex items-center gap-1.5 text-xs sm:text-sm font-bold text-gray-500 hover:text-red-600 transition-colors bg-gray-50 hover:bg-red-50 px-3 sm:px-4 py-2 rounded-xl sm:rounded-2xl flex-shrink-0 ml-2">
+              <LogOut size={14} /> <span className="hidden sm:inline">Sair</span><span className="sm:hidden">Sair</span>
+            </button>
+          </div>
+        </div>
+
+        {/* TABS */}
+        <div className="flex rounded-xl sm:rounded-2xl bg-gray-100 p-1 mb-4 sm:mb-6">
+          <button
+            onClick={() => setTab('pedidos')}
+            className={`flex-1 py-2 sm:py-2.5 rounded-lg sm:rounded-xl text-xs sm:text-sm font-bold uppercase transition-all flex items-center justify-center gap-1.5 ${tab === 'pedidos' ? 'bg-white shadow text-green-700' : 'text-gray-500'}`}
+          >
+            <Package size={14} /> Pedidos
+          </button>
+          <button
+            onClick={() => setTab('perfil')}
+            className={`flex-1 py-2 sm:py-2.5 rounded-lg sm:rounded-xl text-xs sm:text-sm font-bold uppercase transition-all flex items-center justify-center gap-1.5 ${tab === 'perfil' ? 'bg-white shadow text-green-700' : 'text-gray-500'}`}
+          >
+            <User size={14} /> Meu Perfil
+          </button>
+        </div>
+
+        {/* PEDIDOS */}
+        {tab === 'pedidos' && (
+          <div className="bg-white rounded-2xl sm:rounded-3xl border border-gray-100 p-5 sm:p-8 shadow-sm">
+            <div className="flex items-center gap-3 mb-5 pb-4 border-b">
+              <Package className="text-green-600" size={20} />
+              <h2 className="text-base sm:text-xl font-black italic uppercase tracking-tight">Meus Pedidos</h2>
+              <span className="ml-auto bg-green-100 text-green-700 text-xs font-black px-2.5 py-1 rounded-full">
+                {orders.length}
+              </span>
+            </div>
+
+            {orders.length === 0 ? (
+              <div className="text-center py-10 text-gray-400">
+                <Package size={40} className="mx-auto mb-3 opacity-30" />
+                <p className="font-bold uppercase text-xs">Nenhum pedido ainda</p>
+                <button onClick={() => router.push(`/${lang}/produtos`)}
+                  className="mt-5 bg-green-600 text-white px-6 py-3 rounded-2xl font-black uppercase italic hover:bg-green-700 transition-all text-xs sm:text-sm">
+                  Ir às Compras
+                </button>
+              </div>
+            ) : (
+              <div className="space-y-2 sm:space-y-3">
+                {orders.map(order => {
+                  const cfg = STATUS_CONFIG[order.status] || STATUS_CONFIG.pending
+                  const Icon = cfg.icon
+                  return (
+                    <div
+                      key={order.id}
+                      onClick={() => openOrder(order)}
+                      className="flex flex-col sm:flex-row sm:items-center sm:justify-between p-4 sm:p-5 rounded-xl sm:rounded-2xl border border-gray-100 hover:border-green-200 hover:bg-green-50/30 transition-all cursor-pointer gap-2"
+                    >
+                      <div className="flex items-center gap-3">
+                        <div className="w-9 h-9 sm:w-10 sm:h-10 bg-gray-100 rounded-xl flex items-center justify-center flex-shrink-0">
+                          <Package size={16} className="text-gray-500" />
+                        </div>
+                        <div>
+                          <p className="font-black text-sm uppercase">Pedido #{order.order_number}</p>
+                          <p className="text-xs text-gray-400 mt-0.5">
+                            {new Date(order.created_at).toLocaleDateString('pt-BR', { day: '2-digit', month: 'short', year: 'numeric' })}
+                          </p>
+                        </div>
+                      </div>
+                      <div className="flex items-center justify-between sm:justify-end gap-2 sm:gap-4">
+                        <span className={`flex items-center gap-1 text-xs font-bold px-2.5 py-1 rounded-full ${cfg.color}`}>
+                          <Icon size={11} />{cfg.label}
+                        </span>
+                        <div className="flex items-center gap-1.5">
+                          <span className="font-black text-green-700 text-sm sm:text-base">£{parseFloat(order.total_amount).toFixed(2)}</span>
+                          <ChevronRight size={15} className="text-gray-400" />
+                        </div>
+                      </div>
+                    </div>
+                  )
+                })}
+              </div>
+            )}
+          </div>
+        )}
+
+        {/* PERFIL */}
+        {tab === 'perfil' && (
+          <div className="bg-white rounded-2xl sm:rounded-3xl border border-gray-100 p-5 sm:p-8 shadow-sm">
+            <div className="flex items-center gap-3 mb-5 pb-4 border-b">
+              <User className="text-green-600" size={20} />
+              <h2 className="text-base sm:text-xl font-black italic uppercase tracking-tight">Meu Perfil</h2>
+            </div>
+
+            <div className="space-y-4">
+              <div>
+                <label className="block text-xs font-bold uppercase text-gray-500 mb-1.5">Nome Completo</label>
+                <input type="text" value={profile.full_name}
+                  onChange={e => setProfile({ ...profile, full_name: e.target.value })}
+                  placeholder="Seu nome completo"
+                  className="w-full p-3.5 sm:p-4 rounded-xl sm:rounded-2xl border border-gray-200 outline-none focus:ring-2 focus:ring-green-500 text-sm" />
+              </div>
+              <div>
+                <label className="block text-xs font-bold uppercase text-gray-500 mb-1.5">Telefone</label>
+                <input type="text" value={profile.phone}
+                  onChange={e => setProfile({ ...profile, phone: e.target.value })}
+                  placeholder="+44 7700 000000"
+                  className="w-full p-3.5 sm:p-4 rounded-xl sm:rounded-2xl border border-gray-200 outline-none focus:ring-2 focus:ring-green-500 text-sm" />
+              </div>
+              <div>
+                <label className="block text-xs font-bold uppercase text-gray-500 mb-1.5">Morada / Address</label>
+                <input type="text" value={profile.address}
+                  onChange={e => setProfile({ ...profile, address: e.target.value })}
+                  placeholder="123 Street Name, City"
+                  className="w-full p-3.5 sm:p-4 rounded-xl sm:rounded-2xl border border-gray-200 outline-none focus:ring-2 focus:ring-green-500 text-sm" />
+              </div>
+              <div>
+                <label className="block text-xs font-bold uppercase text-gray-500 mb-1.5">Código Postal</label>
+                <input type="text" value={profile.postcode}
+                  onChange={e => setProfile({ ...profile, postcode: e.target.value })}
+                  placeholder="SW1A 1AA"
+                  className="w-full p-3.5 sm:p-4 rounded-xl sm:rounded-2xl border border-gray-200 outline-none focus:ring-2 focus:ring-green-500 text-sm" />
+              </div>
+
+              <button onClick={handleSaveProfile} disabled={saving}
+                className="w-full bg-green-600 text-white py-3.5 sm:py-4 rounded-xl sm:rounded-2xl font-black uppercase italic hover:bg-green-700 transition-all shadow-lg disabled:bg-gray-300 flex items-center justify-center gap-2 text-sm">
+                <Save size={16} />
+                {saving ? 'GUARDANDO...' : 'GUARDAR DADOS'}
+              </button>
+
+              {saveMsg && (
+                <div className={`p-3.5 rounded-xl text-sm font-medium text-center ${saveMsg.includes('Erro') ? 'bg-red-50 text-red-600' : 'bg-green-50 text-green-700'}`}>
+                  {saveMsg}
+                </div>
+              )}
+            </div>
+          </div>
+        )}
+
+      </div>
     </div>
   )
 }
