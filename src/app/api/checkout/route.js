@@ -13,62 +13,55 @@ export async function POST(req) {
     const body = await req.json();
     const { total, orderNumber, customer, items } = body;
 
-    if (!total || total <= 0) {
-      return NextResponse.json({ error: 'Total inválido' }, { status: 400 });
-    }
-    if (!customer?.email || !customer?.nome) {
-      return NextResponse.json({ error: 'Dados do cliente incompletos' }, { status: 400 });
-    }
+    // 1. Validações básicas
+    if (!total || total <= 0) return NextResponse.json({ error: 'Total inválido' }, { status: 400 });
+    if (!customer?.email) return NextResponse.json({ error: 'E-mail do cliente é obrigatório' }, { status: 400 });
 
-    // Criar PaymentIntent no Stripe
+    // 2. Criar PaymentIntent no Stripe
     const paymentIntent = await stripe.paymentIntents.create({
       amount: Math.round(total * 100),
       currency: 'gbp',
       receipt_email: customer.email,
-      metadata: {
-        orderNumber: orderNumber || '',
-        email: customer.email || '',
-        postcode: customer.postcode || '',
-        nome: customer.nome || '',
-      },
+      metadata: { orderNumber: orderNumber || '' },
     });
 
-    // Guardar pedido na tabela orders
-    const { data: orderData, error: orderError } = await supabaseAdmin.from('orders').insert({
-      order_number: orderNumber,
-      stripe_payment_intent_id: paymentIntent.id,
-      status: 'pending',
-      total_amount: total,
-      currency: 'gbp',
-      customer_email: customer.email,
-      customer_name: customer.nome,
-      customer_postcode: customer.postcode,
-      customer_address: customer.endereco,
-      items: items || [],
-      created_at: new Date().toISOString(),
-    }).select().single();
+    // 3. Guardar o Pedido Principal (tabela orders)
+    const { data: orderData, error: orderError } = await supabaseAdmin
+      .from('orders')
+      .insert({
+        order_number: orderNumber,
+        stripe_payment_intent_id: paymentIntent.id,
+        status: 'pending',
+        total_amount: total,
+        currency: 'gbp',
+        customer_email: customer.email,
+        customer_name: customer.nome,
+        customer_postcode: customer.postcode,
+        customer_address: customer.endereco,
+        items: items || [], // Aqui salvamos o JSON bruto por segurança
+        created_at: new Date().toISOString(),
+      })
+      .select()
+      .single();
 
-    if (orderError) {
-      console.error('Erro ao guardar pedido:', orderError);
-      return NextResponse.json({ error: orderError.message }, { status: 500 });
-    }
+    if (orderError) throw orderError;
 
-    // Guardar itens na tabela order_items
+    // 4. Guardar Itens Detalhados (tabela order_items)
     if (items && items.length > 0 && orderData?.id) {
-      const orderItems = items.map(item => ({
+      const orderItemsToInsert = items.map(item => ({
         order_id: orderData.id,
-        product_name: item.name || item.title || item.product_name || 'Produto',
-        quantity: item.quantity || 1,
-        price: item.price || 0,
-        image_url: item.image || item.image_url || null,
+        // MAPEAMENTO FLEXÍVEL: tenta pegar qualquer nome de campo comum
+        product_name: item.name || item.title || item.product_name || item.nome || 'Produto',
+        quantity: parseInt(item.quantity || item.qty || 1),
+        price: parseFloat(item.price || 0),
+        image_url: item.image || item.image_url || item.thumb || null,
       }));
 
-      const { error: itemsError } = await supabaseAdmin.from('order_items').insert(orderItems);
+      const { error: itemsError } = await supabaseAdmin
+        .from('order_items')
+        .insert(orderItemsToInsert);
 
-      if (itemsError) {
-        console.error('Erro ao guardar itens:', itemsError);
-        // Não bloqueamos o pagamento por causa deste erro
-      }
+      if (itemsError) console.error('Erro ao inserir order_items:', itemsError);
     }
 
     return NextResponse.json({ clientSecret: paymentIntent.client_secret });
