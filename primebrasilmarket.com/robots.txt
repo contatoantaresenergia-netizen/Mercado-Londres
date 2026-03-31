@@ -1,0 +1,12 @@
+export default function robots() {
+  return {
+    rules: [
+      {
+        userAgent: '*',
+        allow: '/',
+        disallow: ['/api/', '/carrinho', '/checkout', '/minha-conta', '/login'],
+      },
+    ],
+    sitemap: 'https://www.primebrasilmarket.com/sitemap.xml',
+  };
+}
