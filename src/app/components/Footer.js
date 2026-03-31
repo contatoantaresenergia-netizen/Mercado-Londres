@@ -10,7 +10,7 @@ export default function Footer({ lang, dict }) {
   return (
     <footer className="bg-gray-900 text-white pt-12 pb-6">
       <div className="container mx-auto px-4">
-        <div className="grid md:grid-cols-4 gap-8 mb-8">
+        <div className="grid md:grid-cols-5 gap-8 mb-8">
           
           {/* Coluna 1: Logo e Descrição */}
           <div>
@@ -52,8 +52,42 @@ export default function Footer({ lang, dict }) {
               </li>
             </ul>
           </div>
+
+          {/* Coluna 3: Entrega */}
+          <div>
+            <h4 className="font-bold mb-4">
+              {currentLang === 'pt' ? 'Entrega' : 'Delivery'}
+            </h4>
+            <ul className="space-y-2 text-sm text-gray-400">
+              {currentLang === 'pt' ? (
+                <>
+                  <li>Entregas de terça a sexta e aos sábados para todo o Reino Unido.</li>
+                  <li>Frete grátis acima de £70 (ter–sex) e acima de £100 (sábado).</li>
+                  <li>Entregamos via DPD em embalagens térmicas lacradas com gelo.</li>
+                  <li>Taxa de manuseio de £1.99 aplicada em todas as compras.</li>
+                  <li className="pt-2">
+                    <Link href={`/${currentLang}/entrega`} className="hover:text-yellow-400 transition underline">
+                      Ver regras de entrega →
+                    </Link>
+                  </li>
+                </>
+              ) : (
+                <>
+                  <li>Deliveries Tuesday to Friday and Saturdays across the UK.</li>
+                  <li>Free delivery over £70 (Tue–Fri) and over £100 (Saturday).</li>
+                  <li>Delivered by DPD in sealed thermal bags with ice packs.</li>
+                  <li>A £1.99 handling fee is applied to all orders.</li>
+                  <li className="pt-2">
+                    <Link href={`/${currentLang}/entrega`} className="hover:text-yellow-400 transition underline">
+                      View delivery policy →
+                    </Link>
+                  </li>
+                </>
+              )}
+            </ul>
+          </div>
           
-          {/* Coluna 3: Contato */}
+          {/* Coluna 4: Contato */}
           <div>
             <h4 className="font-bold mb-4">
               {currentLang === 'pt' ? 'Contato' : 'Contact'}
@@ -73,7 +107,7 @@ export default function Footer({ lang, dict }) {
             </ul>
           </div>
           
-          {/* Coluna 4: Redes Sociais */}
+          {/* Coluna 5: Redes Sociais */}
           <div>
             <h4 className="font-bold mb-4">
               {currentLang === 'pt' ? 'Siga-nos' : 'Follow Us'}
