@@ -1,0 +1,26 @@
+export default function sitemap() {
+  const siteUrl = 'https://www.primebrasilmarket.com';
+  const langs = ['pt', 'en'];
+
+  const pages = [
+    { path: '',          priority: 1.0,  changeFrequency: 'daily' },
+    { path: '/produtos', priority: 0.9,  changeFrequency: 'daily' },
+    { path: '/entrega',  priority: 0.8,  changeFrequency: 'monthly' },
+    { path: '/sobre',    priority: 0.7,  changeFrequency: 'monthly' },
+    { path: '/contato',  priority: 0.7,  changeFrequency: 'monthly' },
+  ];
+
+  const urls = [];
+  for (const lang of langs) {
+    for (const page of pages) {
+      urls.push({
+        url: `${siteUrl}/${lang}${page.path}`,
+        lastModified: new Date(),
+        changeFrequency: page.changeFrequency,
+        priority: page.priority,
+      });
+    }
+  }
+
+  return urls;
+}
