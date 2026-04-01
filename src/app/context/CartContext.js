@@ -25,9 +25,25 @@ export function CartProvider({ children }) {
   const addToCart = (product) => {
     setCart(prev => {
       const exists = prev.find(i => i.id === product.id);
-      if (exists) return prev.map(i => i.id === product.id ? {...i, quantity: i.quantity + 1} : i);
-      return [...prev, {...product, quantity: 1}];
+      if (exists) return prev.map(i => i.id === product.id ? { ...i, quantity: i.quantity + 1 } : i);
+      return [...prev, { ...product, quantity: 1 }];
     });
+  };
+
+  // ✅ FUNÇÃO ADICIONADA
+  const removeFromCart = (productId) => {
+    setCart(prev => prev.filter(i => i.id !== productId));
+  };
+
+  // ✅ FUNÇÃO ADICIONADA
+  const updateQuantity = (productId, newQuantity) => {
+    if (newQuantity < 1) {
+      removeFromCart(productId);
+      return;
+    }
+    setCart(prev =>
+      prev.map(i => i.id === productId ? { ...i, quantity: newQuantity } : i)
+    );
   };
 
   const clearCart = () => {
@@ -38,7 +54,8 @@ export function CartProvider({ children }) {
   const getCartTotal = () => cart.reduce((t, i) => t + (Number(i.price) * i.quantity), 0);
 
   return (
-    <CartContext.Provider value={{ cart, addToCart, clearCart, getCartTotal }}>
+    // ✅ removeFromCart e updateQuantity adicionados ao value
+    <CartContext.Provider value={{ cart, addToCart, removeFromCart, updateQuantity, clearCart, getCartTotal }}>
       {children}
     </CartContext.Provider>
   );
