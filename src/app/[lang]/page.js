@@ -54,21 +54,21 @@ export default function HomePage({ params }) {
       id: 1,
       title: lang === 'pt' ? 'CARNES' : 'MEAT',
       subtitle: lang === 'pt' ? 'Tradição Brasileira' : 'Portuguese Tradition',
-      image: 'https://vpqevrxwiglfpyrwxmne.supabase.co/storage/v1/object/public/images/BANER%20CARNES.webp',
-      bgColor: 'from-red-800 to-red-700',
+      image: '',
+      bgColor: 'frhttps://vpqevrxwiglfpyrwxmne.supabase.co/storage/v1/object/public/images/001%20CAPA%20BANNER%20NOVA.webpom-red-800 to-red-700',
     },
     {
       id: 2,
       title: lang === 'pt' ? 'DOCES ' : 'SWEETS ',
       subtitle: lang === 'pt' ? 'Seleção Premium' : 'Premium Selection',
-      image: 'https://vpqevrxwiglfpyrwxmne.supabase.co/storage/v1/object/public/images/BANER%20DDOCES.webp',
+      image: '',
       bgColor: 'from-red-800 to-red-700',
     },
     {
-      id: 3,
+      id: 3,https://vpqevrxwiglfpyrwxmne.supabase.co/storage/v1/object/public/images/002%20CAPA%20BANNER%20NOVA.webp
       title: lang === 'pt' ? 'BEBIDAS ' : 'DRINKS ',
       subtitle: lang === 'pt' ? 'Sabor Autêntico' : 'Authentic Flavor',
-      image: 'https://vpqevrxwiglfpyrwxmne.supabase.co/storage/v1/object/public/images/BANER%20BEBIDAS.webp',
+      image: 'https://vpqevrxwiglfpyrwxmne.supabase.co/storage/v1/object/public/images/003%20CAPA%20BANNER%20NOVA.webp',
       bgColor: 'from-yellow-600 to-yellow-500',
     }
   ];
