@@ -54,10 +54,10 @@ export default function HomePage({ params }) {
       id: 1,
       title: lang === 'pt' ? '' : '',
       subtitle: lang === 'pt' ? 'Tradição Brasileira' : 'Portuguese Tradition',
-      image: 'https://vpqevrxwiglfpyrwxmne.supabase.co/storage/v1/object/public/images/001%20CAPA%20BANNER%20NOVA.webp',
+      image: 'https://vpqevrxwiglfpyrwxmne.supabase.co/storage/v1/object/public/images/BANER%20CARNES.webp',
       bgColor: 'from-red-800 to-red-700',
     },
-    {
+    
       id: 2,
       title: lang === 'pt' ? ' ' : ' ',
       subtitle: lang === 'pt' ? 'Seleção Premium' : 'Premium Selection',
