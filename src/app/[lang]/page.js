@@ -61,7 +61,7 @@ export default function HomePage({ params }) {
       id: 2,
       title: lang === 'pt' ? 'DOCES ' : 'SWEETS ',
       subtitle: lang === 'pt' ? 'Seleção Premium' : 'Premium Selection',
-      image: '',
+      image: 'https://vpqevrxwiglfpyrwxmne.supabase.co/storage/v1/object/public/images/002%20CAPA%20BANNER%20NOVA.webp',
       bgColor: 'from-red-800 to-red-700',
     },
     {
