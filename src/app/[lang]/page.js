@@ -52,21 +52,21 @@ export default function HomePage({ params }) {
   const banners = [
     {
       id: 1,
-      title: lang === 'pt' ? 'CARNES' : 'MEAT',
+      title: lang === 'pt' ? '' : '',
       subtitle: lang === 'pt' ? 'Tradição Brasileira' : 'Portuguese Tradition',
       image: 'https://vpqevrxwiglfpyrwxmne.supabase.co/storage/v1/object/public/images/001%20CAPA%20BANNER%20NOVA.webp',
       bgColor: 'from-red-800 to-red-700',
     },
     {
       id: 2,
-      title: lang === 'pt' ? 'DOCES ' : 'SWEETS ',
+      title: lang === 'pt' ? ' ' : ' ',
       subtitle: lang === 'pt' ? 'Seleção Premium' : 'Premium Selection',
       image: 'https://vpqevrxwiglfpyrwxmne.supabase.co/storage/v1/object/public/images/002%20CAPA%20BANNER%20NOVA.webp',
       bgColor: 'from-red-800 to-red-700',
     },
     {
       id: 3,
-      title: lang === 'pt' ? 'BEBIDAS ' : 'DRINKS ',
+      title: lang === 'pt' ? ' ' : ' ',
       subtitle: lang === 'pt' ? 'Sabor Autêntico' : 'Authentic Flavor',
       image: 'https://vpqevrxwiglfpyrwxmne.supabase.co/storage/v1/object/public/images/003%20CAPA%20BANNER%20NOVA.webp',
       bgColor: 'from-yellow-600 to-yellow-500',
