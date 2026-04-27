@@ -52,23 +52,23 @@ export default function HomePage({ params }) {
   const banners = [
     {
       id: 1,
-      title: lang === 'pt' ? '' : '',
+      title: lang === 'pt' ? 'CARNES' : 'MEAT',
       subtitle: lang === 'pt' ? 'Tradição Brasileira' : 'Portuguese Tradition',
       image: 'https://vpqevrxwiglfpyrwxmne.supabase.co/storage/v1/object/public/images/BANER%20CARNES.webp',
       bgColor: 'from-red-800 to-red-700',
     },
-    
+    {
       id: 2,
-      title: lang === 'pt' ? ' ' : ' ',
+      title: lang === 'pt' ? 'DOCES ' : 'SWEETS ',
       subtitle: lang === 'pt' ? 'Seleção Premium' : 'Premium Selection',
-      image: 'https://vpqevrxwiglfpyrwxmne.supabase.co/storage/v1/object/public/images/BANER%20BEBIDAS.webp',
+      image: 'https://vpqevrxwiglfpyrwxmne.supabase.co/storage/v1/object/public/images/BANER%20DDOCES.webp',
       bgColor: 'from-red-800 to-red-700',
     },
     {
       id: 3,
-      title: lang === 'pt' ? ' ' : ' ',
+      title: lang === 'pt' ? 'BEBIDAS ' : 'DRINKS ',
       subtitle: lang === 'pt' ? 'Sabor Autêntico' : 'Authentic Flavor',
-      image: 'https://vpqevrxwiglfpyrwxmne.supabase.co/storage/v1/object/public/images/BANER%20DDOCES.webp',
+      image: 'https://vpqevrxwiglfpyrwxmne.supabase.co/storage/v1/object/public/images/BANER%20BEBIDAS.webp',
       bgColor: 'from-yellow-600 to-yellow-500',
     }
   ];
