@@ -54,8 +54,8 @@ export default function HomePage({ params }) {
       id: 1,
       title: lang === 'pt' ? 'CARNES' : 'MEAT',
       subtitle: lang === 'pt' ? 'Tradição Brasileira' : 'Portuguese Tradition',
-      image: '',
-      bgColor: 'frhttps://vpqevrxwiglfpyrwxmne.supabase.co/storage/v1/object/public/images/001%20CAPA%20BANNER%20NOVA.webpom-red-800 to-red-700',
+      image: 'https://vpqevrxwiglfpyrwxmne.supabase.co/storage/v1/object/public/images/001%20CAPA%20BANNER%20NOVA.webp',
+      bgColor: 'from-red-800 to-red-700',
     },
     {
       id: 2,
