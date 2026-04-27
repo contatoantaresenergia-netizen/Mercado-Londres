@@ -65,7 +65,7 @@ export default function HomePage({ params }) {
       bgColor: 'from-red-800 to-red-700',
     },
     {
-      id: 3,https://vpqevrxwiglfpyrwxmne.supabase.co/storage/v1/object/public/images/002%20CAPA%20BANNER%20NOVA.webp
+      id: 3,
       title: lang === 'pt' ? 'BEBIDAS ' : 'DRINKS ',
       subtitle: lang === 'pt' ? 'Sabor Autêntico' : 'Authentic Flavor',
       image: 'https://vpqevrxwiglfpyrwxmne.supabase.co/storage/v1/object/public/images/003%20CAPA%20BANNER%20NOVA.webp',
