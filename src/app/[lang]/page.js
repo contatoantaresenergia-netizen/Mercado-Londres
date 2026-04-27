@@ -61,14 +61,14 @@ export default function HomePage({ params }) {
       id: 2,
       title: lang === 'pt' ? ' ' : ' ',
       subtitle: lang === 'pt' ? 'Seleção Premium' : 'Premium Selection',
-      image: 'https://vpqevrxwiglfpyrwxmne.supabase.co/storage/v1/object/public/images/002%20CAPA%20BANNER%20NOVA.webp',
+      image: 'https://vpqevrxwiglfpyrwxmne.supabase.co/storage/v1/object/public/images/BANER%20BEBIDAS.webp',
       bgColor: 'from-red-800 to-red-700',
     },
     {
       id: 3,
       title: lang === 'pt' ? ' ' : ' ',
       subtitle: lang === 'pt' ? 'Sabor Autêntico' : 'Authentic Flavor',
-      image: 'https://vpqevrxwiglfpyrwxmne.supabase.co/storage/v1/object/public/images/003%20CAPA%20BANNER%20NOVA.webp',
+      image: 'https://vpqevrxwiglfpyrwxmne.supabase.co/storage/v1/object/public/images/BANER%20DDOCES.webp',
       bgColor: 'from-yellow-600 to-yellow-500',
     }
   ];
